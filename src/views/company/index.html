@@ -1,0 +1,37 @@
+{% extends "layouts/ukti.html" %}
+
+{% block main %}
+
+<h2 class="heading-xlarge">{{ company.name}}</h2>
+
+<div class="tabs tabs--inline js-tabs">
+  <ul class="tabs-nav">
+    <li class="tab">
+      <a href="#details">Details</a>
+    </li>
+    <li class="tab">
+      <a href="#contacts">Contacts</a>
+    </li>
+    <li class="tab">
+      <a href="#interactions">Interactions</a>
+    </li>
+  </ul>
+  <div id="details" class="tabs-panel">
+    <div class="tabs-panel-inner">
+      {% include "company/details.html" %}
+    </div>
+  </div>
+  <div id="contacts" class="tabs-panel">
+    <div class="tabs-panel-inner">
+      {% include "company/contacts.html" %}
+    </div>
+  </div>
+  <div id="interactions" class="tabs-panel">
+    <div class="tabs-panel-inner">
+      {% include "company/interactions.html" %}
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}

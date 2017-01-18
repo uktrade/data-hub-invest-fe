@@ -1,0 +1,21 @@
+{
+  "extends": ["standard"],
+  "parser": "babel-eslint",
+  "globals": {
+    "afterEach": true,
+    "assert": true,
+    "beforeEach": true,
+    "describe": true,
+    "es": true,
+    "expect": true,
+    "ga": true,
+    "GOVUK": true,
+    "Image": true,
+    "it": true,
+    "jasmine": true,
+    "spyOn": true,
+    "$": true,
+    "_gaq": true,
+    "require": true
+  }
+}

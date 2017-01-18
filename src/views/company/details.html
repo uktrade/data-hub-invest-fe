@@ -1,0 +1,7 @@
+{% import "macros/trade.html" as trade %}
+
+{% if chDisplay %}
+  {{ trade.keyvaluetable(chDisplay, labels=chDetailLabels, keyorder=chDetailsDisplayOrder, readonly=true) }}
+{% endif %}
+
+{{ trade.keyvaluetable(companyDisplay, stripey=true, labels=companyDetailLabels, keyorder=companyDetailsDisplayOrder) }}
