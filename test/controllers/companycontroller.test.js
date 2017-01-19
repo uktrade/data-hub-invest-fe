@@ -391,7 +391,7 @@ describe('Company controller', () => {
       const actual = companyController.getDisplayCH(company)
       const expected = {
         company_number: '02658484',
-        registered_address: '52A HIGH STREET, SHEFFIELD, S20 ',
+        registered_address: '52A HIGH STREET, SHEFFIELD, S20 1ED',
         business_type: 'Private Limited Company',
         company_status: 'Active',
         sic_code: ['82990 - Other business support service activities n.e.c.', '82991 - Other business support service activities n.e.c.']
