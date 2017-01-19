@@ -3,7 +3,7 @@
 {% if chDisplay %}
   <div class="dark-panel">
     {{ trade.keyvaluetable(chDisplay, labels=chDetailLabels, keyorder=chDetailsDisplayOrder, readonly=true) }}
-    <p>Powered by data from <strong>Companies House</strong></p>
+    <p class="footnote">Powered by data from <strong>Companies House</strong></p>
   </div>
 {% endif %}
 
@@ -16,5 +16,5 @@
 <a href="#" class="button button-secondary">Add a parent company</a>
 
 <h3 class="heading-medium">Child companies</h3>
-<p class="footnote">This company is currently not linked with any companies that is is a parent of.</p>
+<p>This company is currently not linked with any companies that is is a parent of.</p>
 <a href="#" class="button button-secondary">Add a child company</a>

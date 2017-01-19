@@ -18,11 +18,7 @@ const companyDetailLabels = {
   website: 'Website',
   description: 'Business description',
   employee_range: 'Number of employees',
-  turnover_range: 'Annual turnover',
-
-  account_manager: 'Account manager',
-  export_to_countries: 'Is the company currently exporting to a market?',
-  future_interest_countries: 'Future countries of interest'
+  turnover_range: 'Annual turnover'
 }
 const chDetailLabels = {
   company_number: 'Company number',
@@ -93,7 +89,8 @@ function getDisplayCompany (company) {
     website: company.website ? `<a href="${company.website}">${company.website}</a>` : TODO,
     employee_range: (company.employee_range && company.employee_range.name) ? company.employee_range.name : TODO,
     turnover_range: (company.turnover_range && company.turnover_range.name) ? company.turnover_range.name : TODO,
-    account_manager: (company.account_manager && company.account_manager.name) ? company.account_manager.name : TODO
+    account_manager: (company.account_manager && company.account_manager.name) ? company.account_manager.name : TODO,
+    headquarters: 'UK headquarters'
   }
 
   displayCompany.trading_address = getFormattedAddress(company, 'trading')
