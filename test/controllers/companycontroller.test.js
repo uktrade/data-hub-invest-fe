@@ -1,5 +1,6 @@
 /* globals expect: true, describe: true, it: true, beforeEach: true */
 const companyController = require('../../src/controllers/companycontroller')
+const TODO = '<span class="status-badge status-badge--xsmall status-badge--action">TO DO</span>'
 
 describe('Company controller', () => {
   describe('get display company', () => {
@@ -126,10 +127,10 @@ describe('Company controller', () => {
           sector: 'Giftware, Jewellery and Tableware',
           alias: '',
           trading_address: '',
-          website: '',
-          description: '',
-          employee_range: '',
-          turnover_range: '',
+          website: TODO,
+          description: TODO,
+          employee_range: TODO,
+          turnover_range: TODO,
           uk_region: 'London',
           account_manager: 'Yvonne Ahern',
           export_to_countries: 'No',

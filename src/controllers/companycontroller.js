@@ -32,6 +32,7 @@ const chDetailLabels = {
 
 const companyDetailsDisplayOrder = Object.keys(companyDetailLabels)
 const chDetailsDisplayOrder = Object.keys(chDetailLabels)
+const TODO = '<span class="status-badge status-badge--xsmall status-badge--action">TO DO</span>'
 
 function cleanErrors (errors) {
   if (errors.registered_address_1 || errors.registered_address_2 ||
@@ -86,11 +87,11 @@ function getDisplayCompany (company) {
   const displayCompany = {
     sector: company.sector.name,
     alias: company.alias || '',
-    description: company.description || '',
-    website: company.website || '',
-    employee_range: (company.employee_range && company.employee_range.name) ? company.employee_range.name : '',
-    turnover_range: (company.turnover_range && company.turnover_range.name) ? company.turnover_range.name : '',
-    account_manager: (company.account_manager && company.account_manager.name) ? company.account_manager.name : ''
+    description: company.description || TODO,
+    website: company.website || TODO,
+    employee_range: (company.employee_range && company.employee_range.name) ? company.employee_range.name : TODO,
+    turnover_range: (company.turnover_range && company.turnover_range.name) ? company.turnover_range.name : TODO,
+    account_manager: (company.account_manager && company.account_manager.name) ? company.account_manager.name : TODO
   }
 
   displayCompany.trading_address = getFormattedAddress(company, 'trading')
