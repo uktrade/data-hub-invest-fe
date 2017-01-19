@@ -8,7 +8,7 @@
     "url": "https://github.com/uktrade/data-hub-invest-fe"
   },
   "dependencies": {
-    "@uktrade/trade_elements": "^1.0.0",
+    "@uktrade/trade_elements": "^1.2.0",
     "@uktrade/trade_elements_react": "^1.0.0",
     "async-props": "^0.3.2",
     "axios": "^0.15.2",
