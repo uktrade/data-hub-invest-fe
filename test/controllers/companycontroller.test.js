@@ -134,7 +134,8 @@ describe('Company controller', () => {
           uk_region: 'London',
           account_manager: 'Yvonne Ahern',
           export_to_countries: 'No',
-          future_interest_countries: 'Sweden'
+          future_interest_countries: 'Sweden',
+          headquarters: "UK headquarters"
         }
         const actual = companyController.getDisplayCompany(company)
         expect(actual).to.deep.equal(expected)
