@@ -139,6 +139,15 @@ describe('Company controller', () => {
         const actual = companyController.getDisplayCompany(company)
         expect(actual).to.deep.equal(expected)
       })
+      it('should convert website to link', () => {
+        const company = {
+          "id": "1234",
+          "website": "http:/www.test.com"
+        }
+
+        const actual = companyController.getDisplayCompany(company)
+        expect(actual.website).to.equal('<a href="http:/www.test.com">http:/www.test.com</a>')
+      })
       describe('and no CH data', () => {
         const company = {
           "id": "3a4b36c6-a950-43c5-ba41-82cf6bffaa91",

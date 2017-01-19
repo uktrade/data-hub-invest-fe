@@ -10,14 +10,16 @@ const router = express.Router()
 const companyDetailLabels = {
   registered_address: 'Registered address',
   business_type: 'Company type',
-  sector: 'Sector',
   alias: 'Trading name',
   trading_address: 'Trading address',
+  uk_region: 'Region',
+  headquarters: 'Headquarters',
+  sector: 'Primary sector',
   website: 'Website',
   description: 'Business description',
   employee_range: 'Number of employees',
   turnover_range: 'Annual turnover',
-  uk_region: 'Region',
+
   account_manager: 'Account manager',
   export_to_countries: 'Is the company currently exporting to a market?',
   future_interest_countries: 'Future countries of interest'
@@ -85,10 +87,10 @@ function getDisplayCompany (company) {
   if (!company.id) return null
 
   const displayCompany = {
-    sector: company.sector.name,
+    sector: (company.sector && company.sector.name) ? company.sector.name : TODO,
     alias: company.alias || '',
     description: company.description || TODO,
-    website: company.website || TODO,
+    website: company.website ? `<a href="${company.website}">${company.website}</a>` : TODO,
     employee_range: (company.employee_range && company.employee_range.name) ? company.employee_range.name : TODO,
     turnover_range: (company.turnover_range && company.turnover_range.name) ? company.turnover_range.name : TODO,
     account_manager: (company.account_manager && company.account_manager.name) ? company.account_manager.name : TODO
@@ -98,7 +100,7 @@ function getDisplayCompany (company) {
 
   if (!company.companies_house_data) {
     displayCompany.registered_address = getFormattedAddress(company, 'registered')
-    displayCompany.business_type = company.business_type.name
+    displayCompany.business_type = (company.business_type && company.business_type.name) ? company.business_type.name : TODO
   }
 
   if (company.uk_region) displayCompany.uk_region = company.uk_region.name
