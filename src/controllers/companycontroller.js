@@ -4,6 +4,7 @@ const winston = require('winston')
 const controllerUtils = require('../lib/controllerutils')
 const companyRepository = require('../repositorys/companyrepository')
 const itemCollectionService = require('../services/itemcollectionservice')
+const getFormattedAddress = require('../lib/address').getFormattedAddress
 
 const router = express.Router()
 const companyDetailLabels = {
@@ -66,20 +67,8 @@ function getDisplayCH (company) {
   const displayCH = {
     company_number: companyHouseData.company_number,
     business_type: companyHouseData.company_category,
-    company_status: companyHouseData.company_status
-  }
-
-  let registeredAddress = ''
-  if (companyHouseData.registered_address_1) registeredAddress += `${companyHouseData.registered_address_1}, `
-  if (companyHouseData.registered_address_2) registeredAddress += `${companyHouseData.registered_address_2}, `
-  if (companyHouseData.registered_address_town) registeredAddress += `${companyHouseData.registered_address_town}, `
-  if (companyHouseData.registered_address_county) registeredAddress += `${companyHouseData.registered_address_county}, `
-  if (companyHouseData.registered_address_postcode) registeredAddress += `${companyHouseData.registered_address_postcode}`
-
-  if (registeredAddress.length > 0) {
-    displayCH.registered_address = registeredAddress
-  } else {
-    displayCH.registered_address = ''
+    company_status: companyHouseData.company_status,
+    registered_address: getFormattedAddress(company.companies_house_data, 'registered')
   }
 
   displayCH.sic_code = []
@@ -104,33 +93,10 @@ function getDisplayCompany (company) {
     account_manager: (company.account_manager && company.account_manager.name) ? company.account_manager.name : ''
   }
 
-  let tradingAddress = ''
-  if (company.trading_address_1) tradingAddress += `${company.trading_address_1}, `
-  if (company.trading_address_2) tradingAddress += `${company.trading_address_2}, `
-  if (company.trading_address_town) tradingAddress += `${company.trading_address_town}, `
-  if (company.trading_address_county) tradingAddress += `${company.trading_address_county}, `
-  if (company.trading_address_postcode) tradingAddress += `${company.trading_address_postcode}, `
-  if (company.trading_address_country) tradingAddress += `${company.trading_address_country.name}`
-  if (tradingAddress.length > 0) {
-    displayCompany.trading_address = tradingAddress
-  } else {
-    displayCompany.trading_address = ''
-  }
+  displayCompany.trading_address = getFormattedAddress(company, 'trading')
 
   if (!company.companies_house_data) {
-    let registeredAddress = ''
-    if (company.registered_address_1) registeredAddress += `${company.registered_address_1}, `
-    if (company.registered_address_2) registeredAddress += `${company.registered_address_2}, `
-    if (company.registered_address_town) registeredAddress += `${company.registered_address_town}, `
-    if (company.registered_address_county) registeredAddress += `${company.registered_address_county}, `
-    if (company.registered_address_postcode) registeredAddress += `${company.registered_address_postcode}, `
-    if (company.registered_address_country) registeredAddress += `${company.registered_address_country.name}`
-
-    if (registeredAddress.length > 0) {
-      displayCompany.registered_address = registeredAddress
-    } else {
-      displayCompany.registered_address = ''
-    }
+    displayCompany.registered_address = getFormattedAddress(company, 'registered')
     displayCompany.business_type = company.business_type.name
   }
 
@@ -150,6 +116,20 @@ function getDisplayCompany (company) {
   return displayCompany
 }
 
+function getHeadingAddress (company) {
+  // If this is a CDMS
+  const cdmsTradingAddress = getFormattedAddress(company, 'trading')
+  if (cdmsTradingAddress.length > 0) {
+    return cdmsTradingAddress
+  }
+
+  if (company.companies_house_data !== null) {
+    return getFormattedAddress(company.companies_house_data, 'registered')
+  }
+
+  return getFormattedAddress(company, 'registered')
+}
+
 function index (req, res, next) {
   const id = req.params.sourceId
   const source = req.params.source
@@ -160,6 +140,7 @@ function index (req, res, next) {
       const contactsInLastYear = itemCollectionService.getItemsAddedInLastYear(company.contacts)
       const companyDisplay = getDisplayCompany(company)
       const chDisplay = getDisplayCH(company)
+      const headingAddress = getHeadingAddress(company)
 
       res.render('company/index', {
         company,
@@ -170,7 +151,8 @@ function index (req, res, next) {
         companyDetailLabels,
         companyDetailsDisplayOrder,
         chDetailLabels,
-        chDetailsDisplayOrder
+        chDetailsDisplayOrder,
+        headingAddress
       })
     })
     .catch((error) => {
@@ -259,4 +241,4 @@ router.post('/api/company', post)
 router.post('/api/company/archive', archive)
 router.post('/api/company/unarchive', unarchive)
 
-module.exports = { router, getDisplayCompany, getDisplayCH }
+module.exports = { router, getDisplayCompany, getDisplayCH, getHeadingAddress }
