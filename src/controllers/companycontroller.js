@@ -32,6 +32,45 @@ const companyDetailsDisplayOrder = Object.keys(companyDetailLabels)
 const chDetailsDisplayOrder = Object.keys(chDetailLabels)
 const TODO = '<span class="status-badge status-badge--xsmall status-badge--action">TO DO</span>'
 
+const fakeParents = [{
+  id: '1234',
+  name: 'Marriott International (USA) HQ - Global HQ',
+  address: 'Bethesda, United States of America'
+}]
+const fakeChildren = [
+  {
+    id: '1234',
+    name: 'Marriott Hanbury Manor Hotel & Country Club',
+    address: 'Hanbury, UK'
+  },
+  {
+    id: '1234',
+    name: 'Marriott Hotel (Twickenham)',
+    address: 'Twickenham, UK'
+  },
+  {
+    id: '1234',
+    name: 'Marriott Hotel and Country Club St Pierre',
+    address: 'Chepstow, UK'
+  },
+  {
+    id: '1234',
+    name: 'Marriott International Aberdeen',
+    address: 'Aberdeen, UK'
+  },
+  {
+    id: '1234',
+    name: 'Marriott Manchester Victoria & Albert Hotel',
+    address: 'Manchester, UK'
+  }
+]
+
+const companyTableHeadings = {
+  name: 'Company name',
+  address: 'Address'
+}
+const companyTableKeys = ['name', 'address']
+
 function cleanErrors (errors) {
   if (errors.registered_address_1 || errors.registered_address_2 ||
     errors.registered_address_town || errors.registered_address_county ||
@@ -57,7 +96,6 @@ function cleanErrors (errors) {
     delete errors.trading_address_country
   }
 }
-
 function getDisplayCH (company) {
   if (!company.companies_house_data) return null
 
@@ -78,7 +116,6 @@ function getDisplayCH (company) {
 
   return displayCH
 }
-
 function getDisplayCompany (company) {
   if (!company.id) return null
 
@@ -115,7 +152,6 @@ function getDisplayCompany (company) {
 
   return displayCompany
 }
-
 function getHeadingAddress (company) {
   // If this is a CDMS
   const cdmsTradingAddress = getFormattedAddress(company, 'trading')
@@ -128,6 +164,14 @@ function getHeadingAddress (company) {
   }
 
   return getFormattedAddress(company, 'registered')
+}
+function parseRelatedData (companies) {
+  return companies.map((company) => {
+    return {
+      name: `<a href="/company/%{company.id}">${company.name}</a>`,
+      address: company.address
+    }
+  })
 }
 
 function index (req, res, next) {
@@ -142,6 +186,9 @@ function index (req, res, next) {
       const chDisplay = getDisplayCH(company)
       const headingAddress = getHeadingAddress(company)
 
+      const parents = parseRelatedData(fakeParents)
+      const children = parseRelatedData(fakeChildren)
+
       res.render('company/index', {
         company,
         companyDisplay,
@@ -152,7 +199,11 @@ function index (req, res, next) {
         companyDetailsDisplayOrder,
         chDetailLabels,
         chDetailsDisplayOrder,
-        headingAddress
+        headingAddress,
+        companyTableHeadings,
+        companyTableKeys,
+        children,
+        parents
       })
     })
     .catch((error) => {
