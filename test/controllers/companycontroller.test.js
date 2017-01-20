@@ -1,5 +1,6 @@
 /* globals expect: true, describe: true, it: true, beforeEach: true */
 const companyController = require('../../src/controllers/companycontroller')
+const TODO = '<span class="status-badge status-badge--xsmall status-badge--action">TO DO</span>'
 
 describe('Company controller', () => {
   describe('get display company', () => {
@@ -126,17 +127,27 @@ describe('Company controller', () => {
           sector: 'Giftware, Jewellery and Tableware',
           alias: '',
           trading_address: '',
-          website: '',
-          description: '',
-          employee_range: '',
-          turnover_range: '',
+          website: TODO,
+          description: TODO,
+          employee_range: TODO,
+          turnover_range: TODO,
           uk_region: 'London',
           account_manager: 'Yvonne Ahern',
           export_to_countries: 'No',
-          future_interest_countries: 'Sweden'
+          future_interest_countries: 'Sweden',
+          headquarters: "UK headquarters"
         }
         const actual = companyController.getDisplayCompany(company)
         expect(actual).to.deep.equal(expected)
+      })
+      it('should convert website to link', () => {
+        const company = {
+          "id": "1234",
+          "website": "http:/www.test.com"
+        }
+
+        const actual = companyController.getDisplayCompany(company)
+        expect(actual.website).to.equal('<a href="http:/www.test.com">http:/www.test.com</a>')
       })
       describe('and no CH data', () => {
         const company = {
@@ -391,13 +402,130 @@ describe('Company controller', () => {
       const actual = companyController.getDisplayCH(company)
       const expected = {
         company_number: '02658484',
-        registered_address: '52A HIGH STREET, SHEFFIELD, S20 1ED',
+        registered_address: '52A HIGH STREET, SHEFFIELD, S20 1ED, United Kingdom',
         business_type: 'Private Limited Company',
         company_status: 'Active',
         sic_code: ['82990 - Other business support service activities n.e.c.', '82991 - Other business support service activities n.e.c.']
       }
-
       expect(actual).to.deep.equal(expected)
+    })
+  })
+  describe('get header address', () => {
+    it('should return the CDMS trading address if there is one', () => {
+      const company = {
+        "id": "3a4b36c6-a950-43c5-ba41-82cf6bffaa91",
+        "name": "Fresh Flowers",
+        "trading_name": null,
+        "companies_house_data": null,
+        "registered_address_1": "Business Innovation & Skills",
+        "registered_address_2": "1 Victoria Street",
+        "registered_address_3": null,
+        "registered_address_4": null,
+        "registered_address_town": "London",
+        "registered_address_country": {
+          "id": "80756b9a-5d95-e211-a939-e4115bead28a",
+          "name": "United Kingdom"
+        },
+        "registered_address_county": "Greater London",
+        "registered_address_postcode": "SW1H 0ET",
+        "trading_address_1": "Trading address",
+        "trading_address_2": "2 Victoria Street",
+        "trading_address_3": null,
+        "trading_address_4": null,
+        "trading_address_town": "Trading town",
+        "trading_address_county": "Trading county",
+        "trading_address_postcode": 'WC1 1AA',
+        "trading_address_country": {
+          "id": "80756b9a-5d95-e211-a939-e4115bead28a",
+          "name": "United Kingdom"
+        }
+      }
+
+      const address = companyController.getHeadingAddress(company)
+
+      expect(address).to.equal('Trading address, 2 Victoria Street, Trading town, Trading county, WC1 1AA, United Kingdom')
+    })
+    it('should return the CDMS registered address if there is no trading and no CH', () => {
+      const company = {
+        "id": "3a4b36c6-a950-43c5-ba41-82cf6bffaa91",
+        "name": "Fresh Flowers",
+        "trading_name": null,
+        "companies_house_data": null,
+        "registered_address_1": "Business Innovation & Skills",
+        "registered_address_2": "1 Victoria Street",
+        "registered_address_3": null,
+        "registered_address_4": null,
+        "registered_address_town": "London",
+        "registered_address_country": {
+          "id": "80756b9a-5d95-e211-a939-e4115bead28a",
+          "name": "United Kingdom"
+        },
+        "registered_address_county": "Greater London",
+        "registered_address_postcode": "SW1H 0ET",
+        "trading_address_1": null,
+        "trading_address_2": null,
+        "trading_address_3": null,
+        "trading_address_4": null,
+        "trading_address_town": null,
+        "trading_address_county": null,
+        "trading_address_postcode": null,
+        "trading_address_country": null
+      }
+      const address = companyController.getHeadingAddress(company)
+      expect(address).to.equal('Business Innovation & Skills, 1 Victoria Street, London, Greater London, SW1H 0ET, United Kingdom')
+    })
+    it('should return the CH registered address if there is no trading address but there is a CH', () => {
+      const company = {
+        "id": "3a4b36c6-a950-43c5-ba41-82cf6bffaa91",
+        "name": "Fresh Flowers",
+        "trading_name": null,
+        "companies_house_data": {
+          "id": 4179778,
+          "name": "AMAZON SAVERS",
+          "registered_address_1": "52A HIGH STREET",
+          "registered_address_2": "",
+          "registered_address_3": "",
+          "registered_address_4": "",
+          "registered_address_town": "SHEFFIELD",
+          "registered_address_county": "",
+          "registered_address_postcode": "S20 1ED",
+          "company_number": "02658484",
+          "company_category": "Private Limited Company",
+          "company_status": "Active",
+          "sic_code_1": "82990 - Other business support service activities n.e.c.",
+          "sic_code_2": "82991 - Other business support service activities n.e.c.",
+          "sic_code_3": "",
+          "sic_code_4": "",
+          "uri": "http://business.data.gov.uk/id/company/07937720",
+          "incorporation_date": "2012-02-06",
+          "registered_address_country": {
+            "id": "80756b9a-5d95-e211-a939-e4115bead28a",
+            "name": "United Kingdom",
+            "selectable": true
+          }
+        },
+        "registered_address_1": "Business Innovation & Skills",
+        "registered_address_2": "1 Victoria Street",
+        "registered_address_3": null,
+        "registered_address_4": null,
+        "registered_address_town": "London",
+        "registered_address_country": {
+          "id": "80756b9a-5d95-e211-a939-e4115bead28a",
+          "name": "United Kingdom"
+        },
+        "registered_address_county": "Greater London",
+        "registered_address_postcode": "SW1H 0ET",
+        "trading_address_1": null,
+        "trading_address_2": null,
+        "trading_address_3": null,
+        "trading_address_4": null,
+        "trading_address_town": null,
+        "trading_address_county": null,
+        "trading_address_postcode": null,
+        "trading_address_country": null
+      }
+      const address = companyController.getHeadingAddress(company)
+      expect(address).to.equal('52A HIGH STREET, SHEFFIELD, S20 1ED, United Kingdom')
     })
   })
 })

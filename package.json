@@ -8,7 +8,7 @@
     "url": "https://github.com/uktrade/data-hub-invest-fe"
   },
   "dependencies": {
-    "@uktrade/trade_elements": "^1.0.0",
+    "@uktrade/trade_elements": "^1.2.3",
     "@uktrade/trade_elements_react": "^1.0.0",
     "async-props": "^0.3.2",
     "axios": "^0.15.2",
@@ -61,7 +61,7 @@
   },
   "scripts": {
     "clean": "rm -rf build",
-    "start": "node --use-strict build/server.js",
+    "start": "node --use-strict src/server.js",
     "build": "npm run clean && npm run sass && npm run js",
     "test": "mocha --require test/common.js --ui bdd test/**/*.test.js",
     "lint": "npm run lint:js & npm run lint:sass",

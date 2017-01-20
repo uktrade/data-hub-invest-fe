@@ -1,7 +1,23 @@
 {% import "macros/trade.html" as trade %}
-
+<h2 class="heading-medium">Company summary</h2>
 {% if chDisplay %}
-  {{ trade.keyvaluetable(chDisplay, labels=chDetailLabels, keyorder=chDetailsDisplayOrder, readonly=true) }}
+  <div class="dark-panel">
+    {{ trade.keyvaluetable(chDisplay, labels=chDetailLabels, keyorder=chDetailsDisplayOrder, readonly=true) }}
+    <p class="footnote">Powered by data from <strong>Companies House</strong></p>
+  </div>
 {% endif %}
 
 {{ trade.keyvaluetable(companyDisplay, stripey=true, labels=companyDetailLabels, keyorder=companyDetailsDisplayOrder) }}
+
+<a href="/company/edit" class="button">Update</a>
+
+<div class="section">
+  <h3 class="heading-medium">Parent companies</h3>
+  {{  trade.datatable(parents, headings=companyTableHeadings, columnorder=companyTableKeys) }}
+  <a href="#" class="button button-secondary">Add a parent company</a>
+</div>
+<div class="section">
+  <h3 class="heading-medium">Child companies</h3>
+  {{  trade.datatable(children, headings=companyTableHeadings, columnorder=companyTableKeys) }}
+  <a href="#" class="button button-secondary">Add a child company</a>
+</div>

@@ -2,7 +2,13 @@
 
 {% block main %}
 
-<h2 class="heading-xlarge">{{ company.name}}</h2>
+<h1 class="visually-hidden">Company Details</h1>
+<h2 class="heading-xlarge">
+  {% if company.id %}<span class="pre-header">Company ref: {{ company.id }}</span>{% endif %}
+  {{ company.name}}
+  <span class="post-header">{{ headingAddress }}</span>
+</h2>
+
 
 <div class="tabs tabs--inline js-tabs">
   <ul class="tabs-nav">
@@ -14,6 +20,12 @@
     </li>
     <li class="tab">
       <a href="#interactions">Interactions</a>
+    </li>
+    <li class="tab">
+      <a href="#export">Export</a>
+    </li>
+    <li class="tab">
+      <a href="#investment">Investment</a>
     </li>
   </ul>
   <div id="details" class="tabs-panel">
@@ -31,7 +43,16 @@
       {% include "company/interactions.html" %}
     </div>
   </div>
-</div>
+  <div id="export" class="tabs-panel">
+    <div class="tabs-panel-inner">
+      {% include "company/export.html" %}
+    </div>
+  </div>
+  <div id="investment" class="tabs-panel">
+    <div class="tabs-panel-inner">
+      {% include "company/investment.html" %}
+    </div>
+  </div>
 </div>
 
 {% endblock %}

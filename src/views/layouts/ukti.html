@@ -18,17 +18,8 @@
 {% endblock %}
 
 {% block content %}
-  <div class="phase-banner-alpha">
-    <p>
-      <strong class="phase-tag">ALPHA</strong>
-      <span>This is a new service – your <a href="/support/bug">feedback</a> will help us to improve it.</span>
-    </p>
-  </div>
   {% if user and user.name %}
     <div class="login-bar">
-      <div class="login-links login-links-left">
-        <a href="/">Home</a>
-      </div>
       <div class="login-links login-links-right">
         <span class="user-name">{{ user.name }}:</span><a href="/myaccount">My account</a>
         |
