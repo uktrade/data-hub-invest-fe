@@ -125,6 +125,10 @@ function addRelatedData (company) {
       })
       .then((accountManager) => {
         company.account_manager = accountManager
+        return authorisedRequest(null, `${config.apiRoot}/company/${company.id}/investmentprojects/`)
+      })
+      .then((investmentProjects) => {
+        company.investmentProjects = investmentProjects
         resolve(company)
       })
   })

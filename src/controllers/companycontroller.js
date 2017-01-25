@@ -5,6 +5,7 @@ const controllerUtils = require('../lib/controllerutils')
 const companyRepository = require('../repositorys/companyrepository')
 const itemCollectionService = require('../services/itemcollectionservice')
 const getFormattedAddress = require('../lib/address').getFormattedAddress
+const DateLib = require('../lib/date')
 
 const router = express.Router()
 const companyDetailLabels = {
@@ -27,15 +28,30 @@ const chDetailLabels = {
   company_status: 'Company status',
   sic_code: 'Nature of business (SIC)'
 }
+
+const companyDetailsDisplayOrder = Object.keys(companyDetailLabels)
+const chDetailsDisplayOrder = Object.keys(chDetailLabels)
+
 const investmentDetailLabels = {
   account_management_tier: 'Account management tier',
   account_manager: 'Account manager',
   ownership: 'Ownership'
 }
-
-const companyDetailsDisplayOrder = Object.keys(companyDetailLabels)
-const chDetailsDisplayOrder = Object.keys(chDetailLabels)
 const investmentDetailsDisplayOrder = Object.keys(investmentDetailLabels)
+const investmentProjectsOpenLabels = {
+  name: 'Open projects',
+  value: 'Value',
+  state: 'Stage',
+  land_date: 'Land date'
+}
+const investmentProjectsOpenKeys = Object.keys(investmentProjectsOpenLabels)
+const investmentProjectsClosedLabels = {
+  name: 'Closed projects',
+  value: 'Value',
+  state: 'Status',
+  state_date: 'Status date'
+}
+const investmentProjectsClosedKeys = Object.keys(investmentProjectsClosedLabels)
 
 const TODO = '<span class="status-badge status-badge--xsmall status-badge--action">TO DO</span>'
 
@@ -193,12 +209,36 @@ function parseRelatedData (companies) {
   })
 }
 function getInvestmentDetailsDisplay (company) {
-  if (!company.id ) return null
+  if (!company.id) return null
   return {
     account_management_tier: 'B - Top 300',
-    account_manager: `<a href="/advisor/${company.account_manager.id}/">company.account_manager.name</a>`,
+    account_manager: `<a href="/advisor/${company.account_manager.id}/">${company.account_manager.name}</a>`,
     ownership: 'United States of America'
   }
+}
+function getOpenInvestmentProjects (investmentProjects) {
+  return investmentProjects
+    .filter(project => project.open)
+    .map((project) => {
+      return {
+        name: `<a href="/investmentprojects/${project.id}/">${project.name}</a>`,
+        value: project.value,
+        state: project.state,
+        land_date: DateLib.formatDate(project.land_date)
+      }
+    })
+}
+function getClosedInvestmentProjects (investmentProjects) {
+  return investmentProjects
+    .filter(project => !project.open)
+    .map((project) => {
+      return {
+        name: `<a href="/investmentprojects/${project.id}/">${project.name}</a>`,
+        value: project.value,
+        state: project.state,
+        state_date: DateLib.formatDate(project.state_date)
+      }
+    })
 }
 
 function index (req, res, next) {
@@ -216,6 +256,8 @@ function index (req, res, next) {
       const parents = parseRelatedData(fakeParents)
       const children = parseRelatedData(fakeChildren)
       const investmentDisplay = getInvestmentDetailsDisplay(company)
+      const investmentProjectsOpen = getOpenInvestmentProjects(company.investmentProjects)
+      const investmentProjectsClosed = getClosedInvestmentProjects(company.investmentProjects)
 
       res.render('company/index', {
         company,
@@ -235,7 +277,13 @@ function index (req, res, next) {
         parents,
         investmentDetailLabels,
         investmentDetailsDisplayOrder,
-        investmentDisplay
+        investmentDisplay,
+        investmentProjectsOpenLabels,
+        investmentProjectsOpenKeys,
+        investmentProjectsOpen,
+        investmentProjectsClosedLabels,
+        investmentProjectsClosedKeys,
+        investmentProjectsClosed
       })
     })
     .catch((error) => {
