@@ -88,11 +88,12 @@ hr {
   background: $grey-4;
   border-top: 1px solid $border-colour;
   border-bottom: 1px solid $border-colour;
-  margin-bottom: 40px;
+  margin-bottom: 0;
 
-  .footnote {
+  p.footnote {
     color: $grey-1;
     padding-left: 35px;
+    margin-top: 0;
   }
 }
 
@@ -102,4 +103,27 @@ hr {
 
 .section {
   margin-bottom: 60px;
+}
+
+#global-header-bar {
+  display: none
+}
+
+.footer-wrapper {
+  height: 100px;
+}
+
+#details {
+  .table--striped {
+    tr:nth-child(even) {
+      background: $highlight-colour;
+    }
+    tr:nth-child(odd) {
+      background: $white;
+    }
+  }
+}
+#cdms-details.table--key-value {
+  background: red;
+  margin-top: 0;
 }

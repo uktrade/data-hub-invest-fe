@@ -8,7 +8,7 @@
 {% endif %}
 
 {% if companyDisplay %}
-  {{ trade.keyvaluetable(companyDisplay, stripey=true, labels=companyDetailLabels, keyorder=companyDetailsDisplayOrder) }}
+  {{ trade.keyvaluetable(companyDisplay, stripey=true, labels=companyDetailLabels, keyorder=companyDetailsDisplayOrder, id="cdms-details") }}
 
 <a href="/company/edit" class="button">Update</a>
 

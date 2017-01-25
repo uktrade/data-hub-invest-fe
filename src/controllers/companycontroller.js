@@ -21,7 +21,7 @@ const companyDetailLabels = {
   turnover_range: 'Annual turnover'
 }
 const chDetailLabels = {
-  company_number: 'Company number',
+  company_number: 'Companies House number',
   registered_address: 'Registered office address',
   business_type: 'Company type',
   company_status: 'Company status',
@@ -121,7 +121,6 @@ function getDisplayCompany (company) {
 
   const displayCompany = {
     sector: (company.sector && company.sector.name) ? company.sector.name : TODO,
-    alias: company.alias || '',
     description: company.description || TODO,
     website: company.website ? `<a href="${company.website}">${company.website}</a>` : TODO,
     employee_range: (company.employee_range && company.employee_range.name) ? company.employee_range.name : TODO,
@@ -130,7 +129,10 @@ function getDisplayCompany (company) {
     headquarters: 'UK headquarters'
   }
 
-  displayCompany.trading_address = getFormattedAddress(company, 'trading')
+  if (company.alias && company.alias.length > 0) displayCompany.alias = company.alias
+
+  const tradingAddress = getFormattedAddress(company, 'trading')
+  if (tradingAddress.length > 0) displayCompany.trading_address = tradingAddress
 
   if (!company.companies_house_data) {
     displayCompany.registered_address = getFormattedAddress(company, 'registered')
