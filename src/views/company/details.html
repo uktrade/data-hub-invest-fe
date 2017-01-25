@@ -7,7 +7,8 @@
   </div>
 {% endif %}
 
-{{ trade.keyvaluetable(companyDisplay, stripey=true, labels=companyDetailLabels, keyorder=companyDetailsDisplayOrder) }}
+{% if companyDisplay %}
+  {{ trade.keyvaluetable(companyDisplay, stripey=true, labels=companyDetailLabels, keyorder=companyDetailsDisplayOrder) }}
 
 <a href="/company/edit" class="button">Update</a>
 
@@ -21,3 +22,6 @@
   {{  trade.datatable(children, headings=companyTableHeadings, columnorder=companyTableKeys) }}
   <a href="#" class="button button-secondary">Add a child company</a>
 </div>
+{% else %}
+  <a href="/company/edit" class="button">Update</a>
+{% endif %}

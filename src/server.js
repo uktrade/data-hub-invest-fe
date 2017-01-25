@@ -26,7 +26,6 @@ const queueStateController = require('./controllers/queuestatecontroller');
 
 const filters = require('@uktrade/trade_elements/dist/nunjucks/filters');
 const datahubFlash = require('./middleware/flash');
-const auth = require('./middleware/auth');
 const user = require('./middleware/user');
 const csrf = require('./middleware/csrf');
 const locals = require('./middleware/locals');
@@ -127,7 +126,6 @@ app.use(forceHttps);
 app.use(flash());
 app.use(locals);
 app.use(datahubFlash);
-app.use(auth);
 app.use(user);
 app.use(csrf);
 app.use(headers);

@@ -45,12 +45,11 @@ function getMetadata(path, key) {
 
 const metadataItems = [
   ['sector', 'SECTOR_OPTIONS'],
-  ['turnover', 'TURNOVER_OPTIONS'],
-  ['uk-region', 'REGION_OPTIONS'],
+  ['turnoverrange', 'TURNOVER_OPTIONS'],
+  ['region', 'REGION_OPTIONS'],
   ['country', 'COUNTRYS'],
-  ['employee-range', 'EMPLOYEE_OPTIONS'],
-  ['business-type', 'TYPES_OF_BUSINESS'],
-  ['team', 'TEAMS'],
+  ['employeerange', 'EMPLOYEE_OPTIONS'],
+  ['businesstype', 'TYPES_OF_BUSINESS']
 ];
 
 module.exports.setRedisClient = (client) => {

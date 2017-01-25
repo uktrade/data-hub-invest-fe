@@ -165,6 +165,16 @@ function getHeadingAddress (company) {
 
   return getFormattedAddress(company, 'registered')
 }
+function getHeadingName (company) {
+  if (company.id) {
+    if (company.alias && company.alias.length > 0) {
+      return company.alias
+    }
+    return company.name
+  } else {
+    return company.companies_house_data.name
+  }
+}
 function parseRelatedData (companies) {
   return companies.map((company) => {
     return {
@@ -185,7 +195,7 @@ function index (req, res, next) {
       const companyDisplay = getDisplayCompany(company)
       const chDisplay = getDisplayCH(company)
       const headingAddress = getHeadingAddress(company)
-
+      const headingName = getHeadingName(company)
       const parents = parseRelatedData(fakeParents)
       const children = parseRelatedData(fakeChildren)
 
@@ -200,6 +210,7 @@ function index (req, res, next) {
         chDetailLabels,
         chDetailsDisplayOrder,
         headingAddress,
+        headingName,
         companyTableHeadings,
         companyTableKeys,
         children,
