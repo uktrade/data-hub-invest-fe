@@ -50,7 +50,7 @@ const metadataItems = [
   ['country', 'COUNTRYS'],
   ['employeerange', 'EMPLOYEE_OPTIONS'],
   ['businesstype', 'TYPES_OF_BUSINESS']
-];
+]
 
 module.exports.setRedisClient = (client) => {
   redisClient = client;
@@ -93,5 +93,5 @@ module.exports.fetchAll = (cb) => {
 
 module.exports.REASONS_FOR_ARCHIVE = [
   'Company is dissolved',
-  'Other',
-];
+  'Other'
+]

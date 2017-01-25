@@ -4,6 +4,16 @@ const interactionRepository = require('./interactionrepository')
 const contactRepository = require('./contactrepository')
 const metadataRepository = require('./metadatarepository')
 
+const relatedProperties = {
+  'sector': 'SECTOR_OPTIONS',
+  'turnover_range': 'TURNOVER_OPTIONS',
+  'uk_region': 'REGION_OPTIONS',
+  'employee_range': 'EMPLOYEE_OPTIONS',
+  'business_type': 'TYPES_OF_BUSINESS',
+  'registered_address_country': 'COUNTRYS',
+  'trading_address_countrt': 'COUNTRYS'
+}
+
 // Get a company and then go back and get further detail for each company contact
 // and interaction, so the company detail pages can give the detail required.
 function getDitCompany (token, id) {
@@ -42,6 +52,16 @@ function getCHCompany (token, id) {
   return authorisedRequest(token, `${config.apiRoot}/ch-company/${id}/`)
 }
 
+function addRelatedCHCompany (token, company) {
+  return new Promise((resolve) => {
+    getCHCompany(token, company.company_number)
+      .then((companies_house_data) => {
+        company.companies_house_data = companies_house_data
+        resolve(company)
+      })
+  })
+}
+
 function getCompany (token, id, source) {
   return new Promise((resolve, reject) => {
     // Get DIT Company
@@ -62,23 +82,48 @@ function getCompany (token, id, source) {
       return
     }
 
-    let companyResult
-
     getDitCompany(token, id)
       .then((company) => {
-        companyResult = company
-        if (companyResult.company_number && companyResult.company_number.length > 0) {
-          return getCHCompany(token, companyResult.company_number)
-        }
-        resolve(companyResult)
+        return addRelatedData(company)
       })
-      .then((companies_house_data) => {
-        companyResult.companies_house_data = companies_house_data
-        resolve(companyResult)
+      .then((company) => {
+        if (company.company_number && company.company_number.length > 0) {
+          return addRelatedCHCompany(token, company)
+        }
+        return company
+      })
+      .then((company) => {
+        resolve(company)
       })
       .catch((error) => {
         reject(error)
       })
+  })
+}
+
+function addRelatedData (company) {
+  return new Promise((resolve, reject) => {
+    const relatedKeys = Object.keys(relatedProperties)
+
+    for (const property of relatedKeys) {
+      if (company[property] && company[property].length > 0) {
+        const metadataKey = relatedProperties[property]
+        const values = metadataRepository[metadataKey]
+        company[property] = values.filter(item => item.id === company[property])[0]
+      }
+    }
+
+    if (!company.account_manager || company.account_manager.length === 0) {
+      resolve(company)
+    } else {
+      console.log(`${config.apiRoot}/metadata/advisor/${company.account_manager}/`)
+      authorisedRequest(null, `${config.apiRoot}/metadata/advisor/${company.account_manager}/`)
+        .then((value) => {
+          company.account_manager = value
+          resolve(company)
+        })
+    }
+
   })
 }
 
