@@ -27,9 +27,16 @@ const chDetailLabels = {
   company_status: 'Company status',
   sic_code: 'Nature of business (SIC)'
 }
+const investmentDetailLabels = {
+  account_management_tier: 'Account management tier',
+  account_manager: 'Account manager',
+  ownership: 'Ownership'
+}
 
 const companyDetailsDisplayOrder = Object.keys(companyDetailLabels)
 const chDetailsDisplayOrder = Object.keys(chDetailLabels)
+const investmentDetailsDisplayOrder = Object.keys(investmentDetailLabels)
+
 const TODO = '<span class="status-badge status-badge--xsmall status-badge--action">TO DO</span>'
 
 const fakeParents = [{
@@ -185,6 +192,14 @@ function parseRelatedData (companies) {
     }
   })
 }
+function getInvestmentDetailsDisplay (company) {
+  if (!company.id ) return null
+  return {
+    account_management_tier: 'B - Top 300',
+    account_manager: `<a href="/advisor/${company.account_manager.id}/">company.account_manager.name</a>`,
+    ownership: 'United States of America'
+  }
+}
 
 function index (req, res, next) {
   const id = req.params.sourceId
@@ -200,6 +215,7 @@ function index (req, res, next) {
       const headingName = getHeadingName(company)
       const parents = parseRelatedData(fakeParents)
       const children = parseRelatedData(fakeChildren)
+      const investmentDisplay = getInvestmentDetailsDisplay(company)
 
       res.render('company/index', {
         company,
@@ -216,7 +232,10 @@ function index (req, res, next) {
         companyTableHeadings,
         companyTableKeys,
         children,
-        parents
+        parents,
+        investmentDetailLabels,
+        investmentDetailsDisplayOrder,
+        investmentDisplay
       })
     })
     .catch((error) => {

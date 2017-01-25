@@ -113,17 +113,20 @@ function addRelatedData (company) {
       }
     }
 
-    if (!company.account_manager || company.account_manager.length === 0) {
-      resolve(company)
-    } else {
-      console.log(`${config.apiRoot}/metadata/advisor/${company.account_manager}/`)
-      authorisedRequest(null, `${config.apiRoot}/metadata/advisor/${company.account_manager}/`)
-        .then((value) => {
-          company.account_manager = value
-          resolve(company)
-        })
-    }
+    authorisedRequest(null, `${config.apiRoot}/company/${company.id}/contacts/`)
+      .then((contacts) => {
+        company.contacts = contacts
 
+        if (!company.account_manager || company.account_manager.length === 0) {
+          resolve(company)
+        } else {
+          return authorisedRequest(null, `${config.apiRoot}/metadata/advisor/${company.account_manager}/`)
+        }
+      })
+      .then((accountManager) => {
+        company.account_manager = accountManager
+        resolve(company)
+      })
   })
 }
 

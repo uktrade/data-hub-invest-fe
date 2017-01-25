@@ -29,7 +29,7 @@
   <tbody>
   {% for contact in company.contacts %}
     <tr>
-      <td><a href="/contact/{{ contact.id }}">{{ contact.name }}</a></td>
+      <td><a href="/contact/{{ contact.id }}">{{ contact.first_name }} {{ contact.last_name }}</a></td>
       <td>{{ contact.job_title }}</td>
       <td>{{ contact.telephone_number }}</td>
       <td><a href="mailto:{{contact.email}}">{{ contact.email }}</a></td>

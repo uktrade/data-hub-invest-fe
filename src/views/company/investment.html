@@ -1,0 +1,24 @@
+{% import "macros/trade.html" as trade %}
+<h2 class="heading-medium">Investment summary</h2>
+{% if investmentDisplay %}
+
+  {{ trade.keyvaluetable(
+    investmentDisplay,
+    stripey=true,
+    labels=investmentDetailLabels,
+    keyorder=investmentDetailsDisplayOrder,
+    id="investment-details")
+  }}
+  <a href="/company/edit" class="button button-secondary">Update</a>
+
+  <h2 class="heading-medium">Investment projects</h2>
+  {% if company.contacts.length == 0 %}
+  <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
+    <h3 class="heading-medium error-summary-heading" id="error-summary-heading">
+      Add related company contacts before adding a new project
+    </h3>
+    <p>You need to add the related contacts to the company before adding a new project.</p>
+    <a href="#">Add new contact</a>
+  </div>
+  {% endif %}
+{% endif %}
