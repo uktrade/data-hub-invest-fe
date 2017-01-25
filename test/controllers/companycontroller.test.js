@@ -125,8 +125,6 @@ describe('Company controller', () => {
           registered_address: 'Business Innovation & Skills, 1 Victoria Street, London, Greater London, SW1H 0ET, United Kingdom',
           business_type: 'Company',
           sector: 'Giftware, Jewellery and Tableware',
-          alias: '',
-          trading_address: '',
           website: TODO,
           description: TODO,
           employee_range: TODO,
