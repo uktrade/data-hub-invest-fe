@@ -1,0 +1,43 @@
+{% import "macros/trade.html" as trade %}
+<h2 class="heading-medium">Investment summary</h2>
+{% if investmentDisplay %}
+  <div class="section">
+    {{ trade.keyvaluetable(
+      investmentDisplay,
+      stripey=true,
+      labels=investmentDetailLabels,
+      keyorder=investmentDetailsDisplayOrder,
+      id="investment-details")
+    }}
+    <a href="/company/edit" class="button button-secondary">Update</a>
+  </div>
+  {% if company.contacts.length == 0 %}
+    <h2 class="heading-medium">Investment projects</h2>
+    <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
+      <h3 class="heading-medium error-summary-heading" id="error-summary-heading">
+        Add related company contacts before adding a new project
+      </h3>
+      <p>You need to add the related contacts to the company before adding a new project.</p>
+      <a href="#">Add new contact</a>
+    </div>
+  {% elseif company.investmentProjects.length == 0 %}
+    <h2 class="heading-medium">Investment projects</h2>
+    <p>This company does not have any investment projects</p>
+    <a href="#" class="button button-secondary">Create investment project</a>
+  {% else %}
+    <div class="section">
+      <div class="split-header">
+        <div class="cell">
+          <h3 class="heading-medium">Investment projects</h3>
+        </div>
+        <div class="cell">
+          <a href="#" class="button button-secondary">Create investment project</a>
+        </div>
+      </div>
+      {{ trade.datatable(investmentProjectsOpen, headings=investmentProjectsOpenLabels, columnorder=investmentProjectsOpenKeys) }}
+    </div>
+    <div class="section">
+      {{ trade.datatable(investmentProjectsClosed, headings=investmentProjectsClosedLabels, columnorder=investmentProjectsClosedKeys) }}
+    </div>
+    {% endif %}
+{% endif %}
