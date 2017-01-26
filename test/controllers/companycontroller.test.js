@@ -400,7 +400,7 @@ describe('Company controller', () => {
       const actual = companyController.getDisplayCH(company)
       const expected = {
         company_number: '02658484',
-        registered_address: '52A HIGH STREET, SHEFFIELD, S20 1ED, United Kingdom',
+        registered_address: '52a High Street, Sheffield, S20 1ED, United Kingdom',
         business_type: 'Private Limited Company',
         company_status: 'Active',
         sic_code: ['82990 - Other business support service activities n.e.c.', '82991 - Other business support service activities n.e.c.']
@@ -441,7 +441,7 @@ describe('Company controller', () => {
 
       const address = companyController.getHeadingAddress(company)
 
-      expect(address).to.equal('Trading address, 2 Victoria Street, Trading town, Trading county, WC1 1AA, United Kingdom')
+      expect(address).to.equal('Trading Address, 2 Victoria Street, Trading Town, Trading County, WC1 1AA, United Kingdom')
     })
     it('should return the CDMS registered address if there is no trading and no CH', () => {
       const company = {
@@ -523,7 +523,7 @@ describe('Company controller', () => {
         "trading_address_country": null
       }
       const address = companyController.getHeadingAddress(company)
-      expect(address).to.equal('52A HIGH STREET, SHEFFIELD, S20 1ED, United Kingdom')
+      expect(address).to.equal('52a High Street, Sheffield, S20 1ED, United Kingdom')
     })
   })
 })
