@@ -217,6 +217,8 @@ function getInvestmentDetailsDisplay (company) {
   }
 }
 function getOpenInvestmentProjects (investmentProjects) {
+  if (!investmentProjects) return null
+
   return investmentProjects
     .filter(project => project.open)
     .map((project) => {
@@ -229,6 +231,8 @@ function getOpenInvestmentProjects (investmentProjects) {
     })
 }
 function getClosedInvestmentProjects (investmentProjects) {
+  if (!investmentProjects) return null
+
   return investmentProjects
     .filter(project => !project.open)
     .map((project) => {
