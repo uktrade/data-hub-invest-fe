@@ -212,7 +212,7 @@ class ContactForm extends BaseForm {
 
     return (
       <div>
-        { !this.props.contact && <h1 className="heading-xlarge record-title">Add contact</h1> }
+        { !this.props.contact && <h1 className="page-heading">Add contact</h1> }
         { this.state.errors && <ErrorList labels={LABELS} errors={this.state.errors}/> }
 
         { this.state.showCompanyField ?

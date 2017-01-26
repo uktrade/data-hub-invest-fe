@@ -22,12 +22,6 @@
   }
 }
 
-
-.heading-xlarge {
-  margin-top: 0.625em;
-  margin-bottom: 1.25em;
-}
-
 .lede {
   margin-bottom: 60px;
 }
@@ -87,18 +81,20 @@ hr {
 .dark-panel {
   background: $grey-4;
   border-top: 1px solid $border-colour;
-  border-bottom: 1px solid $border-colour;
   margin-bottom: 0;
+
+  .table--key-value tbody tr:first-child {
+    td,
+    th {
+      border-top: 0;
+    }
+  }
 
   p.footnote {
     color: $grey-1;
     padding-left: 35px;
-    margin-top: 0;
+    margin: 0;
   }
-}
-
-.table--data {
-  margin-bottom: 20px;
 }
 
 .section {
@@ -123,7 +119,4 @@ hr {
     }
   }
 }
-#cdms-details.table--key-value {
-  background: red;
-  margin-top: 0;
-}
+
