@@ -34,10 +34,10 @@
           <a href="#" class="button button-secondary">Create investment project</a>
         </div>
       </div>
-      {{ trade.datatable(investmentProjectsOpen, headings=investmentProjectsOpenLabels, columnorder=investmentProjectsOpenKeys) }}
+      {{ trade.datatable(investmentProjectsOpen, headings=investmentProjectsOpenLabels, columnorder=investmentProjectsOpenKeys, class="investment-project-summary-table") }}
     </div>
     <div class="section">
-      {{ trade.datatable(investmentProjectsClosed, headings=investmentProjectsClosedLabels, columnorder=investmentProjectsClosedKeys) }}
+      {{ trade.datatable(investmentProjectsClosed, headings=investmentProjectsClosedLabels, columnorder=investmentProjectsClosedKeys, class="investment-project-summary-table") }}
     </div>
     {% endif %}
 {% endif %}

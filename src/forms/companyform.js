@@ -325,7 +325,7 @@ class CompanyForm extends BaseForm {
     return (
       <div>
         { !this.state.edit &&
-          <h1 className="heading-xlarge record-title">Add new company</h1>
+          <h1 className="page-heading">Add new company</h1>
         }
 
         { this.state.errors &&

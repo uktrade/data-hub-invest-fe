@@ -1,3 +1,11 @@
+#cdms-details.table--key-value {
+  margin-top: 0;
+}
+
+.table--data {
+  margin-bottom: 20px;
+}
+
 table.contact-table {
   [data-key="name"] {
     width: 20%;
@@ -42,4 +50,32 @@ table.interaction-table {
     }
   }
 }
+
+table.investment-project-summary-table {
+  tr {
+    td:last-child,
+    th:last-child {
+      text-align: right;
+    }
+
+    [data-key="name"] {
+      width: 45%;
+    }
+
+    [data-key="value"] {
+      width: 20%;
+    }
+
+    [data-key="state"] {
+      width: 20%;
+    }
+
+    [data-key="land_date"],
+    [data-key="state_date"]{
+      width: 15%;
+    }
+
+  }
+}
+
 

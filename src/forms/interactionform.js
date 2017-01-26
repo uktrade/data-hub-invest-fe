@@ -195,10 +195,8 @@ class InteractionForm extends BaseForm {
     return (
       <div>
         { backLink && <a className="back-link" href={backLink.url}>{backLink.title}</a> }
-        { this.props.params.interactionId ?
-          <h1 className="heading-xlarge record-title">Edit interaction</h1>
-          :
-          <h1 className="heading-xlarge record-title">Add interaction</h1>
+        { this.props.params.interactionId ? <h1 className="page-heading">Edit interaction</h1>
+          : <h1 className="page-heading">Add interaction</h1>
         }
 
         { this.state.errors &&
