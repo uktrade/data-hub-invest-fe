@@ -113,7 +113,10 @@ function addRelatedData (company) {
       }
     }
 
-    authorisedRequest(null, `${config.apiRoot}/company/${company.id}/contacts/`)
+    getParentsAndChildren(company)
+      .then(() => {
+        return authorisedRequest(null, `${config.apiRoot}/company/${company.id}/contacts/`)
+      })
       .then((contacts) => {
         company.contacts = contacts
 
@@ -132,6 +135,29 @@ function addRelatedData (company) {
         resolve(company)
       })
   })
+}
+
+function getParentsAndChildren (company) {
+  const promises = []
+  company.parents = []
+  company.children = []
+
+  return authorisedRequest(null, `${config.apiRoot}/company/${company.id}/related/`)
+    .then((related) => {
+      for (const id of related.parents) {
+        promises.push(authorisedRequest(null, `${config.apiRoot}/company/${id}/`)
+          .then((parentCompany) => {
+            return company.parents.push(parentCompany)
+          }))
+      }
+      for (const id of related.children) {
+        promises.push(authorisedRequest(null, `${config.apiRoot}/company/${id}/`)
+          .then((childCompany) => {
+            return company.children.push(childCompany)
+          }))
+      }
+      return Promise.all(promises)
+    })
 }
 
 function setCHDefaults (token, company) {

@@ -6,6 +6,7 @@ const companyRepository = require('../repositorys/companyrepository')
 const itemCollectionService = require('../services/itemcollectionservice')
 const getFormattedAddress = require('../lib/address').getFormattedAddress
 const DateLib = require('../lib/date')
+const sentenceCase = require('../lib/sentencecase')
 
 const router = express.Router()
 const companyDetailLabels = {
@@ -54,39 +55,6 @@ const investmentProjectsClosedLabels = {
 const investmentProjectsClosedKeys = Object.keys(investmentProjectsClosedLabels)
 
 const TODO = '<span class="status-badge status-badge--xsmall status-badge--action">TO DO</span>'
-
-const fakeParents = [{
-  id: '1234',
-  name: 'Marriott International (USA) HQ - Global HQ',
-  address: 'Bethesda, United States of America'
-}]
-const fakeChildren = [
-  {
-    id: '1234',
-    name: 'Marriott Hanbury Manor Hotel & Country Club',
-    address: 'Hanbury, UK'
-  },
-  {
-    id: '1234',
-    name: 'Marriott Hotel (Twickenham)',
-    address: 'Twickenham, UK'
-  },
-  {
-    id: '1234',
-    name: 'Marriott Hotel and Country Club St Pierre',
-    address: 'Chepstow, UK'
-  },
-  {
-    id: '1234',
-    name: 'Marriott International Aberdeen',
-    address: 'Aberdeen, UK'
-  },
-  {
-    id: '1234',
-    name: 'Marriott Manchester Victoria & Albert Hotel',
-    address: 'Manchester, UK'
-  }
-]
 
 const companyTableHeadings = {
   name: 'Company name',
@@ -202,9 +170,22 @@ function getHeadingName (company) {
 }
 function parseRelatedData (companies) {
   return companies.map((company) => {
+    const key = (company.trading_address_1 && company.trading_address_1.length > 0) ? 'trading' : 'registered'
+
+    let address = ''
+    if (company[`${key}_address_town`] && company[`${key}_address_town`].length > 0) {
+      address += sentenceCase(`${company[`${key}_address_town`]}, `)
+    } else if (company[`${key}_address_county`] && company[`${key}_address_county`].length > 0) {
+      address += sentenceCase(`${company[`${key}_address_county`]}, `)
+    }
+    if (company[`${key}_address_country`] && company[`${key}_address_country`].name && company[`${key}_address_country`].name.length > 0) {
+      address += sentenceCase(company[`${key}_address_country`].name)
+    } else if (address.length > 0) {
+      address += 'United Kingdom'
+    }
     return {
-      name: `<a href="/company/%{company.id}">${company.name}</a>`,
-      address: company.address
+      name: `<a href="/company/company_company/${company.id}">${company.alias || company.name}</a>`,
+      address
     }
   })
 }
@@ -257,8 +238,8 @@ function index (req, res, next) {
       const chDisplay = getDisplayCH(company)
       const headingAddress = getHeadingAddress(company)
       const headingName = getHeadingName(company)
-      const parents = parseRelatedData(fakeParents)
-      const children = parseRelatedData(fakeChildren)
+      const parents = parseRelatedData(company.parents)
+      const children = parseRelatedData(company.children)
       const investmentDisplay = getInvestmentDetailsDisplay(company)
       const investmentProjectsOpen = getOpenInvestmentProjects(company.investmentProjects)
       const investmentProjectsClosed = getClosedInvestmentProjects(company.investmentProjects)
