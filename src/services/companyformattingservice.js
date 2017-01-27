@@ -78,7 +78,7 @@ function getHeadingAddress (company) {
     return cdmsTradingAddress
   }
 
-  if (company.companies_house_data) {
+  if (company.companies_house_data && company.companies_house_data !== null) {
     return getFormattedAddress(company.companies_house_data, 'registered')
   }
 
