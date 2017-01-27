@@ -1,8 +1,8 @@
 /* globals expect: true, describe: true, it: true, beforeEach: true */
-const companyController = require('../../src/controllers/companycontroller')
+const companyFormattingService = require('../../src/services/companyformattingservice')
 const TODO = '<span class="status-badge status-badge--xsmall status-badge--action">TO DO</span>'
 
-describe('Company controller', () => {
+describe('Company formatting service', () => {
   describe('get display company', () => {
     it('Should not return anything when CH only data.', () => {
       const company = {
@@ -35,7 +35,7 @@ describe('Company controller', () => {
         "contacts": [],
         "interactions": []
       }
-      const actual = companyController.getDisplayCompany(company)
+      const actual = companyFormattingService.getDisplayCompany(company)
       expect(actual).to.be.null
     })
     describe('company contains CDMS data', () => {
@@ -133,9 +133,10 @@ describe('Company controller', () => {
           account_manager: 'Yvonne Ahern',
           export_to_countries: 'No',
           future_interest_countries: 'Sweden',
-          headquarters: "UK headquarters"
+          headquarters: "Not a headquarters",
+          name: 'Fresh Flowers'
         }
-        const actual = companyController.getDisplayCompany(company)
+        const actual = companyFormattingService.getDisplayCompany(company)
         expect(actual).to.deep.equal(expected)
       })
       it('should convert website to link', () => {
@@ -144,7 +145,7 @@ describe('Company controller', () => {
           "website": "http:/www.test.com"
         }
 
-        const actual = companyController.getDisplayCompany(company)
+        const actual = companyFormattingService.getDisplayCompany(company)
         expect(actual.website).to.equal('<a href="http:/www.test.com">http:/www.test.com</a>')
       })
       describe('and no CH data', () => {
@@ -230,11 +231,11 @@ describe('Company controller', () => {
           "trading_address_country": null
         }
         it('should display CDMS registered address', () => {
-          const actual = companyController.getDisplayCompany(company)
-          expect(actual.registered_address).to.equal('Business Innovation & Skills, 1 Victoria Street, London, Greater London, SW1H 0ET, United Kingdom')
+          const actual = companyFormattingService.getHeadingAddress(company)
+          expect(actual).to.equal('Business Innovation & Skills, 1 Victoria Street, London, Greater London, SW1H 0ET, United Kingdom')
         })
         it('and show the CDMS company type', () => {
-          const actual = companyController.getDisplayCompany(company)
+          const actual = companyFormattingService.getDisplayCompany(company)
           expect(actual.business_type).to.equal('Company')
         })
       })
@@ -345,11 +346,11 @@ describe('Company controller', () => {
           "trading_address_country": null
         }
         it('should not show the CDMS registered address', () => {
-          const actual = companyController.getDisplayCompany(company)
+          const actual = companyFormattingService.getHeadingAddress(company)
           expect(actual).to.not.have.property('registered_address')
         })
         it('should not show the CDMS company type', () => {
-          const actual = companyController.getDisplayCompany(company)
+          const actual = companyFormattingService.getHeadingAddress(company)
           expect(actual).to.not.have.property('business_type')
         })
       })
@@ -363,7 +364,7 @@ describe('Company controller', () => {
         "contacts": [],
         "interactions": []
       }
-      const actual = companyController.getDisplayCH(company)
+      const actual = companyFormattingService.getDisplayCH(company)
       expect(actual).to.be.null
     })
     it('should return a subset of CH data to display', () => {
@@ -397,11 +398,12 @@ describe('Company controller', () => {
         "contacts": [],
         "interactions": []
       }
-      const actual = companyController.getDisplayCH(company)
+      const actual = companyFormattingService.getDisplayCH(company)
       const expected = {
         company_number: '02658484',
         registered_address: '52a High Street, Sheffield, S20 1ED, United Kingdom',
         business_type: 'Private Limited Company',
+        name: 'Amazon Savers',
         company_status: 'Active',
         sic_code: ['82990 - Other business support service activities n.e.c.', '82991 - Other business support service activities n.e.c.']
       }
@@ -439,7 +441,7 @@ describe('Company controller', () => {
         }
       }
 
-      const address = companyController.getHeadingAddress(company)
+      const address = companyFormattingService.getHeadingAddress(company)
 
       expect(address).to.equal('Trading Address, 2 Victoria Street, Trading Town, Trading County, WC1 1AA, United Kingdom')
     })
@@ -469,7 +471,7 @@ describe('Company controller', () => {
         "trading_address_postcode": null,
         "trading_address_country": null
       }
-      const address = companyController.getHeadingAddress(company)
+      const address = companyFormattingService.getHeadingAddress(company)
       expect(address).to.equal('Business Innovation & Skills, 1 Victoria Street, London, Greater London, SW1H 0ET, United Kingdom')
     })
     it('should return the CH registered address if there is no trading address but there is a CH', () => {
@@ -522,7 +524,7 @@ describe('Company controller', () => {
         "trading_address_postcode": null,
         "trading_address_country": null
       }
-      const address = companyController.getHeadingAddress(company)
+      const address = companyFormattingService.getHeadingAddress(company)
       expect(address).to.equal('52a High Street, Sheffield, S20 1ED, United Kingdom')
     })
   })
