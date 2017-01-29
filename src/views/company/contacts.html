@@ -1,3 +1,7 @@
+{% extends "./index.html" %}
+{% import "macros/trade.html" as trade %}
+
+{% block tabmain %}
 {% if company.contacts.length > 0 %}
   <div class="grid-row table-summary">
     <div class="column-one-third">
@@ -43,3 +47,4 @@
     <a class="button button-secondary" href="/contact/add?companyId={{company.id}}">Add new contact</a>
   </p>
 {% endif %}
+{% endblock %}

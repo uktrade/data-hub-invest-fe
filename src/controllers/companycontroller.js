@@ -1,13 +1,40 @@
 /* eslint new-cap: 0 */
 const express = require('express')
-const winston = require('winston')
 const controllerUtils = require('../lib/controllerutils')
 const companyRepository = require('../repositorys/companyrepository')
-const itemCollectionService = require('../services/itemcollectionservice')
+const metadataRepository = require('../repositorys/metadatarepository')
 const companyFormattingService = require('../services/companyformattingservice')
 const investmentFormattingService = require('../services/investmentformattingservice')
 const { companyDetailLabels, chDetailLabels, companyTableHeadings } = require('../labels/companylabels')
 const { investmentDetailLabels, investmentProjectsOpenLabels, investmentProjectsClosedLabels } = require('../labels/investmentlabels')
+const investmentTierOptions = [
+  'A - Ministerial account',
+  'A1 - Tomorrows champions',
+  'A2 - Intermediaries',
+  'B - Top 300',
+  'C - IST managed',
+  'C - IST managed - Partner lead',
+  'D - LEP managed',
+  'D - Post managed'
+]
+const managedOptions = [
+  'C - IST managed',
+  'C - IST managed - Partner lead',
+  'D - LEP managed',
+  'D - Post managed'
+]
+const investmentFormLabels = {
+  investment_tier: 'Investment account manager tier',
+  investment_account_manager: 'Investment account manager',
+  client_relationship_manager: 'Client relationsip manager',
+  ownership: 'Ownership'
+}
+
+function isBlank (thing) {
+  const answer = (!thing || thing.length === 0)
+  return answer
+}
+
 const router = express.Router()
 
 function cleanErrors (errors) {
@@ -36,75 +63,51 @@ function cleanErrors (errors) {
   }
 }
 
-function index (req, res, next) {
+function getCommon (req, res, next) {
   const id = req.params.sourceId
   const source = req.params.source
+  const csrfToken = controllerUtils.genCSRF(req, res)
+  return companyRepository.getCompany(req.session.token, id, source)
+  .then((company) => {
+    const headingAddress = companyFormattingService.getHeadingAddress(company)
+    const headingName = companyFormattingService.getHeadingName(company)
+    const countries = metadataRepository.COUNTRYS
 
-  companyRepository.getCompany(req.session.token, id, source)
-    .then((company) => {
-      const timeSinceNewContact = itemCollectionService.getTimeSinceLastAddedItem(company.contacts)
-      const contactsInLastYear = itemCollectionService.getItemsAddedInLastYear(company.contacts)
-      const companyDisplay = companyFormattingService.getDisplayCompany(company)
-      const chDisplay = companyFormattingService.getDisplayCH(company)
-      const headingAddress = companyFormattingService.getHeadingAddress(company)
-      const headingName = companyFormattingService.getHeadingName(company)
-      const parents = companyFormattingService.parseRelatedData(company.parents)
-      const children = companyFormattingService.parseRelatedData(company.children)
-      const investmentDisplay = investmentFormattingService.getInvestmentDetailsDisplay(company)
-      const investmentProjectsOpen = investmentFormattingService.getOpenInvestmentProjects(company.investmentProjects)
-      const investmentProjectsClosed = investmentFormattingService.getClosedInvestmentProjects(company.investmentProjects)
+    res.locals.id = id
+    res.locals.source = source
+    res.locals.company = company
+    res.locals.countries = countries
+    res.locals.headingName = headingName
+    res.locals.headingAddress = headingAddress
+    res.locals.csrfToken = csrfToken
 
-      res.render('company/index', {
-        company,
-        companyDisplay,
-        chDisplay,
-        timeSinceNewContact,
-        contactsInLastYear,
-        companyDetailLabels,
-        companyDetailsDisplayOrder: Object.keys(companyDetailLabels),
-        chDetailLabels,
-        chDetailsDisplayOrder: Object.keys(chDetailLabels),
-        headingAddress,
-        headingName,
-        companyTableHeadings,
-        companyTableKeys: Object.keys(companyTableHeadings),
-        children,
-        parents,
-        investmentDetailLabels,
-        investmentDetailsDisplayOrder: Object.keys(investmentDetailLabels),
-        investmentDisplay,
-        investmentProjectsOpenLabels,
-        investmentProjectsOpenKeys: Object.keys(investmentProjectsOpenLabels),
-        investmentProjectsOpen,
-        investmentProjectsClosedLabels,
-        investmentProjectsClosedKeys: Object.keys(investmentProjectsClosedLabels),
-        investmentProjectsClosed
-      })
-    })
-    .catch((error) => {
-      const errors = error.error
-      if (error.response) {
-        return res.status(error.response.statusCode).json({errors})
-      }
-      next(error)
-    })
+    next()
+  })
 }
 
-function get (req, res) {
-  const id = req.params.sourceId
-  const source = req.params.source
+function getDetails (req, res, next) {
+  const company = res.locals.company
+  const companyDisplay = companyFormattingService.getDisplayCompany(company)
+  const chDisplay = companyFormattingService.getDisplayCH(company)
+  const parents = companyFormattingService.parseRelatedData(company.parents)
+  const children = companyFormattingService.parseRelatedData(company.children)
 
-  companyRepository.getCompany(req.session.token, id, source)
-    .then((company) => {
-      res.json(company)
-    })
-    .catch((error) => {
-      const errors = error.error
-      return res.status(error.response.statusCode).json({ errors })
-    })
+  res.render('company/details', {
+    tab: 'details',
+    companyDisplay,
+    chDisplay,
+    companyDetailLabels,
+    companyDetailsDisplayOrder: Object.keys(companyDetailLabels),
+    chDetailLabels,
+    chDetailsDisplayOrder: Object.keys(chDetailLabels),
+    companyTableHeadings,
+    companyTableKeys: Object.keys(companyTableHeadings),
+    children,
+    parents
+  })
 }
 
-function post (req, res) {
+function postDetails (req, res) {
   // Flatten selected fields
   const company = Object.assign({}, req.body.company)
   controllerUtils.flattenIdFields(company)
@@ -125,46 +128,131 @@ function post (req, res) {
     })
 }
 
-function archive (req, res) {
-  controllerUtils.genCSRF(req, res)
+function getContacts (req, res) {
+  res.render('company/contacts', {tab: 'contacts'})
+}
 
-  companyRepository.archiveCompany(req.session.token, req.body.id, req.body.reason)
-    .then((company) => {
-      res.json(company)
+function getInteractions (req, res) {
+  res.render('company/interactions', {tab: 'interactions'})
+}
+
+function getExport (req, res) {
+  res.render('company/export', {tab: 'export'})
+}
+
+function getInvestment (req, res, next) {
+  companyRepository.getCompanyInvestmentSummary(req.session.token, req.params.sourceId)
+  .then((investmentSummary) => {
+    if (!investmentSummary) {
+      req.flash('info', 'Before creating a new investment project, please complete this section.')
+      return res.redirect(`/company/company_company/${req.params.sourceId}/investment/edit`)
+    }
+
+    res.locals.investmentSummary = investmentSummary
+    res.locals.investmentDisplay = investmentFormattingService.getInvestmentDetailsDisplay(investmentSummary)
+    return metadataRepository.getAdvisors(req.session.token)
+  })
+  .then((advisors) => {
+    res.locals.advisors = advisors
+    companyRepository.getCompanyInvestmentProjects(req.session.token, req.params.sourceId)
+  })
+  .then((investmentProjects) => {
+    if (investmentProjects) {
+      res.locals.investmentProjects = investmentProjects
+      res.locals.investmentProjectsOpen = investmentFormattingService.getOpenInvestmentProjects(investmentProjects)
+      res.locals.investmentProjectsClosed = investmentFormattingService.getClosedInvestmentProjects(investmentProjects)
+    }
+
+    res.render('company/investment', {
+      tab: 'investment',
+      investmentProjectsOpenLabels,
+      investmentProjectsClosedLabels,
+      investmentDetailLabels,
+      investmentTierOptions,
+      investmentProjectsOpenKeys: Object.keys(investmentProjectsOpenLabels),
+      investmentProjectsClosedKeys: Object.keys(investmentProjectsClosedLabels)
     })
-    .catch((error) => {
-      winston.log('error', error)
-      if (typeof error.error === 'string') {
-        return res.status(error.response.statusCode).json({ errors: { detail: error.response.statusMessage } })
-      }
-      const errors = error.error
-      cleanErrors(errors)
-      return res.status(error.response.statusCode).json({ errors })
+  })
+  .catch((error) => {
+    if (error.statusCode && error.statusCode === 404) {
+      return res.redirect(`/company/company_company/${req.params.sourceId}/investment/edit`)
+    }
+    next(error)
+  })
+}
+
+function editInvestment (req, res, next) {
+  metadataRepository.getAdvisors(req.session.token)
+    .then((advisors) => {
+      res.locals.advisors = advisors
+      return companyRepository.getCompanyInvestmentSummaryLite(req.session.token, req.params.sourceId)
+    })
+    .then((investmentSummary) => {
+      res.render('company/investmentform', {
+        tab: 'investment',
+        investmentTierOptions,
+        investmentFormLabels,
+        investmentSummary
+      })
     })
 }
 
-function unarchive (req, res) {
-  controllerUtils.genCSRF(req, res)
+function postInvestment (req, res) {
+  delete req.body._csrf_token
 
-  companyRepository.unarchiveCompany(req.session.token, req.body.id)
-    .then((company) => {
-      res.json(company)
-    })
-    .catch((error) => {
-      winston.error('error', error)
-      if (typeof error.error === 'string') {
-        return res.status(error.response.statusCode).json({ errors: { detail: error.response.statusMessage } })
-      }
-      const errors = error.error
-      cleanErrors(errors)
-      return res.status(error.response.statusCode).json({ errors })
-    })
+  const errors = validateInvestment(req.body)
+  if (errors) {
+    controllerUtils.genCSRF(req, res)
+    res.locals.errors = errors
+    return editInvestment(req, res)
+  }
+
+  companyRepository.saveCompanyInvestmentSummary(req.session.token, req.body)
+  .then((result) => {
+    res.redirect(`/company/company_company/${req.params.sourceId}/investment`)
+  })
+  .catch((error) => {
+    if (error.errors) {
+      cleanErrors(error.errors)
+      req.errors = error.errors
+    } else {
+      res.errors = error
+    }
+    return editInvestment(req, res)
+  })
 }
 
-router.get('/company/:source/:sourceId', index)
-router.get('/api/company/:source/:sourceId', get)
-router.post('/api/company', post)
-router.post('/api/company/archive', archive)
-router.post('/api/company/unarchive', unarchive)
+function validateInvestment (data) {
+  const errors = {}
+  if (isBlank(data.investment_tier)) {
+    errors.investment_tier = ['You must select an investment tier']
+  }
+
+  if (isBlank(data.ownership)) {
+    errors.ownership = ['You must select a country of ownership']
+  }
+  if (managedOptions.includes(data.investment_tier) && isBlank(data.investment_account_manager)) {
+    errors.investment_account_manager = ['You must provide an investment account manager']
+  }
+  if (data.ownership === 'foreign' && isBlank(data.ownership_country)) {
+    errors.ownership_country = ['You must provide the name of the country that this companys owner is registered in']
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return errors
+  }
+
+  return null
+}
+
+router.use('/company/:source/:sourceId/*', getCommon)
+router.get('/company/:source/:sourceId/details', getDetails)
+router.post('/company/:source/:sourceId/details', postDetails)
+router.get('/company/:source/:sourceId/contacts', getContacts)
+router.get('/company/:source/:sourceId/interactions', getInteractions)
+router.get('/company/:source/:sourceId/export', getExport)
+router.get('/company/:source/:sourceId/investment', getInvestment)
+router.get('/company/:source/:sourceId/investment/edit', editInvestment)
+router.post('/company/:source/:sourceId/investment/edit', postInvestment)
 
 module.exports = { router }

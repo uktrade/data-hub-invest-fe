@@ -52,10 +52,6 @@ hr {
   }
 }
 
-.table-detail.table-detail--compact {
-  margin-bottom: 0;
-}
-
 .add-another-button {
   @include core-19();
   background-color: $white;
@@ -120,4 +116,3 @@ hr {
     }
   }
 }
-

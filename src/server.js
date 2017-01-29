@@ -1,7 +1,6 @@
 const config = require('./config')
 const express = require('express')
 const bodyParser = require('body-parser')
-const expressNunjucks = require('express-nunjucks')
 const compression = require('compression')
 const logger = require('morgan')
 const session = require('express-session')
@@ -11,7 +10,7 @@ const flash = require('connect-flash')
 const url = require('url')
 const winston = require('winston')
 const expressValidator = require('express-validator')
-
+const nunjucks = require('nunjucks')
 const companyController = require('./controllers/companycontroller')
 const contactController = require('./controllers/contactcontroller')
 const interactionController = require('./controllers/interactioncontroller')
@@ -90,17 +89,18 @@ app.use(bodyParser.json({ limit: '1mb' }))
 app.use(expressValidator())
 
 app.use(compression())
-app.set('views', [
-  `${__dirname}/views`,
-  `${__dirname}/../node_modules/@uktrade/trade_elements/dist/nunjucks`
-])
 
 filters.stringify = JSON.stringify
 
-expressNunjucks(app, {
-  watch: isDev,
-  noCache: isDev,
-  filters
+app.set('view engine', 'html')
+const nunenv = nunjucks.configure([`${__dirname}/views`, `${__dirname}/../node_modules/@uktrade/trade_elements/dist/nunjucks`], {
+  autoescape: true,
+  express: app,
+  watch: isDev
+})
+
+Object.keys(filters).forEach((filterName) => {
+  nunenv.addFilter(filterName, filters[filterName])
 })
 
 // Static files
@@ -123,7 +123,7 @@ app.use(flash())
 app.use(locals)
 app.use(datahubFlash)
 app.use(user)
-app.use(csrf)
+//app.use(csrf)
 app.use(headers)
 
 app.use('/login', loginController.router)
