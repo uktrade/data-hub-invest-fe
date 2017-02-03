@@ -97,6 +97,8 @@ function getHeadingName (company) {
 }
 
 function parseRelatedData (companies) {
+  if (!companies) return null
+
   return companies.map((company) => {
     const key = (company.trading_address_1 && company.trading_address_1.length > 0) ? 'trading' : 'registered'
 

@@ -1,6 +1,9 @@
+{% extends "./index.html" %}
 {% import "macros/trade.html" as trade %}
-<h2 class="heading-medium">Investment summary</h2>
-{% if investmentDisplay %}
+
+{% block tabmain %}
+<div id="summary-table-wrapper">
+  <h2 class="heading-medium">Investment summary</h2>
   <div class="section">
     {{ trade.keyvaluetable(
       investmentDisplay,
@@ -9,7 +12,7 @@
       keyorder=investmentDetailsDisplayOrder,
       id="investment-details")
     }}
-    <a href="/company/edit" class="button button-secondary">Update</a>
+    <a href="/company/company_company/{{company.id}}/investment/edit" class="button">Update</a>
   </div>
   {% if company.contacts.length == 0 %}
     <h2 class="heading-medium">Investment projects</h2>
@@ -20,7 +23,7 @@
       <p>You need to add the related contacts to the company before adding a new project.</p>
       <a href="#">Add new contact</a>
     </div>
-  {% elseif company.investmentProjects.length == 0 %}
+  {% elseif not investmentProjects %}
     <h2 class="heading-medium">Investment projects</h2>
     <p>This company does not have any investment projects</p>
     <a href="#" class="button button-secondary">Create investment project</a>
@@ -39,5 +42,6 @@
     <div class="section">
       {{ trade.datatable(investmentProjectsClosed, headings=investmentProjectsClosedLabels, columnorder=investmentProjectsClosedKeys, class="investment-project-summary-table") }}
     </div>
-    {% endif %}
-{% endif %}
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,13 +1,31 @@
 const DateLib = require('../lib/date')
 
-function getInvestmentDetailsDisplay (company) {
-  if (!company.id) return null
-  return {
-    account_management_tier: 'B - Top 300',
-    account_manager: `<a href="/advisor/${company.account_manager.id}/">${company.account_manager.name}</a>`,
-    ownership: 'United States of America'
+function getInvestmentDetailsDisplay (investmentSummary) {
+  if (!investmentSummary.id || !investmentSummary.investment_tier || investmentSummary.investment_tier.length === 0) return null
+
+  const result = {}
+  result.account_management_tier = investmentSummary.investment_tier
+
+  if (investmentSummary.investment_account_manager) {
+    result.investment_account_manager = `<a href="/advisor/${investmentSummary.investment_account_manager.id}/">${investmentSummary.investment_account_manager.name}</a>`
   }
+  if (investmentSummary.client_relationship_manager) {
+    result.client_relationship_manager = `<a href="/advisor/${investmentSummary.client_relationship_manager.id}/">${investmentSummary.client_relationship_manager.name}</a>`
+  }
+
+  result.ownership = investmentSummary.ownership
+
+  if (investmentSummary.ownership === 'uk') {
+    result.ownership = 'UK Owned'
+  } else if (investmentSummary.ownership === 'both') {
+    result.ownership = 'Both UK and Foreign owned'
+  } else {
+    result.ownership = `${investmentSummary.ownership_country.name} owned`
+  }
+
+  return result
 }
+
 function getOpenInvestmentProjects (investmentProjects) {
   if (!investmentProjects) return null
 

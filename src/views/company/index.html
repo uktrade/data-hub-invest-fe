@@ -1,7 +1,14 @@
 {% extends "layouts/ukti.html" %}
+{% block head_script %}
+<script>
+  window.company = {{ company | dump | safe }}
+  window.csrfToken= '{{ csrfToken }}'
+  window.countries = {{ countries | dump | safe }}
+</script>
+{% endblock %}
 
+%}
 {% block main %}
-
 <h1 class="visually-hidden">Company Details</h1>
 <h2 class="page-heading">
   {% if company.id %}<span class="pre-header">Company ref: 321513</span>{% endif %}
@@ -9,49 +16,24 @@
   <span class="post-header">{{ headingAddress }}</span>
 </h2>
 
-<div class="tabs tabs--inline js-tabs">
+<div class="tabs tabs--inline">
   <ul class="tabs-nav">
     <li class="tab">
-      <a href="#details">Details</a>
+      <a class="{% if tab == 'details' %}selected{% endif %}" href="/company/{{source}}/{{id}}/details">Details</a>
     </li>
     <li class="tab">
-      <a href="#contacts">Contacts</a>
+      <a class="{% if tab == 'contacts' %}selected{% endif %}" href="/company/{{source}}/{{id}}/contacts">Contacts</a>
     </li>
     <li class="tab">
-      <a href="#interactions">Interactions</a>
+      <a class="{% if tab == 'interactions' %}selected{% endif %}" href="/company/{{source}}/{{id}}/interactions">Interactions</a>
     </li>
     <li class="tab">
-      <a href="#export">Export</a>
+      <a class="{% if tab == 'exports' %}selected{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a>
     </li>
     <li class="tab">
-      <a href="#investment">Investment</a>
+      <a class="{% if tab == 'investment' %}selected{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>
     </li>
   </ul>
-  <div id="details" class="tabs-panel">
-    <div class="tabs-panel-inner">
-      {% include "company/details.html" %}
-    </div>
-  </div>
-  <div id="contacts" class="tabs-panel">
-    <div class="tabs-panel-inner">
-      {% include "company/contacts.html" %}
-    </div>
-  </div>
-  <div id="interactions" class="tabs-panel">
-    <div class="tabs-panel-inner">
-      {% include "company/interactions.html" %}
-    </div>
-  </div>
-  <div id="export" class="tabs-panel">
-    <div class="tabs-panel-inner">
-      {% include "company/export.html" %}
-    </div>
-  </div>
-  <div id="investment" class="tabs-panel">
-    <div class="tabs-panel-inner">
-      {% include "company/investment.html" %}
-    </div>
-  </div>
 </div>
-
+{% block tabmain%}{% endblock %}
 {% endblock %}

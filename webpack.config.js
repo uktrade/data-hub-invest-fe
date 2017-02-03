@@ -1,19 +1,13 @@
-const webpack = require('webpack');
-
-const prod = process.env.NODE_ENV === 'production';
-const replaceCompanyRepo =
-  new webpack.NormalModuleReplacementPlugin(/companyrepository.js$/, 'remotecompanyrepository.js');
-const replaceContactRepo =
-  new webpack.NormalModuleReplacementPlugin(/contactrepository.js$/, 'remotecontactrepository.js');
-const replaceInteractionRepo =
-  new webpack.NormalModuleReplacementPlugin(/interactionrepository.js$/, 'remoteinteractionrepository.js');
-
+const webpack = require('webpack')
+const prod = process.env.NODE_ENV === 'production'
 
 module.exports = {
   devtool: prod ? 'hidden-source-map' : 'source-map',
-
   entry: {
-
+    contactform: './src/forms/contactform.js',
+    interactionform: './src/forms/interactionform.js',
+    companyform: './src/forms/companyform',
+    companyinvestmenttabform: './src/forms/companyinvestmenttabform'
   },
   output: {
     path: 'build/javascripts',
@@ -23,27 +17,23 @@ module.exports = {
     loaders: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          cacheDirectory: './babel_cache',
-          babelrc: false,
-          presets: ['es2015', 'react'],
-          plugins: ['transform-class-properties'],
-        },
-      },
-    ],
+          cacheDirectory: './babel_cache'
+        }
+      }
+    ]
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],
     modules: [
-      'app',
-      'node_modules',
+      'src',
+      'node_modules'
     ]
   },
   externals: {
     'react': 'React',
-    'react-dom': 'ReactDOM',
+    'react-dom': 'ReactDOM'
   },
   plugins: prod ? [
     new webpack.DefinePlugin({
@@ -52,20 +42,18 @@ module.exports = {
       }}),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        warnings: false,
+        warnings: false
       },
       output: {
-        comments: false,
+        comments: false
       },
       sourceMap: false,
-      dead_code: true,
+      dead_code: true
     }),
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.CommonsChunkPlugin('common.js'),
-    replaceCompanyRepo, replaceContactRepo, replaceInteractionRepo,
+    new webpack.optimize.CommonsChunkPlugin('common.js')
   ] : [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.CommonsChunkPlugin('common.js'),
-    replaceCompanyRepo, replaceContactRepo, replaceInteractionRepo,
-  ],
-};
+    new webpack.optimize.CommonsChunkPlugin('common.js')
+  ]
+}
