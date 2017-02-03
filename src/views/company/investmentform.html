@@ -12,7 +12,7 @@
 {{ trade.errorPanel( errors ) }}
 <form method="post">
   <input type="hidden" name="_csrf_token" value="{{ csrfToken }}" />
-  <input type="hidden" name="id" value="{{ investmentSummary.id }}"/>
+  <input type="hidden" name="id" value="{{ company.id }}"/>
   {{ trade.dropdown("investment_tier",
     label="Investment account manager tier",
     emptyLabel="Pick a value",
@@ -43,38 +43,37 @@
     class="select-autocomplete-js")
   }}
 
-  <div class="form-group {% if errors.ownership %}error{% endif %}">
-    <fieldset id="ownership-options" className='form-group'>
-      <legend class='form-label-bold'>Ownership
-         {% if errors.ownership %}<span class="error-message">{{ errors.ownership }}</span>{% endif %}
-      </legend>
+  <fieldset id="ownership-options" class="form-group {% if errors.ownership %}error{% endif %}">
+    <legend class='form-label-bold'>Ownership
+        {% if errors.ownership %}<span class="error-message">{{ errors.ownership }}</span>{% endif %}
+    </legend>
 
-      <label class="block-label selection-button-radio {% if investmentSummary.ownership == "foreign" %}selected{% endif %}" for="foreign-owned-radio">
-        <input id="foreign-owned-radio" type="radio" name="ownership" value="foreign" {% if investmentSummary.ownership == "foreign" %}checked{% endif %}>
-        Foreign owned
-      </label>
-      <div id="foreign-owned-country-wrapper" class='panel panel-border-narrow'>
-        {{ trade.dropdown("ownership_country",
-          label="Country of ownership",
-          emptyLabel="Select a country",
-          hint="Please start typing to search for a country",
-          value=investmentSummary.ownership_country,
-          error=errors.ownership_country,
-          options=countries,
-          class="select-autocomplete-js")
-        }}
-      </div>
-      <label class="block-label selection-button-radio {% if investmentSummary.ownership == "uk" %}selected{% endif %}" for="uk-owned-radio">
-        <input id="uk-owned-radio" type="radio" name="ownership" value="uk" {% if investmentSummary.ownership == "uk" %}checked{% endif %}>
-        UK owned
-      </label>
+    <label class="block-label selection-button-radio {% if investmentSummary.ownership == "foreign" %}selected{% endif %}" for="foreign-owned-radio">
+      <input id="foreign-owned-radio" type="radio" name="ownership" value="foreign" {% if investmentSummary.ownership == "foreign" %}checked{% endif %}>
+      Foreign owned
+    </label>
+    <div id="foreign-owned-country-wrapper" class='panel panel-border-narrow'>
+      {{ trade.dropdown("ownership_country",
+        label="Country of ownership",
+        emptyLabel="Select a country",
+        hint="Please start typing to search for a country",
+        value=investmentSummary.ownership_country,
+        error=errors.ownership_country,
+        options=countries,
+        class="select-autocomplete-js")
+      }}
+    </div>
+    <label class="block-label selection-button-radio {% if investmentSummary.ownership == "uk" %}selected{% endif %}" for="uk-owned-radio">
+      <input id="uk-owned-radio" type="radio" name="ownership" value="uk" {% if investmentSummary.ownership == "uk" %}checked{% endif %}>
+      UK owned
+    </label>
 
-      <label class="block-label selection-button-radio {% if investmentSummary.ownership == "both" %}selected{% endif %}" for="both-owned-radio">
-        <input id="both-owned-radio" type="radio" name="ownership" value="both" {% if investmentSummary.ownership == "both" %}checked{% endif %}>
-        Both foreign and UK owned
-      </label>
-    </fieldset>
-  </div>
+    <label class="block-label selection-button-radio {% if investmentSummary.ownership == "both" %}selected{% endif %}" for="both-owned-radio">
+      <input id="both-owned-radio" type="radio" name="ownership" value="both" {% if investmentSummary.ownership == "both" %}checked{% endif %}>
+      Both foreign and UK owned
+    </label>
+  </fieldset>
+
   <div class="button-bar">
     <button class="button button--save" type="submit">Save</button>
     {% if investmentSummary.investment_tier.length > 0 %}

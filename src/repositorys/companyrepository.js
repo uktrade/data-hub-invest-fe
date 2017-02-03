@@ -261,14 +261,14 @@ function getCompanyInvestmentSummary (token, companyId) {
   .then((summary) => {
     result = summary
     let promises = []
-    if (result.investment_account_manager) {
+    if (result && result.investment_account_manager) {
       promises.push(authorisedRequest(null, `${config.apiRoot}/metadata/advisor/${result.client_relationship_manager}/`)
       .then((advisor) => {
         result.investment_account_manager = advisor
         return
       }))
     }
-    if (result.client_relationship_manager) {
+    if (result && result.client_relationship_manager) {
       promises.push(authorisedRequest(null, `${config.apiRoot}/metadata/advisor/${result.client_relationship_manager}/`)
       .then((advisor) => {
         result.client_relationship_manager = advisor
