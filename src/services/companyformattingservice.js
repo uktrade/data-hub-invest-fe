@@ -1,6 +1,7 @@
 const { companyDetailLabels, chDetailLabels } = require('../labels/companylabels')
 const getFormattedAddress = require('../lib/address').getFormattedAddress
 const sentenceCase = require('../lib/sentencecase')
+const DateLib = require('../lib/date')
 
 const companyDetailsDisplayOrder = Object.keys(companyDetailLabels)
 const chDetailsDisplayOrder = Object.keys(chDetailLabels)
@@ -17,7 +18,8 @@ function getDisplayCH (company) {
     company_number: companyHouseData.company_number,
     business_type: companyHouseData.company_category,
     company_status: companyHouseData.company_status,
-    registered_address: getFormattedAddress(company.companies_house_data, 'registered')
+    registered_address: getFormattedAddress(companyHouseData, 'registered'),
+    incorporation_date: DateLib.formatDate(companyHouseData.incorporation_date)
   }
 
   displayCH.sic_code = []

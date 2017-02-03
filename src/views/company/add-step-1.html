@@ -21,15 +21,15 @@
 
       <label class="block-label selection-button-radio {% if company.business_type == "ltd" %}selected{% endif %}" for="ltd">
         <input id="ltd" type="radio" name="business_type" value="ltd" {% if company.business_type == "ltd" %}checked{% endif %}>
-        UK private or public limited company
+        {{companyTypeOptions.ltd}}
       </label>
       <label class="block-label selection-button-radio {% if company.business_type == "ltdchild" %}selected{% endif %}" for="ltdchild">
         <input id="ltdchild" type="radio" name="business_type" value="ltdchild" {% if company.business_type == "ltdchild" %}checked{% endif %}>
-        Child of a UK private or public limited company
+        {{companyTypeOptions.ltdchild}}
       </label>
       <label class="block-label selection-button-radio {% if company.business_type == "ukother" %}selected{% endif %}" for="ukother">
         <input id="ukother" type="radio" name="business_type" value="ukother" {% if company.business_type == "ukother" %}checked{% endif %}>
-        Other type of UK organisation
+        {{companyTypeOptions.ukother}}
       </label>
       <div id="other-uk-type-wrapper" class='panel panel-border-narrow'>
         {{ trade.dropdown("business_type_uk_other",
@@ -42,7 +42,7 @@
       </div>
       <label class="block-label selection-button-radio {% if company.business_type == "forother" %}selected{% endif %}" for="forother">
         <input id="forother" type="radio" name="business_type" value="forother" {% if company.business_type == "forother" %}checked{% endif %}>
-        Foreign company
+        {{companyTypeOptions.forother}}
       </label>
       <div id="other-for-type-wrapper" class='panel panel-border-narrow'>
         {{ trade.dropdown("business_type_for_other",
