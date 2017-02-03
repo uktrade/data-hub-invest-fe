@@ -89,11 +89,28 @@ function genCSRF (req, res) {
   return token
 }
 
+function isBlank (thing) {
+  const answer = (!thing || thing.length === 0)
+  return answer
+}
+
+function toQueryString (obj) {
+  const parts = []
+  for (const i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      parts.push(`${encodeURIComponent(i)}=${encodeURIComponent(obj[i])}`)
+    }
+  }
+  return parts.join('&')
+}
+
 module.exports = {
   transformErrors,
   encodeQueryData,
   convertAutosuggestCollection,
   flattenIdFields,
   nullEmptyFields,
-  genCSRF
+  genCSRF,
+  isBlank,
+  toQueryString
 }

@@ -7,35 +7,9 @@ const companyFormattingService = require('../services/companyformattingservice')
 const investmentFormattingService = require('../services/investmentformattingservice')
 const { companyDetailLabels, chDetailLabels, companyTableHeadings } = require('../labels/companylabels')
 const { investmentDetailLabels, investmentProjectsOpenLabels, investmentProjectsClosedLabels } = require('../labels/investmentlabels')
-const investmentTierOptions = [
-  'A - Ministerial account',
-  'A1 - Tomorrows champions',
-  'A2 - Intermediaries',
-  'B - Top 300',
-  'C - IST managed',
-  'C - IST managed - Partner lead',
-  'D - LEP managed',
-  'D - Post managed'
-]
-const managedOptions = [
-  'C - IST managed',
-  'C - IST managed - Partner lead',
-  'D - LEP managed',
-  'D - Post managed'
-]
-const investmentFormLabels = {
-  investment_tier: 'Investment account manager tier',
-  investment_account_manager: 'Investment account manager',
-  client_relationship_manager: 'Client relationsip manager',
-  ownership: 'Ownership'
-}
-
-function isBlank (thing) {
-  const answer = (!thing || thing.length === 0)
-  return answer
-}
-
+const { managedOptions, investmentTierOptions } = require('../options')
 const router = express.Router()
+const isBlank = controllerUtils.isBlank
 
 function cleanErrors (errors) {
   if (errors.registered_address_1 || errors.registered_address_2 ||
