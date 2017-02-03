@@ -19,4 +19,16 @@ const investmentDetailLabels = {
   ownership: 'Ownership'
 }
 
-module.exports = { investmentProjectsOpenLabels, investmentProjectsClosedLabels, investmentDetailLabels }
+const investmentFormLabels = {
+  investment_tier: 'Investment account manager tier',
+  investment_account_manager: 'Investment account manager',
+  client_relationship_manager: 'Client relationsip manager',
+  ownership: 'Ownership'
+}
+
+module.exports = {
+  investmentProjectsOpenLabels,
+  investmentProjectsClosedLabels,
+  investmentDetailLabels,
+  investmentFormLabels
+}
