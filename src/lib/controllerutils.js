@@ -90,8 +90,7 @@ function genCSRF (req, res) {
 }
 
 function isBlank (thing) {
-  const answer = (!thing || thing.length === 0)
-  return answer
+  return (!thing || thing.length === 0)
 }
 
 function toQueryString (obj) {
