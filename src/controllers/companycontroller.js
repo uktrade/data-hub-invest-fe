@@ -4,12 +4,8 @@ const controllerUtils = require('../lib/controllerutils')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const companyFormattingService = require('../services/companyformattingservice')
-const investmentFormattingService = require('../services/investmentformattingservice')
-const { companyDetailLabels, chDetailLabels, companyTableHeadings } = require('../labels/companylabels')
-const { investmentDetailLabels, investmentProjectsOpenLabels, investmentProjectsClosedLabels, investmentFormLabels } = require('../labels/investmentlabels')
-const { managedOptions, investmentTierOptions } = require('../options')
+const { companyDetailLabels, chDetailLabels, companyTableHeadings, companyTypeOptions } = require('../labels/companylabels')
 const router = express.Router()
-const isBlank = controllerUtils.isBlank
 
 function cleanErrors (errors) {
   if (errors.registered_address_1 || errors.registered_address_2 ||
@@ -73,7 +69,7 @@ function getDetails (req, res, next) {
     companyDetailLabels,
     companyDetailsDisplayOrder: Object.keys(companyDetailLabels),
     chDetailLabels,
-    chDetailsDisplayOrder: Object.keys(chDetailLabels),
+    chDetailsDisplayOrder: ['name', 'company_number', 'registered_address', 'business_type', 'company_status', 'sic_code'],
     companyTableHeadings,
     companyTableKeys: Object.keys(companyTableHeadings),
     children,
@@ -81,24 +77,44 @@ function getDetails (req, res, next) {
   })
 }
 
-function postDetails (req, res) {
+function editDetails (req, res, next) {
+  const company = res.locals.company
+  const chDisplay = companyFormattingService.getDisplayCH(company)
+  res.render('company/edit', {
+    tab: 'details',
+    chDisplay,
+    companyDetailLabels,
+    companyDetailsDisplayOrder: Object.keys(companyDetailLabels),
+    chDetailLabels,
+    chDetailsDisplayOrder: ['name', 'business_type', 'company_status', 'incorporation_date', 'sic_code'],
+    companyTableHeadings,
+    companyTableKeys: Object.keys(companyTableHeadings),
+    companyTypeOptions,
+    business_type: req.query.business_type,
+    REGION_OPTIONS: metadataRepository.REGION_OPTIONS,
+    SECTOR_OPTIONS: metadataRepository.SECTOR_OPTIONS,
+    EMPLOYEE_OPTIONS: metadataRepository.EMPLOYEE_OPTIONS,
+    TURNOVER_OPTIONS: metadataRepository.TURNOVER_OPTIONS
+  })
+}
+
+function postDetails (req, res, next) {
   // Flatten selected fields
-  const company = Object.assign({}, req.body.company)
-  controllerUtils.flattenIdFields(company)
-  controllerUtils.nullEmptyFields(company)
-
-  if (company.export_to_countries === null) company.export_to_countries = []
-  if (company.future_interest_countries === null) company.future_interest_countries = []
-
-  controllerUtils.genCSRF(req, res)
-
+  const company = Object.assign({}, req.body)
   companyRepository.saveCompany(req.session.token, company)
     .then((data) => {
-      res.json(data)
+      req.flash('success-message', 'Updated company record')
+      res.redirect(`/company/company_company/${data.id}/details`)
     })
-    .catch(({ statusCode, errors }) => {
-      cleanErrors(errors)
-      return res.status(statusCode).json({ errors })
+    .catch((error) => {
+      controllerUtils.genCSRF(req, res)
+      if (error.errors) {
+        cleanErrors(error.errors)
+        res.locals.errors = error.errors
+        return editDetails(req, res)
+      }
+
+      return next(error)
     })
 }
 
@@ -114,119 +130,26 @@ function getExport (req, res) {
   res.render('company/export', {tab: 'export'})
 }
 
-function getInvestment (req, res, next) {
-  companyRepository.getCompanyInvestmentSummary(req.session.token, req.params.sourceId)
-  .then((investmentSummary) => {
-    if (!investmentSummary) {
-      req.flash('info', 'Before creating a new investment project, please complete this section.')
-      return res.redirect(`/company/company_company/${req.params.sourceId}/investment/edit`)
+function postCommon (req, res, next) {
+  const keys = Object.keys(req.body)
+  for (const key of keys) {
+    if (req.body[key] === 'yes') {
+      req.body[key] = true
     }
-
-    res.locals.investmentSummary = investmentSummary
-    res.locals.investmentDisplay = investmentFormattingService.getInvestmentDetailsDisplay(investmentSummary)
-    return metadataRepository.getAdvisors(req.session.token)
-  })
-  .then((advisors) => {
-    res.locals.advisors = advisors
-    companyRepository.getCompanyInvestmentProjects(req.session.token, req.params.sourceId)
-  })
-  .then((investmentProjects) => {
-    if (investmentProjects) {
-      res.locals.investmentProjects = investmentProjects
-      res.locals.investmentProjectsOpen = investmentFormattingService.getOpenInvestmentProjects(investmentProjects)
-      res.locals.investmentProjectsClosed = investmentFormattingService.getClosedInvestmentProjects(investmentProjects)
+    if (req.body[key] === 'no') {
+      req.body[key] = false
     }
-
-    res.render('company/investment', {
-      tab: 'investment',
-      investmentProjectsOpenLabels,
-      investmentProjectsClosedLabels,
-      investmentDetailLabels,
-      investmentTierOptions,
-      investmentProjectsOpenKeys: Object.keys(investmentProjectsOpenLabels),
-      investmentProjectsClosedKeys: Object.keys(investmentProjectsClosedLabels)
-    })
-  })
-  .catch((error) => {
-    if (error.statusCode && error.statusCode === 404) {
-      return res.redirect(`/company/company_company/${req.params.sourceId}/investment/edit`)
-    }
-    next(error)
-  })
-}
-
-function editInvestment (req, res, next) {
-  metadataRepository.getAdvisors(req.session.token)
-    .then((advisors) => {
-      res.locals.advisors = advisors
-      return companyRepository.getCompanyInvestmentSummaryLite(req.session.token, req.params.sourceId)
-    })
-    .then((investmentSummary) => {
-      res.render('company/investmentform', {
-        tab: 'investment',
-        investmentTierOptions,
-        investmentFormLabels,
-        investmentSummary
-      })
-    })
-}
-
-function postInvestment (req, res) {
-  delete req.body._csrf_token
-
-  const errors = validateInvestment(req.body)
-  if (errors) {
-    controllerUtils.genCSRF(req, res)
-    res.locals.errors = errors
-    return editInvestment(req, res)
   }
-
-  companyRepository.saveCompanyInvestmentSummary(req.session.token, req.body)
-  .then((result) => {
-    res.redirect(`/company/company_company/${req.params.sourceId}/investment`)
-  })
-  .catch((error) => {
-    if (error.errors) {
-      cleanErrors(error.errors)
-      req.errors = error.errors
-    } else {
-      res.errors = error
-    }
-    return editInvestment(req, res)
-  })
-}
-
-function validateInvestment (data) {
-  const errors = {}
-  if (isBlank(data.investment_tier)) {
-    errors.investment_tier = ['You must select an investment tier']
-  }
-
-  if (isBlank(data.ownership)) {
-    errors.ownership = ['You must select a country of ownership']
-  }
-  if (managedOptions.includes(data.investment_tier) && isBlank(data.investment_account_manager)) {
-    errors.investment_account_manager = ['You must provide an investment account manager']
-  }
-  if (data.ownership === 'foreign' && isBlank(data.ownership_country)) {
-    errors.ownership_country = ['You must provide the name of the country that this companys owner is registered in']
-  }
-
-  if (Object.keys(errors).length > 0) {
-    return errors
-  }
-
-  return null
+  next()
 }
 
 router.use('/company/:source/:sourceId/*', getCommon)
+router.post('/company/:source/:sourceId/*', postCommon)
 router.get('/company/:source/:sourceId/details', getDetails)
-router.post('/company/:source/:sourceId/details', postDetails)
+router.get('/company/:source/:sourceId/edit', editDetails)
+router.post('/company/:source/:sourceId/edit', postDetails)
 router.get('/company/:source/:sourceId/contacts', getContacts)
 router.get('/company/:source/:sourceId/interactions', getInteractions)
 router.get('/company/:source/:sourceId/export', getExport)
-router.get('/company/:source/:sourceId/investment', getInvestment)
-router.get('/company/:source/:sourceId/investment/edit', editInvestment)
-router.post('/company/:source/:sourceId/investment/edit', postInvestment)
 
 module.exports = { router }

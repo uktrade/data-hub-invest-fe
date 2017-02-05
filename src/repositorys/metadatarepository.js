@@ -8,38 +8,17 @@ function getMetadata (path, key) {
   const ttl = config.redis.metadataTtl
   const url = `${config.apiRoot}/metadata/${path}/`
 
-  if (redisClient) {
-    return new Promise((resolve, reject) => {
-      redisClient.get(url, (err, data) => {
-        if (!err && data) {
-          data = JSON.parse(data)
-          module.exports[key] = data
-          resolve(data)
-        } else {
-          authorisedRequest(null, url)
-          .then((responseData) => {
-            module.exports[key] = responseData
-            redisClient.setex(url, ttl, JSON.stringify(responseData))
-            resolve(responseData)
-          })
-          .catch((reponseError) => {
-            winston.log('error', 'Error fetching metadataRepository for url: %s', url)
-            reject(reponseError)
-            throw reponseError
-          })
-        }
+  return new Promise((resolve, reject) => {
+    authorisedRequest(null, url)
+      .then((responseData) => {
+        module.exports[key] = responseData
+        resolve(responseData)
       })
-    })
-  }
-
-  return authorisedRequest(null, url)
-    .then((responseData) => {
-      module.exports[key] = responseData
-      return responseData
-    })
-    .catch((err) => {
-      winston.log('error', 'Error fetching metadataRepository for url: %s', url)
-      throw err
+      .catch((reponseError) => {
+        winston.log('error', 'Error fetching metadataRepository for url: %s', url)
+        reject(reponseError)
+        throw reponseError
+      })
     })
 }
 

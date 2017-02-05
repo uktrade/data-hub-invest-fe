@@ -173,9 +173,7 @@ function setCHDefaults (token, company) {
           if (!company.registered_address_town) company.registered_address_town = ch.registered_address_town
           if (!company.registered_address_county) company.registered_address_county = ch.registered_address_county
           if (!company.registered_address_postcode) company.registered_address_postcode = ch.registered_address_postcode
-          if (!company.registered_address_country) company.registered_address_country = ch.registered_address_country.id
-
-          company.uk_based = true
+          // if (!company.registered_address_country) company.registered_address_country = ch.registered_address_country.id
 
           // Business type
           const businessTypes = metadataRepository.TYPES_OF_BUSINESS
@@ -229,6 +227,8 @@ function saveCompany (token, company) {
         })
     })
   }
+
+  delete company.is_headquarters
 
   if (company.id && company.id.length > 0) {
     return saveParsedCompany(company)

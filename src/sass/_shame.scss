@@ -95,7 +95,7 @@ hr {
 }
 
 .section {
-  margin-bottom: 60px;
+  margin-bottom: 30px;
 }
 
 #global-header-bar {
@@ -119,4 +119,8 @@ hr {
 
 .form-label-bold .button-link {
   @include core-19
+}
+
+.column-three-quarters .form-control {
+  width: 100%;
 }
