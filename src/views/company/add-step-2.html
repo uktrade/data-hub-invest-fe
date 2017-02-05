@@ -43,21 +43,7 @@
                     <a href="{{hit.url}}">{{hit.name}}</a>
                   </h3>
               {% endif %}
-              <div class="meta meta--ch">
-                {{ hit.company_number }} -
-                {% if hit.registered_address_1 %}
-                  {{hit.registered_address_1}},
-                {% endif %}
-                {% if hit.registered_address_2 %}
-                  {{hit.registered_address_2}},
-                {% endif %}
-                {% if hit.registered_address_town %}
-                  {{hit.registered_address_town}},
-                {% endif %}
-                {% if hit.registered_address_postcode %}
-                  <span class="meta--address__postcode">{{hit.registered_address_postcode}}</span>
-                {% endif %}
-              </div>
+              {% include "./chaddressline.html" %}
               {% if hit.selected %}
                 <div class="panel panel-border-wide">
                   {{ trade.keyvaluetable(
@@ -66,7 +52,7 @@
                     keyorder=chDetailsDisplayOrder,
                     class="table--small"
                   ) }}
-                  {% if business_type == 'ltd' %}
+                  {% if business_type == 'ltd' %} <!-- UK ltd company -->
                     {% if hit.type == 'company_company' %}
                       <a class="button" href="/company/{{type}}/{{selected}}/edit/">Go to company record</a>
                     {% else %}
@@ -80,8 +66,8 @@
                       <a class="button" href="/company/{{type}}/{{selected}}/create/">Create parent company</a>
                     {% endif %}
                   {% endif %}
-                  </div>
-                {% endif %}
+                </div>
+              {% endif %}
             </li>
           {% endfor %}
         </ol>
@@ -93,6 +79,4 @@
     </div>
     <div class="column-one-quarter"></div>
   </div>
-
-
 {% endblock %}
