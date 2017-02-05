@@ -33,9 +33,16 @@
         <ol class="results-list results-list--lined">
           {% for hit in hits %}
             <li class="results-list__result">
-              <h3 class="result-title">
-                <a href="{{hit.url}}">{{hit.name}}</a>
-              </h3>
+              {% if hit.selected %}
+                <h3 class="result-title">
+                  <strong>{{hit.name}}</strong>
+                  <a class="close-link" href="{{closeLink}}">Close</a>
+                </h3>
+                {% else %}
+                  <h3 class="result-title">
+                    <a href="{{hit.url}}">{{hit.name}}</a>
+                  </h3>
+              {% endif %}
               <div class="meta meta--ch">
                 {{ hit.company_number }} -
                 {% if hit.registered_address_1 %}
@@ -50,24 +57,31 @@
                 {% if hit.registered_address_postcode %}
                   <span class="meta--address__postcode">{{hit.registered_address_postcode}}</span>
                 {% endif %}
-
-                {% if hit.selected %}
-                  <a class="close-link" href="{{closeLink}}">Close</a>
-                  <div class="panel panel-border-wide">
-                    {{ trade.keyvaluetable(
-                      chDisplay,
-                      labels=chDetailLabels,
-                      keyorder=chDetailsDisplayOrder,
-                      class="table--small"
-                    ) }}
-                    {% if type == 'company_company' %}
+              </div>
+              {% if hit.selected %}
+                <div class="panel panel-border-wide">
+                  {{ trade.keyvaluetable(
+                    chDisplay,
+                    labels=chDetailLabels,
+                    keyorder=chDetailsDisplayOrder,
+                    class="table--small"
+                  ) }}
+                  {% if business_type == 'ltd' %}
+                    {% if hit.type == 'company_company' %}
                       <a class="button" href="/company/{{type}}/{{selected}}/edit/">Go to company record</a>
                     {% else %}
                       <a class="button" href="/company/{{type}}/{{selected}}/edit/">Choose company</a>
                     {% endif %}
+                  {% else %} <!-- child of ltd -->
+                    {% if hit.type == 'company_company' %}
+                      <a class="button" href="/company/create/?business_type={{business_type}}parent={{hit.id}}">Choose parent company</a>
+                    {% else %}
+                      <p class="bold-xsmall">This company does not exist in Data Hub, please create the parent before the child.</p>
+                      <a class="button" href="/company/{{type}}/{{selected}}/create/">Create parent company</a>
+                    {% endif %}
+                  {% endif %}
                   </div>
                 {% endif %}
-              </div>
             </li>
           {% endfor %}
         </ol>
