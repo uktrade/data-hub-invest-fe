@@ -16,13 +16,14 @@ const investmentDetailLabels = {
   account_management_tier: 'Account management tier',
   investment_account_manager: 'Investment account manager',
   account_manager: 'Account manager',
+  client_relationship_manager: 'Client relationship manager',
   ownership: 'Ownership'
 }
 
 const investmentFormLabels = {
   investment_tier: 'Investment account manager tier',
   investment_account_manager: 'Investment account manager',
-  client_relationship_manager: 'Client relationsip manager',
+  client_relationship_manager: 'Client relationship manager',
   ownership: 'Ownership'
 }
 
@@ -32,3 +33,4 @@ module.exports = {
   investmentDetailLabels,
   investmentFormLabels
 }
+
