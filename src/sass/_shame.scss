@@ -116,3 +116,7 @@ hr {
     }
   }
 }
+
+.form-label-bold .button-link {
+  @include core-19
+}
