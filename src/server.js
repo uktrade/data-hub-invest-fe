@@ -22,6 +22,8 @@ const myAccountController = require('./controllers/myaccountcontroller')
 const indexController = require('./controllers/indexcontroller')
 const supportController = require('./controllers/supportcontroller')
 const companyAddController = require('./controllers/companyaddcontroller')
+const companyInvestmentSummaryController = require('./controllers/companyinvestmentsummarycontroller')
+
 
 const filters = require('@uktrade/trade_elements/dist/nunjucks/filters')
 const datahubFlash = require('./middleware/flash')
@@ -133,6 +135,7 @@ app.use(companyAddController.router)
 app.use(contactController.router)
 app.use(interactionController.router)
 app.use(investmentController.router)
+app.use(companyInvestmentSummaryController.router)
 
 app.use('/search', searchController.router)
 app.use(apiController.router)
