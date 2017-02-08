@@ -3,9 +3,15 @@ const config = require('../config')
 const includes = require('lodash/includes')
 const winston = require('winston')
 
-function search ({ token, term, limit = 10, page = 1, filters }) {
+function search ({ token, term, limit = 10, page = 1, filters, nonuk = false}) {
   let body = { term, limit }
   body.offset = (page * body.limit) - body.limit
+
+  let endpoint = "search"
+
+  if (nonuk) {
+    endpoint = "nonuk"
+  }
 
   if (filters) {
     body = Object.assign(body, filters)
@@ -23,7 +29,7 @@ function search ({ token, term, limit = 10, page = 1, filters }) {
   }
 
   const options = {
-    url: `${config.apiRoot}/search?term=${term}`,
+    url: `${config.apiRoot}/${endpoint}?term=${term}`,
     method: 'GET'
   }
 
