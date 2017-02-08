@@ -6,9 +6,9 @@ module.exports = {
   entry: {
     contactform: './src/forms/contactform.js',
     interactionform: './src/forms/interactionform.js',
-    companyform: './src/forms/companyform',
     companyinvestmenttabform: './src/forms/companyinvestmenttabform',
-    companyadd: './src/forms/companyadd'
+    companyadd: './src/forms/companyadd',
+    companyedit: './src/forms/companyedit'
   },
   output: {
     path: 'build/javascripts',

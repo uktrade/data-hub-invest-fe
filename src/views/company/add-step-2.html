@@ -56,7 +56,7 @@
                     {% if hit.type == 'company_company' %}
                       <a class="button" href="/company/{{type}}/{{selected}}/edit/">Go to company record</a>
                     {% else %}
-                      <a class="button" href="/company/{{type}}/{{selected}}/edit/">Choose company</a>
+                      <a class="button" href="/company/{{type}}/{{selected}}/edit/?business_type=ltd">Choose company</a>
                     {% endif %}
                   {% else %} <!-- child of ltd -->
                     {% if hit.type == 'company_company' %}
