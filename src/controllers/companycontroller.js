@@ -77,7 +77,7 @@ function getDetails (req, res, next) {
   })
 }
 
-function editDetails (req, res, next) {
+function editDetails (req, res) {
   const company = res.locals.company
   const chDisplay = companyFormattingService.getDisplayCH(company)
   res.render('company/edit', {
