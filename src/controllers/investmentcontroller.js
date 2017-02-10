@@ -5,8 +5,8 @@
 const express = require('express')
 const winston = require('winston')
 const companyRepository = require('../repositorys/companyrepository')
+const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
-const countryIds = require('../lib/countryids').ids
 
 // imported from company controller
 // @todo merge into utils
@@ -45,8 +45,7 @@ function index(req, res) {
       res.render('investment/index', {
         investmentDisplay,
         investmentDetailLabels,
-        investmentDetailsDisplayOrder,
-        countryIds
+        investmentDetailsDisplayOrder
       })
 
     })
@@ -82,10 +81,16 @@ function OLDinvsearch(req, res) {
 
 function collate(rez) {
   const companies = [];
+  const flat_countries = [];
+    metadataRepository.COUNTRYS.map((land) => flat_countries[land.id] = land.name);
 
   rez.forEach((item) => {
     if (!!item) {
       if (!!item._type && item._type === "company_company") {
+
+        console.log(flat_countries, item._source.registered_address_country)
+
+        item.country = flat_countries[item._source.registered_address_country]
         companies[item._id] = item;
       }
 
