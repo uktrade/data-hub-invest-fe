@@ -19,13 +19,13 @@ const investmentDetailLabels = {
 
 const investmentDetailsDisplayOrder = Object.keys(investmentDetailLabels)
 
-function getInvestmentDetailsDisplay(company) {
+function getInvestmentDetailsDisplay(company, extra) {
   if (!company.id) return null
   return {
     company_name: `${company.name}`,
-    account_management_tier: 'B - Top 300',
+    account_management_tier: `${extra.investment_tier}`,
     account_manager: `<a href="/advisor/${company.account_manager.id}/">${company.account_manager.name}</a>`,
-    ownership: 'United States of America'
+    ownership: `${extra.ownership}`
   }
 }
 
@@ -33,15 +33,25 @@ const router = express.Router()
 
 function index(req, res) {
   const id = req.params.sourceId
-  companyRepository.getCompany(req.session.token, id, null).then((company) => {
-    let investmentDisplay = getInvestmentDetailsDisplay(company)
-    res.render('investment/index', {
-      investmentDisplay,
-      investmentDetailLabels,
-      investmentDetailsDisplayOrder,
-      countryIds
+  let lcompany
+
+  companyRepository.getCompany(req.session.token, id, null)
+    .then((company) => {
+    lcompany = company
+    return companyRepository.getCompanyInvestmentSummary(req.session.token, company.id)
+  })
+    .then((extra) => {
+      let investmentDisplay = getInvestmentDetailsDisplay(lcompany, extra)
+      res.render('investment/index', {
+        investmentDisplay,
+        investmentDetailLabels,
+        investmentDetailsDisplayOrder,
+        countryIds
+      })
+
     })
-  }).catch((error) => {
+
+    .catch((error) => {
     const errors = error.error
     if (error.response) {
       return res.status(error.response.statusCode).json({errors})
@@ -74,7 +84,6 @@ function collate(rez) {
   const companies = [];
 
   rez.forEach((item) => {
-    console.log(item)
     if (!!item) {
       if (!!item._type && item._type === "company_company") {
         companies[item._id] = item;

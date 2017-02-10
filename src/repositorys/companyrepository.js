@@ -305,11 +305,10 @@ function hydrateCompanyInvestments(token, companies) {
   const promises = []
   for (const co of companies) {
     if (co._type !== 'company_companieshousecompany') {
-      promises.push(co) // comapany first
+      promises.push(co) // company first
       promises.push(getCompanyInvestmentSummary(token, co._id))
       promises.push(getCompanyInvestmentProjects(token, co._id))
     }
-
   }
   return Promise.all(promises)
 }
