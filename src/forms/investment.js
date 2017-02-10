@@ -4,7 +4,7 @@ const resultsdiv = document.querySelector("#inv-results");
 
 const trade = require('@uktrade/trade_elements').elementstuff
 
-const companyTemplate = "<a href='#'>[[name]]</a>" +
+const companyTemplate = "<span id='[[conameid]]' class='clickable'>[[name]]</span><span id='[[headclose]]' class='hidden clickable' style='float:right'>Close</span>" +
   "<br>[[address]]</div>" +
   "<div class='hidden subresults'>" +
   "<table class='table--key-value  table--readonly'>"+
@@ -27,7 +27,7 @@ const companyTemplate = "<a href='#'>[[name]]</a>" +
   "</table>"+
   "<div class='save-bar'>" +
   "<button class='button button--save' type='submit'>Choose company</button>" +
-  "<a class='button-link button--cancel js-button-cancel' href='#' id='[[id]]'>Close</a>" +
+  "<a class='button-link button--cancel js-button-cancel' href='#' id='[[bottomclose]]'>Close</a>" +
   "</div>" +
   "</div>";
 
@@ -50,23 +50,40 @@ function updateSearchField(res) {
     d.id = "inv-res-" + key
     d.className = "inv-result"
     let divtext = companyTemplate.replace("[[name]]", co._source.name)
+    divtext = divtext.replace("[[conameid]]", "name-" + key)
     divtext = divtext.replace("[[address]]", ifdef(co._source.registered_address_1) + ", " + ifdef(co._source.registered_address_town) + " " + co.country)
-    divtext = divtext.replace("[[company_type]]", "Foreign company");
-    divtext = divtext.replace("[[investment_projects]]", co.details.length);
-    divtext = divtext.replace("[[account_tier]]", co.summary.investment_tier);
-    divtext = divtext.replace("[[account_manager]]", co.summary.investment_account_manager.name);
-    divtext = divtext.replace("[[id]]", "close-" + key);
+    divtext = divtext.replace("[[company_type]]", "Foreign company")
+    divtext = divtext.replace("[[investment_projects]]", co.details.length)
+    divtext = divtext.replace("[[account_tier]]", co.summary.investment_tier)
+    divtext = divtext.replace("[[account_manager]]", co.summary.investment_account_manager.name)
+    divtext = divtext.replace("[[bottomclose]]", "close-" + key)
+    divtext = divtext.replace("[[headclose]]", "headclose-" + key)
 
     d.innerHTML = divtext;
     resultsdiv.appendChild(d);
+
     setTimeout(function() {
         let resblock = document.querySelector("#inv-res-" + key + " > .subresults");
+        let coname = document.querySelector("#name-" + key);
+        let headcloser = document.querySelector("#headclose-" + key);
         document.querySelector("#inv-res-" + key).addEventListener("click", function() {
+            trade.removeClass(headcloser, "hidden")
+            trade.removeClass(coname, "clickable")
+            trade.addClass(coname, "unclickable")
             trade.show(resblock)
         }, true)
         document.querySelector("#close-" + key).addEventListener("click", function() {
+          trade.addClass(coname, "clickable")
+          trade.addClass(headcloser, "hidden")
+          trade.removeClass(coname, "unclickable")
           trade.hide(resblock)
         }, true)
+      document.querySelector("#headclose-" + key).addEventListener("click", function() {
+        trade.addClass(coname, "clickable")
+        trade.addClass(headcloser, "hidden")
+        trade.removeClass(coname, "unclickable")
+        trade.hide(resblock)
+      }, true)
     },10)
 
   })

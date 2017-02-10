@@ -25,3 +25,14 @@ $images-dir: '/images/';
   border-bottom: 1px solid #CCC;
   clear: both;
 }
+
+.clickable {
+  color: $link-colour;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.unclickable {
+  color: black;
+  font-weight: bold;
+}
