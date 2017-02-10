@@ -5,6 +5,7 @@
   <h1 class="page-heading">Create a company</h1>
   <div class="grid-row">
     <div class="column-three-quarters">
+      {{ trade.errorPanel( errors ) }}
       <div class="section">
         <div class="for-control key-value key-value--vertical">
           <div id="business-type" class="key-value__key form-label-bold">Business type
@@ -15,12 +16,9 @@
       </div>
 
       <div class="section">
-        {% if business_type %}
-          <div id="business-type" class="key-value__key form-label-bold">Company
-            <a href="/company/add-step-1" class="button-link">Change</a>
-          </div>
-        {% endif %}
-
+        <div id="business-type" class="key-value__key form-label-bold">{{businessType}}
+          <a href="/company/add-step-1" class="button-link">Change</a>
+        </div>
         {% if chDisplay %}
           {{ trade.keyvaluetable(chDisplay, labels=chDetailLabels, keyorder=chDetailsDisplayOrder, class="table--small") }}
         {% endif %}
@@ -30,7 +28,11 @@
         {% if company.company_number %}
           <input type="hidden" name="company_number" value="{{company.company_number}}">
         {% endif %}
-        {{ trade.textbox("alias", label="Trading name (optional)", value=company.alias) }}
+        <input type="hidden" name="business_type" value="{{business_type}}">
+        <input type="hidden" name="uk_based" value="true">
+        <input type="hidden" name="name" value="{{company.name}}">
+
+        {{ trade.textbox("alias", label="Trading name", value=company.alias, error=errors.alias) }}
 
         <fieldset class="inline form-group form-group__checkbox-group form-group__radiohide">
           <legend class='form-label-bold'>Is the trading address the same as the registered address?</legend>
@@ -69,7 +71,6 @@
             </select>
           </div>
 
-
           {{ trade.textbox("trading_address_1", label="Business and street (optional)", value=company.trading_address_1) }}
           {{ trade.textbox("trading_address_2", value=company.trading_address_2) }}
           {{ trade.textbox("trading_address_town", label="Town of city (optional)", value=company.trading_address_town) }}
@@ -77,22 +78,21 @@
           {{ trade.textbox("trading_address_postcode", label="Postcode (optional)", value=company.trading_address_postcode) }}
         </fieldset>
 
-
-        {{ trade.dropdown("uk_region", label="UK region", emptyLabel="Pick a value", value=company.uk_region, options=REGION_OPTIONS) }}
+        {{ trade.dropdown("uk_region", label="UK region", emptyLabel="Pick a value", value=company.uk_region, options=REGION_OPTIONS, error=errors.region) }}
 
         <fieldset class="form-group form-group__checkbox-group form-group__radiohide">
           <div class="inline">
             <legend class='form-label-bold'>Is this a headquarters?</legend>
             <label
-              class="block-label selection-button-radio {% if company.headquarters %}selected{% endif %}"
+              class="block-label selection-button-radio {% if showHeadquarters == true %}selected{% endif %}"
               for="is_headquarters_yes">
-              <input id="is_headquarters_yes" name="is_headquarters" type="radio" value="yes" {% if company.headquarters %}checked{% endif %}>
+              <input id="is_headquarters_yes" name="is_headquarters" type="radio" value="yes" {% if showHeadquarters == true %}checked{% endif %}>
               Yes
             </label>
             <label
-              class="block-label selection-button-radio {% if not company.headquarters == false %}selected{% endif %}"
+              class="block-label selection-button-radio {% if showHeadquarters == false %}selected{% endif %}"
               for="is_headquarters_no">
-              <input id="is_headquarters_no" name="is_headquarters" type="radio" value="no" {% if not company.headquarters %}checked{% endif %}>
+              <input id="is_headquarters_no" name="is_headquarters" type="radio" value="no" {% if showHeadquarters == false %}checked{% endif %}>
               No
             </label>
           </div>
@@ -100,21 +100,21 @@
           <div id="headquarters-type-wrapper" class="panel panel-border-narrow">
             <legend class='form-label-bold visually-hidden'>Headquarters type?</legend>
             <label
-              class="block-label selection-button-radio {% if company.headquarters %}selected{% endif %}"
-              for="is_headquarters_yes">
-              <input id="is_headquarters_yes" type="radio" value="yes" {% if company.headquarters %}checked{% endif %}>
+              class="block-label selection-button-radio {% if company.headquarters == "ukhq" %}selected{% endif %}"
+              for="ukhq">
+              <input id="ukhq" name="headquarters" type="radio" value="ukhq" {% if company.headquarters == "ukhq"  %}checked{% endif %}>
               UK headquarters (UK HQ)
             </label>
             <label
-              class="block-label selection-button-radio {% if not company.headquarters == false %}selected{% endif %}"
-              for="is_headquarters_no">
-              <input id="is_headquarters_no" type="radio" value="no" {% if not company.headquarters %}checked{% endif %}>
+              class="block-label selection-button-radio {% if company.headquarters == "ehq" %}selected{% endif %}"
+              for="ehq">
+              <input id="ehq" name="headquarters" type="radio" value="ehq" {% if company.headquarters == "ehq" %}checked{% endif %}>
               European headquarters (EHQ)
             </label>
-                      <label
-              class="block-label selection-button-radio {% if not company.headquarters == false %}selected{% endif %}"
-              for="is_headquarters_no">
-              <input id="is_headquarters_no" type="radio" value="no" {% if not company.headquarters %}checked{% endif %}>
+            <label
+              class="block-label selection-button-radio {% if company.headquarters == "ghq" %}selected{% endif %}"
+              for="ghq">
+              <input id="ghq" name="headquarters" type="radio" value="ghq" {% if company.headquarters == "ghq" %}checked{% endif %}>
               Global headquarters (GHQ)
             </label>
           </div>
@@ -137,5 +137,3 @@
   <script src="/javascripts/common.js"></script>
   <script src="/javascripts/companyedit.bundle.js"></script>
 {% endblock %}
-
-{# To Do - Add a way to check that we came from step 2 - if we did, then add a way to go back #}
