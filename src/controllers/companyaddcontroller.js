@@ -40,13 +40,34 @@ function postAddStepOne (req, res, next) {
     return getAddStepOne(req, res)
   }
 
-  const params = toQueryString({
-    business_type: req.body.business_type,
-    business_type_uk_other: req.body.business_type_uk_other,
-    business_type_for_other: req.body.business_type_for_other
-  })
+  let params
+  switch (req.body.business_type) {
+    case 'ltd':
+    case 'ltdchild':
+      params = {
+        business_type: req.body.business_type,
+        country: 'uk'
+      }
+      break
+    case 'ukother':
+      params = {
+        business_type: req.body.business_type_uk_other,
+        country: 'uk'
+      }
+      break
+    case 'forother':
+      params = {
+        business_type: req.body.business_type_for_other,
+        country: 'non-uk'
+      }
+      break
+  }
 
-  res.redirect(`/company/add-step-2/?${params}`)
+  if (req.body.business_type === 'ukother') {
+    return res.redirect(`/company/add?${toQueryString(params)}`)
+  }
+
+  return res.redirect(`/company/add-step-2/?${toQueryString(params)}`)
 }
 
 function getAddStepTwo (req, res, next) {

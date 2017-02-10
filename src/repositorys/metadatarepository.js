@@ -27,8 +27,7 @@ const metadataItems = [
   ['turnoverrange', 'TURNOVER_OPTIONS'],
   ['region', 'REGION_OPTIONS'],
   ['country', 'COUNTRYS'],
-  ['employeerange', 'EMPLOYEE_OPTIONS'],
-  ['businesstype', 'TYPES_OF_BUSINESS']
+  ['employeerange', 'EMPLOYEE_OPTIONS']
 ]
 
 module.exports.setRedisClient = (client) => {
