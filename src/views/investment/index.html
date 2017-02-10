@@ -24,30 +24,12 @@ id="investment-details")
   </div>
 </form>
 
-<div id="inv-results" style="display:none"></div>
+<div id="inv-results" class="hidden"></div>
 
-<style>
-.inv-result {
-  padding: 14px 0;
-  border-top: 1px solid #CCC;
-}
-
-  #inv-results {
-    border-bottom: 1px solid #CCC;
-    clear: both;
-  }
-
-  .inv-hidden {
-    display: none;
-  }
-
-
-</style>
-
-  <p class="infostrip" style="display:none" id="new_co_nagger">If you can’t find the company you’re looking for, <a href="/company/add-step-1/">create a new company</a>. Unfortunately you will lose your progress.</p>
+  <p class="infostrip hidden" id="new_co_nagger">If you can’t find the company you’re looking for, <a href="/company/add-step-1/">create a new company</a>. Unfortunately you will lose your progress.</p>
 
   <script src="/javascripts/common.js"></script>
   <script src="/javascripts/investment.bundle.js"></script>
-
+  {#http://localhost:3001/javascripts/trade-elements-components-e839e157d3.js#}
 
 {% endblock %}}

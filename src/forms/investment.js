@@ -1,11 +1,12 @@
 
-var searchfield =document.querySelector("#inv-search");
-var resultsdiv = document.querySelector("#inv-results");
+const searchfield =document.querySelector("#inv-search");
+const resultsdiv = document.querySelector("#inv-results");
 
+const trade = require('@uktrade/trade_elements').elementstuff
 
-var companyTemplate = "<a href='#'>[[name]]</a>" +
+const companyTemplate = "<a href='#'>[[name]]</a>" +
   "<br>[[address]]</div>" +
-  "<div class='inv-hidden'>" +
+  "<div class='hidden subresults'>" +
   "<table class='table--key-value  table--readonly'>"+
   "<tr>" +
   "<td>Company Type</td>" +
@@ -26,22 +27,11 @@ var companyTemplate = "<a href='#'>[[name]]</a>" +
   "</table>"+
   "<div class='save-bar'>" +
   "<button class='button button--save' type='submit'>Choose company</button>" +
-  "<a class='button-link button--cancel js-button-cancel' href='#'>Close</a>" +
+  "<a class='button-link button--cancel js-button-cancel' href='#' id='[[id]]'>Close</a>" +
   "</div>" +
   "</div>";
 
 
-function toggle_sub(ev) {
-  var hid = this.querySelector('.inv-hidden');
-
-  if (!hid.data || hid.data == "hidden") {
-    hid.style.display = "block";
-    hid.data ="showing";
-  } else {
-    hid.style.display = "none";
-    hid.data ="hidden";
-  }
-}
 
 function ifdef(thing, replacer) {
   var replacer = replacer || "";
@@ -49,29 +39,41 @@ function ifdef(thing, replacer) {
 }
 
 function updateSearchField(res) {
-  resultsdiv.style.display = "block";
-  resultsdiv.innerHTML = "";
-  document.querySelector("#new_co_nagger").style.display = "block";
-  var companies = JSON.parse(res.response);
+
+  trade.removeClass(resultsdiv, "hidden")
+  resultsdiv.innerHTML = ""
+  trade.removeClass(document.querySelector("#new_co_nagger"), "hidden")
+  const companies = JSON.parse(res.response)
   Object.keys(companies).forEach(function(key){
-    var co = companies[key];
-    var d = document.createElement("div");
-    d.id = "inv-res-" + key;
-    d.className = "inv-result";
-    var divtext = companyTemplate.replace("[[name]]", co._source.name)
+    let co = companies[key]
+    let d = document.createElement("div")
+    d.id = "inv-res-" + key
+    d.className = "inv-result"
+    let divtext = companyTemplate.replace("[[name]]", co._source.name)
     divtext = divtext.replace("[[address]]", ifdef(co._source.registered_address_1) + ", " + ifdef(co._source.registered_address_town) + " " + co.country)
     divtext = divtext.replace("[[company_type]]", "Foreign company");
     divtext = divtext.replace("[[investment_projects]]", co.details.length);
     divtext = divtext.replace("[[account_tier]]", co.summary.investment_tier);
     divtext = divtext.replace("[[account_manager]]", co.summary.investment_account_manager.name);
+    divtext = divtext.replace("[[id]]", "close-" + key);
+
     d.innerHTML = divtext;
-    d.addEventListener("click", toggle_sub, false);
     resultsdiv.appendChild(d);
+    setTimeout(function() {
+        let resblock = document.querySelector("#inv-res-" + key + " > .subresults");
+        document.querySelector("#inv-res-" + key).addEventListener("click", function() {
+            trade.show(resblock)
+        }, true)
+        document.querySelector("#close-" + key).addEventListener("click", function() {
+          trade.hide(resblock)
+        }, true)
+    },10)
+
   })
 }
 
 function searchCos(term) {
-  var companyRequest = new XMLHttpRequest();
+  const companyRequest = new XMLHttpRequest();
   companyRequest.onreadystatechange = function() {
     if (companyRequest.readyState === 4) {
       updateSearchField(companyRequest);
