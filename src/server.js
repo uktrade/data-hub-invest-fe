@@ -4,8 +4,6 @@ const bodyParser = require('body-parser')
 const compression = require('compression')
 const logger = require('morgan')
 const session = require('express-session')
-const redis = require('redis')
-const redisCrypto = require('connect-redis-crypto')
 const flash = require('connect-flash')
 const url = require('url')
 const winston = require('winston')
@@ -19,7 +17,6 @@ const apiController = require('./controllers/apicontroller')
 const loginController = require('./controllers/logincontroller')
 const myAccountController = require('./controllers/myaccountcontroller')
 const indexController = require('./controllers/indexcontroller')
-const supportController = require('./controllers/supportcontroller')
 const companyAddController = require('./controllers/companyaddcontroller')
 const companyInvestmentSummaryController = require('./controllers/companyinvestmentsummarycontroller')
 
@@ -36,54 +33,11 @@ app.disable('x-powered-by')
 const isDev = app.get('env') === 'development'
 winston.level = config.logLevel
 
-const RedisStore = redisCrypto(session)
-
-let client
-
-if (config.redis.url) {
-  const redisURL = url.parse(config.redis.url)
-  /* eslint-disable camelcase */
-  client = redis.createClient(redisURL.port, redisURL.hostname, { no_ready_check: true })
-  /* eslint-enable camelcase */
-  client.auth(redisURL.auth.split(':')[1])
-} else {
-  client = redis.createClient(config.redis.port, config.redis.host)
+var sess = {
+  secret: 'keyboard cat',
+  cookie: {}
 }
-
-client.on('error', (e) => {
-  winston.log('error', 'Error connecting to redis')
-  winston.log('error', e)
-  throw e
-})
-
-client.on('connect', () => {
-  winston.log('info', 'connected to redis')
-})
-
-client.on('ready', () => {
-  winston.log('info', 'connection to redis is ready to use')
-})
-
-const redisStore = new RedisStore({
-  client,
-  // config ttl defined in milliseconds
-  ttl: config.session.ttl / 1000,
-  secret: config.session.secret
-})
-
-app.use(session({
-  store: redisStore,
-  proxy: !isDev,
-  cookie: {
-    secure: !isDev,
-    maxAge: config.session.ttl
-  },
-  rolling: true,
-  key: 'datahub.sid',
-  secret: config.session.secret,
-  resave: true,
-  saveUninitialized: true
-}))
+app.use(session(sess))
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }))
 app.use(bodyParser.json({ limit: '1mb' }))
@@ -135,10 +89,8 @@ app.use(contactController.router)
 app.use(interactionController.router)
 app.use('/search', searchController.router)
 app.use(apiController.router)
-app.use('/support', supportController.router)
 app.get('/', indexController)
 
-metadata.setRedisClient(client)
 metadata.fetchAll((errors) => {
   if (errors) {
     winston.log('error', 'Unable to load all metadataRepository, cannot start app')
@@ -152,3 +104,6 @@ metadata.fetchAll((errors) => {
     })
   }
 })
+
+
+console.log(config.apiRoot)
