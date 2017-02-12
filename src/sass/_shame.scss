@@ -124,3 +124,24 @@ hr {
 .column-three-quarters .form-control {
   width: 100%;
 }
+
+.invresult {
+  padding: 14px 0;
+  border-top: 1px solid #CCC;
+}
+
+.invresults {
+  border-bottom: 1px solid #CCC;
+  clear: both;
+}
+
+.clickable {
+  color: $link-colour;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.unclickable {
+  color: black;
+  font-weight: bold;
+}

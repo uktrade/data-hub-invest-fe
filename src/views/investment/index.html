@@ -1,0 +1,35 @@
+{% extends "layouts/ukti.html" %}
+
+{% block main %}
+
+{% import "macros/trade.html" as trade %}
+
+<h1 class="page-heading">Create an investment project</h1>
+
+<h2 class="heading-medium">Client summary</h2>
+
+{{ trade.keyvaluetable(
+investmentDisplay,
+stripey=true,
+labels=investmentDetailLabels,
+keyorder=investmentDetailsDisplayOrder,
+id="investment-details")
+}}
+
+<form class="searchbar" action="/search" method="get" role="search">
+  <div class="searchbar__wrapper">
+    <label class="searchbar__label" for="inv-search">Source of foreign investment</label>
+    <input class="searchbar__input form-control" id="inv-search" type="search" name="term" value="" placeholder="Search for company name or contact">
+    <input class="searchbar__submit" type="submit" value="Search">
+  </div>
+</form>
+
+<div id="inv-results" class="invresults hidden"></div>
+
+  <p class="infostrip hidden" id="new_co_nagger">If you can’t find the company you’re looking for, <a href="/company/add-step-1/">create a new company</a>. Unfortunately you will lose your progress.</p>
+
+  <script src="/javascripts/common.js"></script>
+  <script src="/javascripts/investment.bundle.js"></script>
+  {#http://localhost:3001/javascripts/trade-elements-components-e839e157d3.js#}
+
+{% endblock %}}
