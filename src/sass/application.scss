@@ -14,25 +14,3 @@ $images-dir: '/images/';
 @import 'search';
 @import 'shame';
 @import 'splitheader';
-
-
-.inv-result {
-  padding: 14px 0;
-  border-top: 1px solid #CCC;
-}
-
-#inv-results {
-  border-bottom: 1px solid #CCC;
-  clear: both;
-}
-
-.clickable {
-  color: $link-colour;
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-.unclickable {
-  color: black;
-  font-weight: bold;
-}

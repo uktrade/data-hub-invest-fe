@@ -45,7 +45,7 @@ function updateSearchField (res) {
     let co = companies[key]
     let d = document.createElement('div')
     d.id = 'inv-res-' + key
-    d.className = 'inv-result'
+    d.className = 'invresult'
     const subs =
       { id: key,
         name: co._source.name,
