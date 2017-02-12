@@ -7,12 +7,14 @@ services:
       - 5858:5858
     environment:
       - POSTCODE_KEY
-      - API_ROOT
+      - API_ROOT=http://datahub-zorg:3010
     volumes:
       - ./src:/usr/src/app/src
       - ./test:/usr/src/app/test
       - ./build:/usr/src/app/build
-    command: npm run develop
+    links:
+      - datahub-zorg
+    command: dockerize -wait tcp://datahub-zorg:3010 -timeout 60s npm run develop
   datahub-zorg:
     build: ../data-hub-zorg
     ports:
@@ -27,7 +29,7 @@ services:
     links:
       - postgres
       - elasticsearch
-    command: npm run migrate && npm run seed && npm start
+    command: dockerize -wait tcp://postgres:5432 npm run fulldevstart
   postgres:
     image: postgres
     ports:

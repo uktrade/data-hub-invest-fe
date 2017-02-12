@@ -126,7 +126,7 @@ and why you chose to do it the way you did.
 
 Once a pull request is made it will be tested using [CircleCI](https://circleci.com/) and, if successful, 
 deployed to a heroku instance. Links to the Circle build and deployed address will be 
-shown in the gihub pull request.
+shown in the github pull request.
 
 When a pull request is approved it can be merged to master.
 
