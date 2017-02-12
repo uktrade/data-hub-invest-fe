@@ -23,7 +23,7 @@
 
       <form method="POST">
         <input type="hidden" name="business_type" value="{{business_type}}">
-        <input type="hidden" name="uk_based" value="true">
+        <input type="hidden" name="uk_based" value="false">
 
         {{ trade.textbox("name", label="Name", value=company.name, error=errors.name) }}
         {{ trade.textbox("alias", label="Trading name (optional)", value=company.alias, error=error.alias) }}
@@ -34,7 +34,15 @@
             {% if errors.registered_address %}<span class="error-message">{{errors.registered_address}}</span>{% endif %}
           </legend>
 
-          {{ trade.dropdown("registered_address_country", label="Country", emptyLabel="Pick a country", value=company.registered_address_country, options=countries) }}
+          {{ trade.dropdown("registered_address_country",
+            label="Country",
+            emptyLabel="Pick a country",
+            hint="Pease start typing to search for a country",
+            value=company.registered_address_country,
+            error=errors.registered_address_country,
+            options=countries,
+            class="select-autocomplete-js")
+          }}
           {{ trade.textbox("registered_address_1", label="Business and street (optional)", value=company.registered_address_1) }}
           {{ trade.textbox("registered_address_2", value=company.registered_address_2) }}
           {{ trade.textbox("registered_address_town", label="Town of city (optional)", value=company.registered_address_town) }}
@@ -58,7 +66,15 @@
         </fieldset>
 
         <fieldset id="trading-address-wrapper" class="fieldset--address panel panel-border-narrow">
-          {{ trade.dropdown("trading_address_country", label="Country", emptyLabel="Pick a country", value=company.trading_address_country, options=countries) }}
+          {{ trade.dropdown("trading_address_country",
+            label="Country",
+            emptyLabel="Select a country",
+            hint="Please start typing to search for a country",
+            value=company.trading_address_country,
+            error=errors.trading_address_country,
+            options=countries,
+            class="select-autocomplete-js")
+          }}
           {{ trade.textbox("trading_address_1", label="Business and street (optional)", value=company.trading_address_1) }}
           {{ trade.textbox("trading_address_2", value=company.trading_address_2) }}
           {{ trade.textbox("trading_address_town", label="Town of city (optional)", value=company.trading_address_town) }}
