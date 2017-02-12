@@ -11,7 +11,6 @@ const relatedProperties = {
   'turnover_range': 'TURNOVER_OPTIONS',
   'uk_region': 'REGION_OPTIONS',
   'employee_range': 'EMPLOYEE_OPTIONS',
-  'business_type': 'TYPES_OF_BUSINESS',
   'registered_address_country': 'COUNTRYS',
   'trading_address_country': 'COUNTRYS'
 }
@@ -174,14 +173,7 @@ function setCHDefaults (token, company) {
           if (!company.registered_address_county) company.registered_address_county = ch.registered_address_county
           if (!company.registered_address_postcode) company.registered_address_postcode = ch.registered_address_postcode
           // if (!company.registered_address_country) company.registered_address_country = ch.registered_address_country.id
-
-          // Business type
-          const businessTypes = metadataRepository.TYPES_OF_BUSINESS
-          for (const businessType of businessTypes) {
-            if (businessType.name.toLowerCase() === ch.company_category.toLowerCase()) {
-              company.business_type = businessType.id
-            }
-          }
+          company.business_type = ch.company.company_category
           resolve(company)
         })
     } else {
@@ -229,6 +221,7 @@ function saveCompany (token, company) {
   }
 
   delete company.is_headquarters
+  delete company.trading_address_same_as_registered
 
   if (company.id && company.id.length > 0) {
     return saveParsedCompany(company)

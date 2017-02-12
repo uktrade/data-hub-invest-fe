@@ -6,7 +6,7 @@ const companyDetailLabels = {
   trading_address: 'Trading address',
   uk_region: 'UK region',
   headquarters: 'Headquarters',
-  sector: 'Primary sector',
+  sector: 'Sector',
   website: 'Website',
   description: 'Business description',
   employee_range: 'Number of employees',

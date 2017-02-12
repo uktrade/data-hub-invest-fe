@@ -2,10 +2,7 @@ const winston = require('winston')
 const authorisedRequest = require('../lib/authorisedrequest')
 const config = require('../config')
 
-let redisClient
-
 function getMetadata (path, key) {
-  const ttl = config.redis.metadataTtl
   const url = `${config.apiRoot}/metadata/${path}/`
 
   return new Promise((resolve, reject) => {
@@ -19,7 +16,7 @@ function getMetadata (path, key) {
         reject(reponseError)
         throw reponseError
       })
-    })
+  })
 }
 
 const metadataItems = [
@@ -27,13 +24,8 @@ const metadataItems = [
   ['turnoverrange', 'TURNOVER_OPTIONS'],
   ['region', 'REGION_OPTIONS'],
   ['country', 'COUNTRYS'],
-  ['employeerange', 'EMPLOYEE_OPTIONS'],
-  ['businesstype', 'TYPES_OF_BUSINESS']
+  ['employeerange', 'EMPLOYEE_OPTIONS']
 ]
-
-module.exports.setRedisClient = (client) => {
-  redisClient = client
-}
 
 module.exports.getAdvisors = function (token) {
   return authorisedRequest(token, `${config.apiRoot}/metadata/advisor/`)

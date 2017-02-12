@@ -3,6 +3,10 @@ const LookupAddress = require('./lookupaddress')
 const radioHide = require('./radiohide')
 require('./sectors')
 
+if (document.querySelector('#registered-address-wrapper')) {
+  new LookupAddress('#registered-address-wrapper')
+}
+
 new LookupAddress('#trading-address-wrapper')
 
 radioHide('trading_address_same_as_registered', 'yes', '#trading-address-wrapper', true)

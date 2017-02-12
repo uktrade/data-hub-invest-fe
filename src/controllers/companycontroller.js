@@ -1,5 +1,6 @@
 /* eslint new-cap: 0 */
 const express = require('express')
+const winston = require('winston')
 const controllerUtils = require('../lib/controllerutils')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
@@ -55,6 +56,19 @@ function getCommon (req, res, next) {
   })
 }
 
+function postCommon (req, res, next) {
+  const keys = Object.keys(req.body)
+  for (const key of keys) {
+    if (req.body[key] === 'yes') {
+      req.body[key] = true
+    }
+    if (req.body[key] === 'no') {
+      req.body[key] = false
+    }
+  }
+  next()
+}
+
 function getDetails (req, res, next) {
   const company = res.locals.company
   const companyDisplay = companyFormattingService.getDisplayCompany(company)
@@ -78,9 +92,24 @@ function getDetails (req, res, next) {
 }
 
 function editDetails (req, res) {
-  const company = res.locals.company
-  const chDisplay = companyFormattingService.getDisplayCH(company)
-  res.render('company/edit', {
+  const company = res.locals.company || {}
+  const chDisplay = (company.companies_house) ? companyFormattingService.getDisplayCH(company) : null
+
+  const businessType = company.business_type || req.query.business_type
+  const ukBased = company.uk_based || (req.query.country === 'uk')
+
+  let template
+  if (businessType === 'ltd') {
+    template = 'edit-ltd'
+  } else if (businessType === 'ltdchild') {
+    template = 'edit-ltdchild'
+  } else if (!ukBased) {
+    template = 'edit-none-uk'
+  } else {
+    template = 'edit-ukother'
+  }
+
+  res.render(`company/${template}`, {
     tab: 'details',
     chDisplay,
     companyDetailLabels,
@@ -90,7 +119,10 @@ function editDetails (req, res) {
     companyTableHeadings,
     companyTableKeys: Object.keys(companyTableHeadings),
     companyTypeOptions,
-    business_type: req.query.business_type,
+    business_type: businessType,
+    showHeadquarters: !controllerUtils.isBlank(company.headquarters),
+    businessType,
+    ukBased,
     REGION_OPTIONS: metadataRepository.REGION_OPTIONS,
     SECTOR_OPTIONS: metadataRepository.SECTOR_OPTIONS,
     EMPLOYEE_OPTIONS: metadataRepository.EMPLOYEE_OPTIONS,
@@ -108,9 +140,12 @@ function postDetails (req, res, next) {
     })
     .catch((error) => {
       controllerUtils.genCSRF(req, res)
+      winston.debug(error)
       if (error.errors) {
-        cleanErrors(error.errors)
-        res.locals.errors = error.errors
+        winston.debug(error)
+        res.locals.errors = controllerUtils.transformErrors(error.errors)
+        cleanErrors(res.locals.errors)
+        res.locals.company = req.body
         return editDetails(req, res)
       }
 
@@ -130,24 +165,11 @@ function getExport (req, res) {
   res.render('company/export', {tab: 'export'})
 }
 
-function postCommon (req, res, next) {
-  const keys = Object.keys(req.body)
-  for (const key of keys) {
-    if (req.body[key] === 'yes') {
-      req.body[key] = true
-    }
-    if (req.body[key] === 'no') {
-      req.body[key] = false
-    }
-  }
-  next()
-}
-
 router.use('/company/:source/:sourceId/*', getCommon)
 router.post('/company/:source/:sourceId/*', postCommon)
+router.get(['/company/:source/:sourceId/edit', '/company/add'], editDetails)
+router.post(['/company/:source/:sourceId/edit', '/company/add'], postDetails)
 router.get('/company/:source/:sourceId/details', getDetails)
-router.get('/company/:source/:sourceId/edit', editDetails)
-router.post('/company/:source/:sourceId/edit', postDetails)
 router.get('/company/:source/:sourceId/contacts', getContacts)
 router.get('/company/:source/:sourceId/interactions', getInteractions)
 router.get('/company/:source/:sourceId/export', getExport)

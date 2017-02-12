@@ -1,14 +1,18 @@
 const guid = require('@uktrade/trade_elements').guid
 
-function transformErrors (expressErrors) {
-  if (!expressErrors) {
+function transformErrors (sourceErrors) {
+  if (!sourceErrors) {
     return null
   }
 
   const errors = {}
+  const keys = Object.keys(sourceErrors)
+  if (keys.length === 0) {
+    return null
+  }
 
-  for (const error of expressErrors) {
-    errors[error.param] = error.msg
+  for (const key of keys) {
+    errors[key] = [sourceErrors[key].msg]
   }
 
   return errors

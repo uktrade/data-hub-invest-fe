@@ -53,7 +53,7 @@ function getDisplayCompany (company) {
   if (tradingAddress.length > 0) displayCompany.trading_address = tradingAddress
 
   if (!company.companies_house_data) {
-    displayCompany.business_type = (company.business_type && company.business_type.name) ? company.business_type.name : TODO
+    displayCompany.business_type = (company.business_type && company.business_type) ? company.business_type : TODO
     displayCompany.name = company.name
   }
 
