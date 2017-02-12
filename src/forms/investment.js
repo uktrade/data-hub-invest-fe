@@ -36,6 +36,34 @@ function ifdef(thing, replacer) {
   return (!!thing) ? thing : replacer;
 }
 
+const companyDisplay = tmpl => `
+
+ <span id='name-${tmpl.id}' class='clickable'>${tmpl.name}</span><span id='headclose-${tmpl.id}' class='hidden clickable' style='float:right'>Close</span>
+  <br>${tmpl.address}</div>
+  <div class='hidden subresults'>
+    <table class='table--key-value  table--readonly'>
+      <tr>
+        <td>Company Type</td>
+        <td>${tmpl.company_type}</td>
+      </tr>
+      <tr>
+        <td>Investment in the UK</td>
+        <td>${tmpl.investment_projects}</td>
+      </tr>
+      <tr>
+        <td>Account tier</td>
+        <td>${tmpl.account_tier}</td>
+      </tr>
+      <tr>
+        <td>Account Manager in the UK</td>
+        <td>${tmpl.account_manager}</td>
+      </tr>
+    </table>
+  <div class='save-bar'>
+    <button class='button button--save' type='submit'>Choose company</button>
+    <a class='button-link button--cancel js-button-cancel' href='#' id='close-${tmpl.id}'>Close</a>
+  </div>`
+
 function updateSearchField(res) {
 
   trade.removeClass(resultsdiv, "hidden")
@@ -47,17 +75,18 @@ function updateSearchField(res) {
     let d = document.createElement("div")
     d.id = "inv-res-" + key
     d.className = "inv-result"
-    let divtext = companyTemplate.replace("[[name]]", co._source.name)
-    divtext = divtext.replace("[[conameid]]", "name-" + key)
-    divtext = divtext.replace("[[address]]", ifdef(co._source.registered_address_1) + ", " + ifdef(co._source.registered_address_town) + " " + co.country)
-    divtext = divtext.replace("[[company_type]]", "Foreign company")
-    divtext = divtext.replace("[[investment_projects]]", co.details.length)
-    divtext = divtext.replace("[[account_tier]]", co.summary.investment_tier)
-    divtext = divtext.replace("[[account_manager]]", co.summary.investment_account_manager.name)
-    divtext = divtext.replace("[[bottomclose]]", "close-" + key)
-    divtext = divtext.replace("[[headclose]]", "headclose-" + key)
+    const subs =
+      { id: key,
+        name: co._source.name,
+        conameid: "name-" + key,
+        address: ifdef(co._source.registered_address_1) + ", " + ifdef(co._source.registered_address_town) + " " + co.country,
+        investment_projects: co.details.length,
+        company_type: "Foreign Company",
+        account_tier: co.summary.investment_tier,
+        account_manager: co.summary.investment_account_manager.name
+    }
 
-    d.innerHTML = divtext;
+    d.innerHTML = companyDisplay(subs);
     resultsdiv.appendChild(d);
 
     setTimeout(function () {
