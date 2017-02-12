@@ -6,15 +6,7 @@ const express = require('express')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
-
-// imported from company controller
-// @todo merge into utils
-const investmentDetailLabels = {
-  company_name: 'Company',
-  account_management_tier: 'Account management tier',
-  account_manager: 'Account manager',
-  ownership: 'Ownership'
-}
+const investmentDetailLabels = require('../labels/investmentlabels').investmentDetailLabels
 
 const investmentDetailsDisplayOrder = Object.keys(investmentDetailLabels)
 
