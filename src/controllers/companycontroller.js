@@ -104,7 +104,7 @@ function editDetails (req, res) {
   } else if (businessType === 'ltdchild') {
     template = 'edit-ltdchild'
   } else if (!ukBased) {
-    template = 'edit-none-uk'
+    template = 'edit-nonuk'
   } else {
     template = 'edit-ukother'
   }
