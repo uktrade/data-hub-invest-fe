@@ -52,8 +52,6 @@ You can access the server on port 3000, [http://localhost:3000](http://localhost
 a remote debug session over port 5858 if using webstorm or Visual Studio Code
 
 ### docker-compose-full-yml  
-***----- WIP - This does not yet work - Currently the db comes up too slow so zorg cant see the db, and fe cant get metadata***
-
 The "full" variation of the docker compose file runs both the frontend and backend locally, especially 
 usefull if you want to make changes to the data scheme or api.
 
