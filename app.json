@@ -13,6 +13,5 @@
     "ZEN_BROWSER": { "required": true },
     "ZEN_IMPACT": { "required": true },
     "ZEN_SERVICE": { "required": true }
-  },
-  "addons":["heroku-redis"]
+  }
 }
