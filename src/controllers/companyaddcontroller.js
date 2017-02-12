@@ -63,7 +63,7 @@ function postAddStepOne (req, res, next) {
       break
   }
 
-  if (req.body.business_type === 'ukother') {
+  if (req.body.business_type === 'ukother' || req.body.business_type === 'forother') {
     return res.redirect(`/company/add?${toQueryString(params)}`)
   }
 

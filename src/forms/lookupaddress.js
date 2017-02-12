@@ -1,5 +1,5 @@
 const axios = require('axios')
-const { hide, show } = require('@uktrade/trade_elements').elementstuff
+const { hide } = require('@uktrade/trade_elements').elementstuff
 
 class LookupAddress {
 
@@ -11,16 +11,21 @@ class LookupAddress {
   }
 
   cacheElements (elementSelector) {
-    const element = this.element = document.querySelector(elementSelector)
-    this.postcodeLookupField = element.querySelector('.postcode-lookup-field')
-    this.postcodeLookupButton = element.querySelector('.postcode-lookup-button')
-    this.address1Field = element.querySelector('[name*="_address_1"]')
-    this.address2Field = element.querySelector('[name*="_address_2"]')
-    this.addressTownField = element.querySelector('[name*="_address_town"]')
-    this.addressCountyField = element.querySelector('[name*="_address_county"]')
-    this.addressPostcodeField = element.querySelector('[name*="_address_postcode"]')
-    this.addressSuggestionsWrapper = element.querySelector('.form-group--address-suggestions select')
-    this.addressSuggestionsDropdown = element.querySelector('.form-group--address-suggestions select')
+    if (typeof elementSelector === 'string') {
+      this.element = document.querySelector(elementSelector)
+    } else {
+      this.element = elementSelector
+    }
+
+    this.postcodeLookupField = this.element.querySelector('.postcode-lookup-field')
+    this.postcodeLookupButton = this.element.querySelector('.postcode-lookup-button')
+    this.address1Field = this.element.querySelector('[name*="_address_1"]')
+    this.address2Field = this.element.querySelector('[name*="_address_2"]')
+    this.addressTownField = this.element.querySelector('[name*="_address_town"]')
+    this.addressCountyField = this.element.querySelector('[name*="_address_county"]')
+    this.addressPostcodeField = this.element.querySelector('[name*="_address_postcode"]')
+    this.addressSuggestionsWrapper = this.element.querySelector('.form-group--address-suggestions select')
+    this.addressSuggestionsDropdown = this.element.querySelector('.form-group--address-suggestions select')
   }
 
   addEvents () {
@@ -55,6 +60,12 @@ class LookupAddress {
     this.addressCountyField.value = suggestion.county
     this.addressPostcodeField.value = suggestion.postcode
   }
+}
+
+const addressWrappers = document.querySelectorAll('.lookup-address-js')
+for (let pos = 0; pos < addressWrappers.length; pos += 1) {
+  const addressWrapper = addressWrappers.item(pos)
+  new LookupAddress(addressWrapper)
 }
 
 module.exports = LookupAddress

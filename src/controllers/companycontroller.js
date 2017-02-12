@@ -42,12 +42,10 @@ function getCommon (req, res, next) {
   .then((company) => {
     const headingAddress = companyFormattingService.getHeadingAddress(company)
     const headingName = companyFormattingService.getHeadingName(company)
-    const countries = metadataRepository.COUNTRYS
 
     res.locals.id = id
     res.locals.source = source
     res.locals.company = company
-    res.locals.countries = countries
     res.locals.headingName = headingName
     res.locals.headingAddress = headingAddress
     res.locals.csrfToken = csrfToken
@@ -56,17 +54,18 @@ function getCommon (req, res, next) {
   })
 }
 
-function postCommon (req, res, next) {
+function preParseFields (req, res, next) {
   const keys = Object.keys(req.body)
   for (const key of keys) {
-    if (req.body[key] === 'yes') {
+    const value = req.body[key].toLowerCase()
+    console.log(`${key}: ${value}`)
+    if (value === 'yes' || value === 'true') {
       req.body[key] = true
     }
-    if (req.body[key] === 'no') {
+    if (value === 'no' || value === 'false') {
       req.body[key] = false
     }
   }
-  next()
 }
 
 function getDetails (req, res, next) {
@@ -104,7 +103,7 @@ function editDetails (req, res) {
   } else if (businessType === 'ltdchild') {
     template = 'edit-ltdchild'
   } else if (!ukBased) {
-    template = 'edit-none-uk'
+    template = 'edit-nonuk'
   } else {
     template = 'edit-ukother'
   }
@@ -126,11 +125,13 @@ function editDetails (req, res) {
     REGION_OPTIONS: metadataRepository.REGION_OPTIONS,
     SECTOR_OPTIONS: metadataRepository.SECTOR_OPTIONS,
     EMPLOYEE_OPTIONS: metadataRepository.EMPLOYEE_OPTIONS,
-    TURNOVER_OPTIONS: metadataRepository.TURNOVER_OPTIONS
+    TURNOVER_OPTIONS: metadataRepository.TURNOVER_OPTIONS,
+    countries: metadataRepository.COUNTRYS
   })
 }
 
 function postDetails (req, res, next) {
+  preParseFields(req, res)
   // Flatten selected fields
   const company = Object.assign({}, req.body)
   companyRepository.saveCompany(req.session.token, company)
@@ -165,8 +166,7 @@ function getExport (req, res) {
   res.render('company/export', {tab: 'export'})
 }
 
-router.use('/company/:source/:sourceId/*', getCommon)
-router.post('/company/:source/:sourceId/*', postCommon)
+router.use(['/company/:source/:sourceId/*'], getCommon)
 router.get(['/company/:source/:sourceId/edit', '/company/add'], editDetails)
 router.post(['/company/:source/:sourceId/edit', '/company/add'], postDetails)
 router.get('/company/:source/:sourceId/details', getDetails)
