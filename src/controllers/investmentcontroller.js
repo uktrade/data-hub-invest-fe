@@ -55,29 +55,9 @@ function index(req, res) {
     if (error.response) {
       return res.status(error.response.statusCode).json({errors})
     }
-    next(error)
   })
 }
 
-function OLDinvsearch(req, res) {
-  search.search({
-    token: req.session.token,
-    term: req.params.term,
-    nonuk: true
-  })
-    .then((result) => {
-      const promises = []
-      for (const co of result.hits) {
-        if (co._type !== 'company_companieshousecompany') { // @todo - assumption - we'll only have investment data for non-CH cos
-          promises.push(companyRepository.getCompanyInvestmentSummaryLite(req.session.token, co._id))
-        }
-      }
-      return Promise.all(promises)
-    }).then((result) => {
-    res.json(result)
-  })
-    .catch(error => res.render('error', {error}))
-}
 
 function collate(rez) {
   const companies = [];
