@@ -7,10 +7,10 @@ function search ({ token, term, limit = 10, page = 1, filters, nonuk = false}) {
   let body = { term, limit }
   body.offset = (page * body.limit) - body.limit
 
-  let endpoint = "search"
+  let endpoint = 'search'
 
   if (nonuk) {
-    endpoint = "nonuk"
+    endpoint = 'nonuk'
   }
 
   if (filters) {

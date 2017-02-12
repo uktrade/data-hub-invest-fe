@@ -3,7 +3,6 @@
  */
 
 const express = require('express')
-const winston = require('winston')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
@@ -19,7 +18,7 @@ const investmentDetailLabels = {
 
 const investmentDetailsDisplayOrder = Object.keys(investmentDetailLabels)
 
-function getInvestmentDetailsDisplay(company, extra) {
+function getInvestmentDetailsDisplay (company, extra) {
   if (!company.id) return null
   return {
     company_name: `${company.name}`,
@@ -31,15 +30,15 @@ function getInvestmentDetailsDisplay(company, extra) {
 
 const router = express.Router()
 
-function index(req, res) {
+function index (req, res) {
   const id = req.params.sourceId
   let lcompany
 
   companyRepository.getCompany(req.session.token, id, null)
     .then((company) => {
-    lcompany = company
-    return companyRepository.getCompanyInvestmentSummary(req.session.token, company.id)
-  })
+      lcompany = company
+      return companyRepository.getCompanyInvestmentSummary(req.session.token, company.id)
+    })
     .then((extra) => {
       let investmentDisplay = getInvestmentDetailsDisplay(lcompany, extra)
       res.render('investment/index', {
@@ -47,34 +46,29 @@ function index(req, res) {
         investmentDetailLabels,
         investmentDetailsDisplayOrder
       })
-
     })
 
     .catch((error) => {
-    const errors = error.error
-    if (error.response) {
-      return res.status(error.response.statusCode).json({errors})
-    }
-  })
+      const errors = error.error
+      if (error.response) {
+        return res.status(error.response.statusCode).json({errors})
+      }
+    })
 }
 
-
-function collate(rez) {
-  const companies = [];
-  const flat_countries = [];
-    metadataRepository.COUNTRYS.map((land) => flat_countries[land.id] = land.name);
+function collate (rez) {
+  const companies = []
+  const flatCountries = []
+  metadataRepository.COUNTRYS.map((land) => flatCountries[land.id] = land.name)
 
   rez.forEach((item) => {
-    if (!!item) {
-      if (!!item._type && item._type === "company_company") {
-
-        console.log(flat_countries, item._source.registered_address_country)
-
-        item.country = flat_countries[item._source.registered_address_country]
-        companies[item._id] = item;
+    if (item) {
+      if (!!item._type && item._type === 'company_company') {
+        item.country = flatCountries[item._source.registered_address_country]
+        companies[item._id] = item
       }
 
-      if (!!item.investment_tier) {
+      if (item.investment_tier) {
         companies[item.id].summary = item
       }
 
@@ -82,12 +76,12 @@ function collate(rez) {
         companies[item[0].company].details = item
       }
     }
-    }
+  }
 )
   return companies
 }
 
-function invsearch(req, res) {
+function invsearch (req, res) {
   search.search({
     token: req.session.token,
     term: req.params.term,
@@ -105,6 +99,5 @@ function invsearch(req, res) {
 router.get('/investment/', index)
 router.get('/investment/:sourceId', index)
 router.get('/api/investment/search/:term', invsearch)
-router.get('/api/investment/oldsearch/:term', OLDinvsearch)
 
 module.exports = {router}
