@@ -21,7 +21,7 @@ function getInvestment (req, res, next) {
       metadataRepository.getAdvisors(req.session.token)
       .then((advisors) => {
         res.locals.advisors = advisors
-        companyRepository.getCompanyInvestmentProjects(req.session.token, req.params.sourceId)
+        return companyRepository.getCompanyInvestmentProjects(req.session.token, req.params.sourceId)
       })
       .then((investmentProjects) => {
         if (investmentProjects) {
@@ -30,7 +30,7 @@ function getInvestment (req, res, next) {
           res.locals.investmentProjectsClosed = investmentFormattingService.getClosedInvestmentProjects(investmentProjects)
         }
 
-        res.render('company/investment', {
+        return res.render('company/investment', {
           tab: 'investment',
           investmentProjectsOpenLabels,
           investmentProjectsClosedLabels,
