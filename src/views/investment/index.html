@@ -16,14 +16,10 @@ keyorder=investmentDetailsDisplayOrder,
 id="investment-details")
 }}
 
-{% if foreign %}
-FOREIGN
-{% endif %}
 
-
-<form class="searchbar" action="/search" method="get" role="search">
+<h1 class="heading-small">Source of foreign investment</h1>
+<form class="searchbar tightertopmargin" action="/search" method="get" role="search">
   <div class="searchbar__wrapper">
-    <label class="searchbar__label" for="inv-search">Source of foreign investment</label>
     <input class="searchbar__input form-control" id="inv-search" type="search" name="term" value="" placeholder="Search for company name or contact">
     <input class="searchbar__submit" type="submit" value="Search">
   </div>
