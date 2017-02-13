@@ -39,7 +39,6 @@ function index (req, res) {
         investmentDetailsDisplayOrder
       })
     })
-
     .catch((error) => {
       const errors = error.error
       if (error.response) {
