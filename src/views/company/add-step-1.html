@@ -34,7 +34,7 @@
         {{companyTypeOptions.ukother}}
         <span class="form-hint">UK organisation not registered with Companies House</span>
       </label>
-      <div id="other-uk-type-wrapper" class='panel panel-border-narrow'>
+      <div id="other-uk-type-wrapper" class='panel panel-border-narrow hidden'>
         {{ trade.dropdown("business_type_uk_other",
           label="Type of organisation",
           emptyLabel="Select type",
@@ -47,7 +47,7 @@
         <input id="forother" type="radio" name="business_type" value="forother" {% if company.business_type == "forother" %}checked{% endif %}>
         {{companyTypeOptions.forother}}
       </label>
-      <div id="other-for-type-wrapper" class='panel panel-border-narrow'>
+      <div id="other-for-type-wrapper" class='panel panel-border-narrow hidden'>
         {{ trade.dropdown("business_type_for_other",
           label="Type of organisation",
           emptyLabel="Select type",
