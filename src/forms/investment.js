@@ -1,5 +1,6 @@
 const searchfield = document.querySelector('#inv-search')
 const resultsdiv = document.querySelector('#inv-results')
+const isforeigncontinue = document.querySelector('#isforeigncontinue')
 
 const trade = require('@uktrade/trade_elements').elementstuff
 
@@ -101,3 +102,14 @@ function searchCos (term) {
 searchfield.addEventListener('keyup', function () {
   searchCos(searchfield.value)
 }, true)
+
+isforeigncontinue.addEventListener('click', function(ev) {
+  if (document.querySelector("#isforeign_yes").checked) {
+// this will connect to step 2, @todo
+  } else {
+    trade.removeClass(document.querySelector("#sbcontainer"), "hidden")
+    trade.addClass(document.querySelector("#foreignradiocontainer"), "hidden")
+
+
+  }
+})
