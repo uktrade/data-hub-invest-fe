@@ -20,7 +20,7 @@ function getInvestmentDetailsDisplay (investmentSummary) {
   } else if (investmentSummary.ownership === 'both') {
     result.ownership = 'Both UK and Foreign owned'
   } else {
-    result.ownership = `${investmentSummary.ownership_country.name} owned`
+    result.ownership = `${investmentSummary.ownership_country} owned`
   }
 
   return result
