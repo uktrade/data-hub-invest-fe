@@ -15,32 +15,38 @@ function getInvestment (req, res, next) {
     if (!investmentSummary) {
       req.flash('info', 'Before creating a new investment project, please complete this section.')
       return res.redirect(`/company/company_company/${req.params.sourceId}/investment/edit`)
-    }
+    } else {
+      res.locals.investmentSummary = investmentSummary
+      res.locals.investmentDisplay = investmentFormattingService.getInvestmentDetailsDisplay(investmentSummary)
+      metadataRepository.getAdvisors(req.session.token)
+      .then((advisors) => {
+        res.locals.advisors = advisors
+        return companyRepository.getCompanyInvestmentProjects(req.session.token, req.params.sourceId)
+      })
+      .then((investmentProjects) => {
+        if (investmentProjects) {
+          res.locals.investmentProjects = investmentProjects
+          res.locals.investmentProjectsOpen = investmentFormattingService.getOpenInvestmentProjects(investmentProjects)
+          res.locals.investmentProjectsClosed = investmentFormattingService.getClosedInvestmentProjects(investmentProjects)
+        }
 
-    res.locals.investmentSummary = investmentSummary
-    res.locals.investmentDisplay = investmentFormattingService.getInvestmentDetailsDisplay(investmentSummary)
-    return metadataRepository.getAdvisors(req.session.token)
-  })
-  .then((advisors) => {
-    res.locals.advisors = advisors
-    companyRepository.getCompanyInvestmentProjects(req.session.token, req.params.sourceId)
-  })
-  .then((investmentProjects) => {
-    if (investmentProjects) {
-      res.locals.investmentProjects = investmentProjects
-      res.locals.investmentProjectsOpen = investmentFormattingService.getOpenInvestmentProjects(investmentProjects)
-      res.locals.investmentProjectsClosed = investmentFormattingService.getClosedInvestmentProjects(investmentProjects)
+        return res.render('company/investment', {
+          tab: 'investment',
+          investmentProjectsOpenLabels,
+          investmentProjectsClosedLabels,
+          investmentDetailLabels,
+          investmentTierOptions,
+          investmentProjectsOpenKeys: Object.keys(investmentProjectsOpenLabels),
+          investmentProjectsClosedKeys: Object.keys(investmentProjectsClosedLabels)
+        })
+      })
+      .catch((error) => {
+        if (error.statusCode && error.statusCode === 404) {
+          return res.redirect(`/company/company_company/${req.params.sourceId}/investment/edit`)
+        }
+        next(error)
+      })
     }
-
-    res.render('company/investment', {
-      tab: 'investment',
-      investmentProjectsOpenLabels,
-      investmentProjectsClosedLabels,
-      investmentDetailLabels,
-      investmentTierOptions,
-      investmentProjectsOpenKeys: Object.keys(investmentProjectsOpenLabels),
-      investmentProjectsClosedKeys: Object.keys(investmentProjectsClosedLabels)
-    })
   })
   .catch((error) => {
     if (error.statusCode && error.statusCode === 404) {

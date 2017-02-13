@@ -11,7 +11,7 @@
           <div id="business-type" class="key-value__key form-label-bold">Business type
             <a href="/company/add-step-1" class="button-link">Change</a>
           </div>
-          <div class="key-value__value" aria-labelledby="business-type">UK {{businessType}}</div>
+          <div class="key-value__value" aria-labelledby="business-type">Foreign {{businessType}}</div>
         </div>
       </div>
 
@@ -23,41 +23,30 @@
 
       <form method="POST">
         <input type="hidden" name="business_type" value="{{business_type}}">
-        <input type="hidden" name="uk_based" value="true">
+        <input type="hidden" name="uk_based" value="false">
 
         {{ trade.textbox("name", label="Name", value=company.name, error=errors.name) }}
         {{ trade.textbox("alias", label="Trading name (optional)", value=company.alias, error=error.alias) }}
 
-        <fieldset id="registered-address-wrapper" class="fieldset--address {% if errors.registered_address %}error{% endif %} lookup-address-js">
+        <fieldset id="registered-address-wrapper" class="fieldset--address {% if errors.registered_address %}error{% endif %}">
           <legend class="form-label-bold">
             Primary address
             {% if errors.registered_address %}<span class="error-message">{{errors.registered_address}}</span>{% endif %}
           </legend>
-          <div class="key-value key-value--vertical form-group">
-            <div id="registered-address-contry-label" class="key-value__key form-label-bold">Country</div>
-            <div class="key-value__value" aria-labelledby="registered-address-contry-label">United Kingdom</div>
-          </div>
 
-          <div class="form-group form-group--postcode">{# hide for none js #}
-            <label class="form-label-bold">Postcode</label>
-            <input class="form-control postcode-lookup-value postcode-lookup-field" autoComplete="off" value="">
-            <button class="button button-secondary postcode-lookup-button" type="button">
-              Find UK Address
-            </button>
-          </div>
-          {# dropdown of suggestions #}
-          <div class="form-group form-group--address-suggestions">
-            <label class="form-label-bold">Select an address from the drop down</label>
-            <select class="form-control">
-            <option value="">Please enter a postcode to lookup your address</option>
-            </select>
-          </div>
-
+          {{ trade.dropdown("registered_address_country",
+            label="Country",
+            emptyLabel="Pick a country",
+            hint="Pease start typing to search for a country",
+            value=company.registered_address_country,
+            error=errors.registered_address_country,
+            options=countries,
+            class="select-autocomplete-js")
+          }}
           {{ trade.textbox("registered_address_1", label="Business and street (optional)", value=company.registered_address_1) }}
           {{ trade.textbox("registered_address_2", value=company.registered_address_2) }}
           {{ trade.textbox("registered_address_town", label="Town of city (optional)", value=company.registered_address_town) }}
-          {{ trade.textbox("registered_address_county", label="County (optonal)", value=company.registered_address_county) }}
-          {{ trade.textbox("registered_address_postcode", label="Postcode (optional)", value=company.registered_address_postcode) }}
+          {{ trade.textbox("registered_address_postcode", label="Zip code", value=company.registered_address_postcode) }}
         </fieldset>
 
         <fieldset class="inline form-group form-group__checkbox-group form-group__radiohide">
@@ -76,35 +65,21 @@
           </label>
         </fieldset>
 
-        <fieldset id="trading-address-wrapper" class="fieldset--address panel panel-border-narrow lookup-address-js">
-          <div class="key-value key-value--vertical form-group">
-            <div id="trading-address-contry-label" class="key-value__key form-label-bold">Country</div>
-            <div class="key-value__value" aria-labelledby="trading-address-contry-label">United Kingdom</div>
-          </div>
-
-          <div class="form-group form-group--postcode">{# hide for none js #}
-            <label class="form-label-bold">Postcode</label>
-            <input class="form-control postcode-lookup-value postcode-lookup-field" autoComplete="off" value="">
-            <button class="button button-secondary postcode-lookup-button" type="button">
-              Find UK Address
-            </button>
-          </div>
-          {# dropdown of suggestions #}
-          <div class="form-group form-group--address-suggestions">
-            <label class="form-label-bold">Select an address from the drop down</label>
-            <select class="form-control">
-            <option value="">Please enter a postcode to lookup your address</option>
-            </select>
-          </div>
-
+        <fieldset id="trading-address-wrapper" class="fieldset--address panel panel-border-narrow">
+          {{ trade.dropdown("trading_address_country",
+            label="Country",
+            emptyLabel="Select a country",
+            hint="Please start typing to search for a country",
+            value=company.trading_address_country,
+            error=errors.trading_address_country,
+            options=countries,
+            class="select-autocomplete-js")
+          }}
           {{ trade.textbox("trading_address_1", label="Business and street (optional)", value=company.trading_address_1) }}
           {{ trade.textbox("trading_address_2", value=company.trading_address_2) }}
           {{ trade.textbox("trading_address_town", label="Town of city (optional)", value=company.trading_address_town) }}
-          {{ trade.textbox("trading_address_county", label="County (optonal)", value=company.trading_address_county) }}
-          {{ trade.textbox("trading_address_postcode", label="Postcode (optional)", value=company.trading_address_postcode) }}
+          {{ trade.textbox("trading_address_postcode", label="Zip code", value=company.trading_address_postcode) }}
         </fieldset>
-
-        {{ trade.dropdown("uk_region", label="UK region", emptyLabel="Pick a value", value=company.uk_region, options=REGION_OPTIONS) }}
 
         <fieldset class="form-group form-group__checkbox-group form-group__radiohide">
           <div class="inline">
