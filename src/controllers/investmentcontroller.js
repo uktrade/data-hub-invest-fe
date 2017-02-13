@@ -33,13 +33,14 @@ function index (req, res) {
     })
     .then((extra) => {
       let investmentDisplay = getInvestmentDetailsDisplay(lcompany, extra)
+      const foreign = lcompany.registered_address_country.name !== 'United Kingdom'
       res.render('investment/index', {
         investmentDisplay,
         investmentDetailLabels,
-        investmentDetailsDisplayOrder
+        investmentDetailsDisplayOrder,
+        foreign
       })
     })
-
     .catch((error) => {
       const errors = error.error
       if (error.response) {
