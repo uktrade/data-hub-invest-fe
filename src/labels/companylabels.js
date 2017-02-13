@@ -10,7 +10,21 @@ const companyDetailLabels = {
   website: 'Website',
   description: 'Business description',
   employee_range: 'Number of employees',
-  turnover_range: 'Annual turnover'
+  turnover_range: 'Annual turnover',
+  trading_address_1: 'Trading address street',
+  trading_address_2: 'Trading address street',
+  trading_address_town: 'Trading address town',
+  trading_address_county: 'Trading address county',
+  trading_address_postcode: 'Trading address postcode',
+  trading_address_country: 'Trading address country',
+  registered_address_1: 'Registered address street',
+  registered_address_2: 'Registered address street',
+  registered_address_town: 'Registered address town',
+  registered_address_county: 'Registered address county',
+  registered_address_postcode: 'Registered address postcode',
+  registered_address_country: 'Registered address country',
+  business_type_for_other: 'Type of organisation',
+  business_type_uk_other: 'Type of organisation'
 }
 const chDetailLabels = {
   name: 'Registered company name',

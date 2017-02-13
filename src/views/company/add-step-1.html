@@ -12,7 +12,7 @@
     {% endfor %}
   {% endif %}
 
-  {{ trade.errorPanel( errors ) }}
+  {{ trade.errorPanel( errors, labels=companyDetailLabels ) }}
   <form id="company-add-form" data-step="1" method="post">
     <input type="hidden" name="_csrf_token" value="{{ csrfToken }}" />
 
