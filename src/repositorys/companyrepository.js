@@ -1,8 +1,8 @@
 /* eslint camelcase: 0 */
+const Q = require('q')
 const config = require('../config')
+const axios = require('axios')
 const authorisedRequest = require('../lib/authorisedrequest')
-const interactionRepository = require('./interactionrepository')
-const contactRepository = require('./contactrepository')
 const metadataRepository = require('./metadatarepository')
 const controllerUtils = require('../lib/controllerutils')
 
@@ -15,37 +15,66 @@ const relatedProperties = {
   'trading_address_country': 'COUNTRYS'
 }
 
-// Get a company and then go back and get further detail for each company contact
-// and interaction, so the company detail pages can give the detail required.
-function getDitCompany (token, id) {
-  let result
-
-  return authorisedRequest(token, `${config.apiRoot}/company/${id}/`)
-  .then((company) => {
-    result = company
-    result.interactions = []
-    result.contacts = []
-
-    const promises = []
-    for (const interaction of result.interactions) {
-      promises.push(interactionRepository.getInteraction(token, interaction.id))
-    }
-
-    return Promise.all(promises)
+function request (url) {
+  return new Promise((resolve, reject) => {
+    axios(url)
+    .then((response) => {
+      resolve(response.data)
+    })
+    .catch((error) => {
+      reject(error)
+    })
   })
-  .then((interactions) => {
-    result.interactions = interactions
+}
 
-    const promises = []
-    for (const contact of result.contacts) {
-      promises.push(contactRepository.getBriefContact(token, contact.id))
-    }
+function getCompanyContacts (id) {
+  // todo
+}
 
-    return Promise.all(promises)
-  })
-  .then((contacts) => {
-    result.contacts = contacts
-    return result
+function getCompanyInteractions (id) {
+
+}
+
+// Get a company and then go back and get further details about it
+function getDitCompany (id) {
+  return new Promise((resolve, reject) => {
+    Q.spawn(function *main () {
+      try {
+        const company = yield request(`${config.apiRoot}/company/${id}/`)
+
+        // get related information
+        const relatedKeys = Object.keys(relatedProperties)
+        for (const property of relatedKeys) {
+          if (company[property] && company[property].length > 0) {
+            const metadataKey = relatedProperties[property]
+            const values = metadataRepository[metadataKey]
+            company[property] = values.filter(item => item.id === company[property])[0]
+          }
+        }
+
+        // get related companies
+        const relatedCompanies = yield request(`${config.apiRoot}/company/${company.id}/related/`)
+        company.parents = []
+        for (const id of relatedCompanies.parents) {
+          const parent = yield request(`${config.apiRoot}/company/${id}/`)
+          company.parents.push(parent)
+        }
+
+        company.children = []
+        for (const id of relatedCompanies.children) {
+          const child = yield request(`${config.apiRoot}/company/${id}/`)
+          company.children.push(child)
+        }
+
+        if (company.company_number && company.company_number.length > 0) {
+          const ch = yield request(`${config.apiRoot}/ch-company/${company.company_number}/`)
+          company.companies_house_data = ch
+        }
+        resolve(company)
+      } catch (error) {
+        reject(error)
+      }
+    })
   })
 }
 
@@ -57,46 +86,27 @@ function getCHCompany (token, id) {
   return authorisedRequest(token, `${config.apiRoot}/ch-company/${id}/`)
 }
 
-function addRelatedCHCompany (token, company) {
-  return new Promise((resolve) => {
-    getCHCompany(token, company.company_number)
-      .then((companies_house_data) => {
-        company.companies_house_data = companies_house_data
-        resolve(company)
-      })
-  })
-}
-
 function getCompany (token, id, source) {
   return new Promise((resolve, reject) => {
     // Get DIT Company
     if (source === 'company_companieshousecompany') {
       getCHCompany(token, id)
-        .then((companies_house_data) => {
-          resolve({
-            company_number: id,
-            companies_house_data,
-            contacts: [],
-            interactions: []
-          })
+      .then((companies_house_data) => {
+        resolve({
+          company_number: id,
+          companies_house_data,
+          contacts: [],
+          interactions: []
         })
-        .catch((error) => {
-          reject(error)
-        })
+      })
+      .catch((error) => {
+        reject(error)
+      })
 
       return
     }
 
-    getDitCompany(token, id)
-      .then((company) => {
-        return addRelatedData(company)
-      })
-      .then((company) => {
-        if (company.company_number && company.company_number.length > 0) {
-          return addRelatedCHCompany(token, company)
-        }
-        return company
-      })
+    getDitCompany(id)
       .then((company) => {
         resolve(company)
       })
@@ -104,61 +114,6 @@ function getCompany (token, id, source) {
         reject(error)
       })
   })
-}
-
-function addRelatedData (company) {
-  return new Promise((resolve, reject) => {
-    const relatedKeys = Object.keys(relatedProperties)
-
-    for (const property of relatedKeys) {
-      if (company[property] && company[property].length > 0) {
-        const metadataKey = relatedProperties[property]
-        const values = metadataRepository[metadataKey]
-        company[property] = values.filter(item => item.id === company[property])[0]
-      }
-    }
-
-    getParentsAndChildren(company)
-      .then(() => {
-        return authorisedRequest(null, `${config.apiRoot}/company/${company.id}/contacts/`)
-      })
-      .then((contacts) => {
-        company.contacts = contacts
-
-        if (!company.account_manager || company.account_manager.length === 0) {
-          resolve(company)
-        } else {
-          return authorisedRequest(null, `${config.apiRoot}/metadata/advisor/${company.account_manager}/`)
-        }
-      })
-      .then((accountManager) => {
-        company.account_manager = accountManager
-        resolve(company)
-      })
-  })
-}
-
-function getParentsAndChildren (company) {
-  const promises = []
-  company.parents = []
-  company.children = []
-
-  return authorisedRequest(null, `${config.apiRoot}/company/${company.id}/related/`)
-    .then((related) => {
-      for (const id of related.parents) {
-        promises.push(authorisedRequest(null, `${config.apiRoot}/company/${id}/`)
-          .then((parentCompany) => {
-            return company.parents.push(parentCompany)
-          }))
-      }
-      for (const id of related.children) {
-        promises.push(authorisedRequest(null, `${config.apiRoot}/company/${id}/`)
-          .then((childCompany) => {
-            return company.children.push(childCompany)
-          }))
-      }
-      return Promise.all(promises)
-    })
 }
 
 function setCHDefaults (token, company) {
@@ -318,5 +273,7 @@ module.exports = {
   getCompanyInvestmentSummaryLite,
   saveCompanyInvestmentSummary,
   getCompanyInvestmentProjects,
-  hydrateCompanyInvestments
+  hydrateCompanyInvestments,
+  getCompanyContacts,
+  getCompanyInteractions
 }
