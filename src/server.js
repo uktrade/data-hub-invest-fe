@@ -5,7 +5,6 @@ const compression = require('compression')
 const logger = require('morgan')
 const session = require('express-session')
 const flash = require('connect-flash')
-const url = require('url')
 const winston = require('winston')
 const expressValidator = require('express-validator')
 const nunjucks = require('nunjucks')
@@ -69,8 +68,6 @@ app.use('/css', express.static(`${__dirname}/../node_modules/@uktrade/trade_elem
 app.use('/javascripts', express.static(`${__dirname}/../node_modules/@uktrade/trade_elements/dist/javascripts`))
 
 app.use('/fonts', express.static(`${__dirname}/../node_modules/font-awesome/fonts`))
-app.use('/javascripts/react', express.static(`${__dirname}/../node_modules/react/dist`))
-app.use('/javascripts/react-dom', express.static(`${__dirname}/../node_modules/react-dom/dist`))
 
 app.use(logger((isDev ? 'dev' : 'combined')))
 
@@ -108,6 +105,3 @@ metadata.fetchAll((errors) => {
     })
   }
 })
-
-
-console.log(config.apiRoot)

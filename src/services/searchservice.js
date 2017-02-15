@@ -3,7 +3,7 @@ const config = require('../config')
 const includes = require('lodash/includes')
 const winston = require('winston')
 
-function search ({ token, term, limit = 10, page = 1, filters, nonuk = false}) {
+function search ({token, term, limit = 10, page = 1, filters, nonuk = false}) {
   let body = { term, limit }
   body.offset = (page * body.limit) - body.limit
 
