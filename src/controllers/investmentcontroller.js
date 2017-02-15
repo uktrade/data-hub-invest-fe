@@ -51,8 +51,10 @@ function index (req, res) {
 
 function collate (rez) {
   const companies = []
-  const flatCountries = []
-  metadataRepository.COUNTRYS.map((land) => flatCountries[land.id] = land.name)
+  const flatCountries = {}
+  metadataRepository.COUNTRYS.forEach(function (land) {
+    flatCountries[land.id] = land.name
+  })
 
   rez.forEach((item) => {
     if (item) {
