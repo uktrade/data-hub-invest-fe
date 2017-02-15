@@ -4,8 +4,6 @@ const prod = process.env.NODE_ENV === 'production'
 module.exports = {
   devtool: prod ? 'hidden-source-map' : 'source-map',
   entry: {
-    contactform: './src/forms/contactform.js',
-    interactionform: './src/forms/interactionform.js',
     companyinvestmenttabform: './src/forms/companyinvestmenttabform',
     companyadd: './src/forms/companyadd',
     companyedit: './src/forms/companyedit',
@@ -32,10 +30,6 @@ module.exports = {
       'src',
       'node_modules'
     ]
-  },
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM'
   },
   plugins: prod ? [
     new webpack.DefinePlugin({

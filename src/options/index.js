@@ -33,7 +33,6 @@ const foreignOtherCompanyOptions = [
   'Sold trade'
 ]
 
-
 module.exports = {
   investmentTierOptions,
   managedOptions,
