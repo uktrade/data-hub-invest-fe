@@ -24,6 +24,8 @@ const metadataItems = [
   ['turnoverrange', 'TURNOVER_OPTIONS'],
   ['region', 'REGION_OPTIONS'],
   ['country', 'COUNTRYS'],
+  ['referral', 'REFERRAL'],
+  ['business_activity', 'BUSINESS_ACTIVITY'],
   ['employeerange', 'EMPLOYEE_OPTIONS']
 ]
 
