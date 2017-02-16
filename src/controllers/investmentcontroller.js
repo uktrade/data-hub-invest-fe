@@ -74,6 +74,15 @@ function collate (rez) {
   return companies
 }
 
+function create (req, res) {
+  const topLevelReferralSource = ["Cold call", "Direct enquiry", "Event", "Marketing", "Multiplier", "None", "Other", "Relationship management activity", "Personal reference", "Website"]
+  const businessActivities     = ["Retail", "Assembly", "Call centre", "Distribution", "E-Commerce", "European Headquarters Manufacturing", "Research & Development (R&D) Headquarters", "Knowledge Centre", "Sales", "Services", "Shared service centre", "Other"]
+
+  const sectors = metadataRepository.SECTOR_OPTIONS.map( (sector) => { return {value:sector.id, label:sector.name} } )
+
+  res.render('investment/create', {sectors, topLevelReferralSource, businessActivities})
+}
+
 function invsearch (req, res) {
   search.search({
     token: req.session.token,
@@ -90,6 +99,7 @@ function invsearch (req, res) {
 }
 
 router.get('/investment/', index)
+router.get('/investment/:sourceId/create', create)
 router.get('/investment/:sourceId', index)
 router.get('/api/investment/search/:term', invsearch)
 
