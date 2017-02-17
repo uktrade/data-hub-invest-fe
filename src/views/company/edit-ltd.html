@@ -5,7 +5,7 @@
   <h1 class="page-heading">Create a company</h1>
   <div class="grid-row">
     <div class="column-three-quarters">
-      {{ trade.errorPanel( errors ) }}
+      {{ trade.errorPanel( errors, labels=companyDetailLabels ) }}
       <div class="section">
         <div class="for-control key-value key-value--vertical">
           <div id="business-type" class="key-value__key form-label-bold">Business type
@@ -71,11 +71,11 @@
             </select>
           </div>
 
-          {{ trade.textbox("trading_address_1", label="Business and street (optional)", value=company.trading_address_1) }}
-          {{ trade.textbox("trading_address_2", value=company.trading_address_2) }}
-          {{ trade.textbox("trading_address_town", label="Town of city (optional)", value=company.trading_address_town) }}
-          {{ trade.textbox("trading_address_county", label="County (optonal)", value=company.trading_address_county) }}
-          {{ trade.textbox("trading_address_postcode", label="Postcode (optional)", value=company.trading_address_postcode) }}
+          {{ trade.textbox("trading_address_1", label="Business and street (optional)", value=company.trading_address_1, error=errors.trading_address_1) }}
+          {{ trade.textbox("trading_address_2", value=company.trading_address_2, error=errors.trading_address_2) }}
+          {{ trade.textbox("trading_address_town", label="Town of city (optional)", value=company.trading_address_town, error=errors.trading_address_town) }}
+          {{ trade.textbox("trading_address_county", label="County (optonal)", value=company.trading_address_county, error=errors.trading_address_county) }}
+          {{ trade.textbox("trading_address_postcode", label="Postcode (optional)", value=company.trading_address_postcode, error=errors.trading_address_postcode) }}
         </fieldset>
 
         {{ trade.dropdown("uk_region", label="UK region", emptyLabel="Pick a value", value=company.uk_region, options=REGION_OPTIONS, error=errors.region) }}

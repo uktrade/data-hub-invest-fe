@@ -5,7 +5,7 @@ const { genCSRF, isBlank, toQueryString } = require('../lib/controllerutils')
 const searchService = require('../services/searchservice')
 const companyRepository = require('../repositorys/companyrepository')
 const companyFormattingService = require('../services/companyformattingservice')
-const { chDetailLabels, companyTypeOptions } = require('../labels/companylabels')
+const { companyDetailLabels, chDetailLabels, companyTypeOptions } = require('../labels/companylabels')
 
 const router = express.Router()
 
@@ -14,7 +14,8 @@ function getAddStepOne (req, res, next) {
     ukOtherCompanyOptions,
     foreignOtherCompanyOptions,
     company: req.body,
-    companyTypeOptions
+    companyTypeOptions,
+    companyDetailLabels
   })
 }
 

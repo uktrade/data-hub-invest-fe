@@ -1,14 +1,10 @@
 $images-dir: '/images/';
 
 @import 'trade-elements';
-@import 'trade-elements-react';
 
 // application specific
 @import 'address';
-@import 'dashboard';
 @import 'facets';
-@import 'leads';
-@import 'login-bar';
 @import 'shame';
 @import 'tables';
 @import 'search';

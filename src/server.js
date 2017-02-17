@@ -5,17 +5,13 @@ const compression = require('compression')
 const logger = require('morgan')
 const session = require('express-session')
 const flash = require('connect-flash')
-const url = require('url')
 const winston = require('winston')
 const expressValidator = require('express-validator')
 const nunjucks = require('nunjucks')
 const companyController = require('./controllers/companycontroller')
-const contactController = require('./controllers/contactcontroller')
-const interactionController = require('./controllers/interactioncontroller')
 const investmentController = require('./controllers/investmentcontroller')
 const searchController = require('./controllers/searchcontroller')
 const apiController = require('./controllers/apicontroller')
-const loginController = require('./controllers/logincontroller')
 const myAccountController = require('./controllers/myaccountcontroller')
 const indexController = require('./controllers/indexcontroller')
 const companyAddController = require('./controllers/companyaddcontroller')
@@ -69,8 +65,6 @@ app.use('/css', express.static(`${__dirname}/../node_modules/@uktrade/trade_elem
 app.use('/javascripts', express.static(`${__dirname}/../node_modules/@uktrade/trade_elements/dist/javascripts`))
 
 app.use('/fonts', express.static(`${__dirname}/../node_modules/font-awesome/fonts`))
-app.use('/javascripts/react', express.static(`${__dirname}/../node_modules/react/dist`))
-app.use('/javascripts/react-dom', express.static(`${__dirname}/../node_modules/react-dom/dist`))
 
 app.use(logger((isDev ? 'dev' : 'combined')))
 
@@ -81,13 +75,10 @@ app.use(datahubFlash)
 app.use(user)
 app.use(headers)
 
-app.use('/login', loginController.router)
 app.use('/myaccount', myAccountController.router)
 app.use(companyController.router)
 app.use(companyInvestmentSummaryController.router)
 app.use(companyAddController.router)
-app.use(contactController.router)
-app.use(interactionController.router)
 app.use(investmentController.router)
 app.use(companyInvestmentSummaryController.router)
 
@@ -108,6 +99,3 @@ metadata.fetchAll((errors) => {
     })
   }
 })
-
-
-console.log(config.apiRoot)
