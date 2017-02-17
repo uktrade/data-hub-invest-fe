@@ -22,7 +22,7 @@ const investmentDetailLabels = {
 }
 
 const investmentFormLabels = {
-  company_name: "Company",
+  company_name: 'Company',
   investment_tier: 'Investment account manager tier',
   investment_account_manager: 'Investment account manager',
   client_relationship_manager: 'Client relationship manager',
