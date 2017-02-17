@@ -34,7 +34,28 @@
 
     {{ trade.dropdown("inv-subref-dd", label="Project referral source activity",  class="inset hidden", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
-    {{ local.stackedradio("helloi", ["FDI", "non-FDA", "Commitment to Invest"], label='Type of investment') }}
+
+    <fieldset id="inv-fdi-type">
+      <legend class="form-label-bold">Type of investment</legend>
+
+      <label class="block-label selection-button-radio" for="radio-fdi">
+        <input type="radio" id="radio-fdi" name="radio-fdi" value="FDI">FDI
+      </label>
+      {{ trade.dropdown("inv-fdi", label="Type of foreign direct investment (FDI)", class="inset hidden", emptyLabel="Pick a value", options=fdi) }}
+
+      <label class="block-label selection-button-radio" for="radio-nonfdi">
+        <input type="radio" id="radio-nonfdi" name="radio-nonfdi" value="non-FDI">non-FDI
+      </label>
+
+      {{ trade.dropdown("inv-non-fdi", label="Non-FDI programme options", class="inset hidden", emptyLabel="Pick a value", options=nonfdi) }}
+
+
+      <label class="block-label selection-button-radio" for="radio-commitment">
+        <input type="radio" id="radio-commitment" name="radio-commitment" value="Commitment to Invest">Commitment to Invest
+      </label>
+    </fieldset>
+
+
 
     {{ trade.dropdown("sector", label="Primary sector", emptyLabel="Pick a value", options=sectors) }}
 
@@ -55,8 +76,8 @@
 
 
     <div id="invsubnda" class="inset hybridformgroup">
-      {{ local.inlineradio("inv-nda-signed", "inv-nda-signed", "", label='Can this project be shared with our local UK partners?') }}
-      {{ trade.textarea("Simple", label="Anonymous description to be shared with partners", hint="Do not include and company names or contact details", value="", id="textarea-1", class="inset noformgroup") }}
+      {{ local.inlineradio("inv-nda-unsigned", class="hidden", label='Can this project be shared with our local UK partners?') }}
+      {{ trade.textarea("inv-share-details", label="Anonymous description to be shared with partners", hint="Do not include and company names or contact details", value="", id="textarea-1", class="inset hidden noformgroup") }}
     </div>
 
 

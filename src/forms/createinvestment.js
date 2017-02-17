@@ -14,6 +14,14 @@ const subReferWrapper = document.querySelector('#inv-subref-wrapper')
 const referrerDropdown = document.querySelector('#referral')
 const subReferDropdownWrapper = document.querySelector('#inv-subref-dd-wrapper')
 const subReferDropdown = document.querySelector('#inv-subref-dd')
+const radioFdi = document.querySelector('#radio-fdi')
+const radioNonFdi = document.querySelector('#radio-nonfdi')
+const fdiDropdownWrapper = document.querySelector('#inv-fdi-wrapper')
+const nonFdiDropdownWrapper = document.querySelector('#inv-non-fdi-wrapper')
+const radioNdaNotSigned = document.querySelector('#inv-nda-signed_no')
+const radioCanShareWrapper = document.querySelector('#invsubnda > fieldset')
+const radioCanShare = document.querySelector('#inv-nda-unsigned_yes')
+const textShareDetailsWrapper = document.querySelector('#inv-share-details-wrapper')
 
 notClientRelationship.addEventListener('click', () => {
   trade.removeClass(differentclientrelationship, 'hidden')
@@ -67,3 +75,21 @@ function referHasSubs (id) {
 
 sectorDropdown.addEventListener('change', (ev) => sectorHasSubs(ev.target.value))
 referrerDropdown.addEventListener('change', (ev) => referHasSubs(ev.target.value))
+
+radioFdi.addEventListener('click', () => {
+  trade.removeClass(fdiDropdownWrapper, 'hidden')
+  trade.addClass(nonFdiDropdownWrapper, 'hidden')
+})
+
+radioNonFdi.addEventListener('click', () => {
+  trade.addClass(fdiDropdownWrapper, 'hidden')
+  trade.removeClass(nonFdiDropdownWrapper, 'hidden')
+})
+
+radioNdaNotSigned.addEventListener('click', () => {
+  trade.removeClass(radioCanShareWrapper, 'hidden')
+})
+
+radioCanShare.addEventListener('click', () => {
+  trade.removeClass(textShareDetailsWrapper, 'hidden')
+})

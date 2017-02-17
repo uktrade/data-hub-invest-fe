@@ -81,6 +81,9 @@ function prepForDropdown (metadata, key) {
 function create (req, res) {
   const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, 'referral_type')
   const businessActivities = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, 'business_activity')
+  const fdi = prepForDropdown(metadataRepository.FDI, 'fdi_option')
+  const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
+
   const sectors = prepForDropdown(metadataRepository.SECTOR_OPTIONS, 'name')
   const id = req.params.sourceId
   let lcompany
@@ -100,7 +103,9 @@ function create (req, res) {
         investmentDisplay,
         investmentDetailLabels,
         investmentDetailsDisplayOrder,
-        foreign
+        foreign,
+        fdi,
+        nonfdi
       })
     })
 }

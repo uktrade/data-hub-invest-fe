@@ -27,6 +27,8 @@ const metadataItems = [
   ['country', 'COUNTRYS'],
   ['referral', 'REFERRAL'],
   ['subreferral', 'SUBREFERRAL'],
+  ['fdi', 'FDI'],
+  ['nonfdi', 'NONFDI'],
   ['business_activity', 'BUSINESS_ACTIVITY'],
   ['employeerange', 'EMPLOYEE_OPTIONS']
 ]
