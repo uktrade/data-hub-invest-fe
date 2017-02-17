@@ -10,13 +10,13 @@
 
   <h2 class="heading-medium">Source of foreign equity investment</h2>
 
-  {#{{ trade.keyvaluetable(#}
-  {#investmentDisplay,#}
-  {#stripey=true,#}
-  {#labels=investmentDetailLabels,#}
-  {#keyorder=investmentDetailsDisplayOrder,#}
-  {#id="investment-details")#}
-  {#}}#}
+  {{ trade.keyvaluetable(
+  investmentDisplay,
+  stripey=true,
+  labels=investmentDetailLabels,
+  keyorder=investmentDetailsDisplayOrder,
+  id="investment-details")
+  }}
 
   <h2 class="heading-medium"></h2>
 
@@ -30,7 +30,9 @@
 
     {{ trade.dropdown("referral", label="Project referral source activity", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
-    {{ trade.textbox("crm", label="Type", class="hidden inset", id="subrefferal") }}
+    {{ trade.textbox("inv-subref", label="Event", class="hidden inset", id="subrefferal") }}
+
+    {{ trade.dropdown("inv-subref-dd", label="Project referral source activity",  class="inset hidden", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
     {{ local.stackedradio("helloi", ["FDI", "non-FDA", "Commitment to Invest"], label='Type of investment') }}
 
@@ -38,9 +40,12 @@
 
     {{ trade.dropdown("subsector", label="Sub sector", emptyLabel="Pick a value", options=sectors, class="inset hidden") }}
 
-    {{ trade.dropdown("dropthing", label="Business activity of this investment project", emptyLabel="Pick a value", options=businessActivities) }}
+    {{ trade.dropdown("subsector-drop", label="Business activity of this investment project", emptyLabel="Pick a value", options=businessActivities) }}
 
-    <div class="clickable">Add another business activity</div>
+    <div class="clickable" id="inv-add-business-activity">Add another business activity</div>
+
+    {{ trade.textbox("addbusiness", label="Business Activity", class="hidden inset", id="inv-add-activity-textbox") }}
+
 
     {{ trade.textbox("tb", label="Project name", class="readonly", id="invprojname") }}
 
@@ -52,7 +57,6 @@
     <div id="invsubnda" class="inset hybridformgroup">
       {{ local.inlineradio("inv-nda-signed", "inv-nda-signed", "", label='Can this project be shared with our local UK partners?') }}
       {{ trade.textarea("Simple", label="Anonymous description to be shared with partners", hint="Do not include and company names or contact details", value="", id="textarea-1", class="inset noformgroup") }}
-
     </div>
 
 

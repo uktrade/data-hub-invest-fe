@@ -74,21 +74,35 @@ function collate (rez) {
   return companies
 }
 
-
-function prepForDropdown(metadata, key) {
-  return metadata.map( (thing) => { return {value: thing.id, label: thing[key]}} )
+function prepForDropdown (metadata, key) {
+  return metadata.map((thing) => { return {value: thing.id, label: thing[key]} })
 }
 
-
-
 function create (req, res) {
-  const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, "referral_type")
-  const businessActivities     = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, "business_activity")
-  const sectors                = prepForDropdown(metadataRepository.SECTOR_OPTIONS, "name")
+  const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, 'referral_type')
+  const businessActivities = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, 'business_activity')
+  const sectors = prepForDropdown(metadataRepository.SECTOR_OPTIONS, 'name')
+  const id = req.params.sourceId
+  let lcompany
 
-
-
-  res.render('investment/create', {sectors, topLevelReferralSource, businessActivities})
+  companyRepository.getCompany(req.session.token, id, null)
+    .then((company) => {
+      lcompany = company
+      return companyRepository.getCompanyInvestmentSummary(req.session.token, company.id)
+    })
+    .then((extra) => {
+      let investmentDisplay = getInvestmentDetailsDisplay(lcompany, extra)
+      const foreign = lcompany.registered_address_country.name !== 'United Kingdom'
+      res.render('investment/create', {
+        sectors,
+        topLevelReferralSource,
+        businessActivities,
+        investmentDisplay,
+        investmentDetailLabels,
+        investmentDetailsDisplayOrder,
+        foreign
+      })
+    })
 }
 
 function invsearch (req, res) {
@@ -106,17 +120,19 @@ function invsearch (req, res) {
     })
 }
 
-function subsectors(req, res) {
-  res.json(metadataRepository.SUBSECTOR.filter((f) => { return f.parent === req.params.id}))
+function subsectors (req, res) {
+  res.json(metadataRepository.SUBSECTOR.filter((f) => { return f.parent === req.params.id }))
 }
 
+function subreferrals (req, res) {
+  res.json(metadataRepository.SUBREFERRAL.filter((f) => { return f.parent === req.params.id }))
+}
 
 router.get('/investment/', index)
 router.get('/investment/:sourceId/create', create)
 router.get('/investment/:sourceId', index)
 router.get('/api/investment/search/:term', invsearch)
 router.get('/api/investment/subsectors/:id', subsectors)
-
-
+router.get('/api/investment/subreferrals/:id', subreferrals)
 
 module.exports = {router}
