@@ -21,6 +21,7 @@ function getMetadata (path, key) {
 
 const metadataItems = [
   ['sector', 'SECTOR_OPTIONS'],
+  ['subsector', 'SUBSECTOR'],
   ['turnoverrange', 'TURNOVER_OPTIONS'],
   ['region', 'REGION_OPTIONS'],
   ['country', 'COUNTRYS'],

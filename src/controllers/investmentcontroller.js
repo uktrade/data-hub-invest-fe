@@ -74,11 +74,19 @@ function collate (rez) {
   return companies
 }
 
-function create (req, res) {
-  const topLevelReferralSource = ["Cold call", "Direct enquiry", "Event", "Marketing", "Multiplier", "None", "Other", "Relationship management activity", "Personal reference", "Website"]
-  const businessActivities     = ["Retail", "Assembly", "Call centre", "Distribution", "E-Commerce", "European Headquarters Manufacturing", "Research & Development (R&D) Headquarters", "Knowledge Centre", "Sales", "Services", "Shared service centre", "Other"]
 
-  const sectors = metadataRepository.SECTOR_OPTIONS.map( (sector) => { return {value:sector.id, label:sector.name} } )
+function prepForDropdown(metadata, key) {
+  return metadata.map( (thing) => { return {value: thing.id, label: thing[key]}} )
+}
+
+
+
+function create (req, res) {
+  const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, "referral_type")
+  const businessActivities     = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, "business_activity")
+  const sectors                = prepForDropdown(metadataRepository.SECTOR_OPTIONS, "name")
+
+
 
   res.render('investment/create', {sectors, topLevelReferralSource, businessActivities})
 }
@@ -98,9 +106,17 @@ function invsearch (req, res) {
     })
 }
 
+function subsectors(req, res) {
+  res.json(metadataRepository.SUBSECTOR.filter((f) => { return f.parent === req.params.id}))
+}
+
+
 router.get('/investment/', index)
 router.get('/investment/:sourceId/create', create)
 router.get('/investment/:sourceId', index)
 router.get('/api/investment/search/:term', invsearch)
+router.get('/api/investment/subsectors/:id', subsectors)
+
+
 
 module.exports = {router}
