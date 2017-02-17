@@ -13,7 +13,7 @@ const investmentProjectsClosedLabels = {
 }
 
 const investmentDetailLabels = {
-  company_name: "Company",
+  company_name: 'Company',
   account_management_tier: 'Account management tier',
   investment_account_manager: 'Investment account manager',
   account_manager: 'Account manager',

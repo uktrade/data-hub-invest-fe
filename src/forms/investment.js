@@ -1,3 +1,4 @@
+/* globals XMLHttpRequest:true */
 const searchfield = document.querySelector('#inv-search')
 const resultsdiv = document.querySelector('#inv-results')
 const isforeigncontinue = document.querySelector('#isforeigncontinue')
@@ -6,7 +7,7 @@ const trade = require('@uktrade/trade_elements').elementstuff
 
 function ifdef (thing, replace) {
   const replacer = replace || ''
-  return (thing) ? thing : replacer
+  return thing || replacer
 }
 
 const companyDisplay = tmpl => `
