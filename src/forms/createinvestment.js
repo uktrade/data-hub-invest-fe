@@ -22,6 +22,8 @@ const radioNdaNotSigned = document.querySelector('#inv-nda-signed_no')
 const radioCanShareWrapper = document.querySelector('#invsubnda > fieldset')
 const radioCanShare = document.querySelector('#inv-nda-unsigned_yes')
 const textShareDetailsWrapper = document.querySelector('#inv-share-details-wrapper')
+const radioCannotShare = document.querySelector('#inv-nda-unsigned_no')
+const textNoShareDetailsWrapper = document.querySelector('#inv-noshare-details-wrapper')
 
 notClientRelationship.addEventListener('click', () => {
   trade.removeClass(differentclientrelationship, 'hidden')
@@ -91,5 +93,11 @@ radioNdaNotSigned.addEventListener('click', () => {
 })
 
 radioCanShare.addEventListener('click', () => {
+  trade.addClass(textNoShareDetailsWrapper, 'hidden')
   trade.removeClass(textShareDetailsWrapper, 'hidden')
+})
+
+radioCannotShare.addEventListener('click', () => {
+  trade.addClass(textShareDetailsWrapper, 'hidden')
+  trade.removeClass(textNoShareDetailsWrapper, 'hidden')
 })

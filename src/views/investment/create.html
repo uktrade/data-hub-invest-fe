@@ -20,11 +20,11 @@
 
   <h2 class="heading-medium"></h2>
 
-  {{ trade.textbox("tb", label="Client contact for this project", class="", id="invclientcontact") }}
+  {{ trade.textbox("inv-client", label="Client contact for this project", class="", id="invclientcontact") }}
 
     {{ local.inlineradio("inv-client-relationship", "client-rel-reveal", "client-rev-reveal", label='Are you the Client Relationship Manager for this project?') }}
 
-    {{ trade.textbox("crm", label="Client contact for this project", class="hidden inset", id="differentclientrelationship") }}
+    {{ trade.textbox("inv-crm", label="Client Relationship Manager", class="hidden inset", id="differentclientrelationship") }}
 
     {{ local.inlineradio("inv-referral-source", "referral-src-reveal", "referral-src-reveal", label='Are you the Referral Source for this project?') }}
 
@@ -33,7 +33,6 @@
     {{ trade.textbox("inv-subref", label="Event", class="hidden inset", id="subrefferal") }}
 
     {{ trade.dropdown("inv-subref-dd", label="Project referral source activity",  class="inset hidden", emptyLabel="Pick a value", options=topLevelReferralSource) }}
-
 
     <fieldset id="inv-fdi-type">
       <legend class="form-label-bold">Type of investment</legend>
@@ -49,13 +48,10 @@
 
       {{ trade.dropdown("inv-non-fdi", label="Non-FDI programme options", class="inset hidden", emptyLabel="Pick a value", options=nonfdi) }}
 
-
       <label class="block-label selection-button-radio" for="radio-commitment">
         <input type="radio" id="radio-commitment" name="radio-commitment" value="Commitment to Invest">Commitment to Invest
       </label>
     </fieldset>
-
-
 
     {{ trade.dropdown("sector", label="Primary sector", emptyLabel="Pick a value", options=sectors) }}
 
@@ -67,17 +63,24 @@
 
     {{ trade.textbox("addbusiness", label="Business Activity", class="hidden inset", id="inv-add-activity-textbox") }}
 
+    <div class="form-group readonly afterfloat" id="inv-project-wrapper">
+      <label class="form-label-bold" for="invprojname">
+        Project name
+      </label>
+      {{  investmentDisplay.company_name }} <input id="invprojname" class="form-control" name="inv-project" type="text">
+    </div>
 
-    {{ trade.textbox("tb", label="Project name", class="readonly", id="invprojname") }}
 
-    {{ trade.textarea("Simple", label="Project description", hint="", value="", id="textarea-1", class="custom-class") }}
+    {{ trade.textarea("inv-project-desc", label="Project description", hint="", value="", id="inv-desc") }}
 
     {{ local.inlineradio("inv-nda-signed", "inv-nda-signed", "noformgroup", label='Have we signed a Non-Disclosure Agreement (NDA) with the client?') }}
 
 
     <div id="invsubnda" class="inset hybridformgroup">
       {{ local.inlineradio("inv-nda-unsigned", class="hidden", label='Can this project be shared with our local UK partners?') }}
-      {{ trade.textarea("inv-share-details", label="Anonymous description to be shared with partners", hint="Do not include and company names or contact details", value="", id="textarea-1", class="inset hidden noformgroup") }}
+      {{ trade.textarea("inv-share-details", label="Anonymous description to be shared with partners", hint="Do not include and company names or contact details", value="", id="canshare-text", class="inset hidden noformgroup") }}
+      {{ trade.textarea("inv-noshare-details", label="Please decribe why this project may not be shared with partners", hint="", value="", id="cannotshare-text", class="inset hidden noformgroup") }}
+
     </div>
 
 
