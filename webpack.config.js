@@ -7,7 +7,9 @@ module.exports = {
     companyinvestmenttabform: './src/forms/companyinvestmenttabform',
     companyadd: './src/forms/companyadd',
     companyedit: './src/forms/companyedit',
-    investment: './src/forms/investment'
+    investment: './src/forms/investment',
+    createinvestment: './src/forms/createinvestment'
+
   },
   output: {
     path: 'build/javascripts',

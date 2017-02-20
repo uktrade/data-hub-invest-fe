@@ -21,9 +21,15 @@ function getMetadata (path, key) {
 
 const metadataItems = [
   ['sector', 'SECTOR_OPTIONS'],
+  ['subsector', 'SUBSECTOR'],
   ['turnoverrange', 'TURNOVER_OPTIONS'],
   ['region', 'REGION_OPTIONS'],
   ['country', 'COUNTRYS'],
+  ['referral', 'REFERRAL'],
+  ['subreferral', 'SUBREFERRAL'],
+  ['fdi', 'FDI'],
+  ['nonfdi', 'NONFDI'],
+  ['business_activity', 'BUSINESS_ACTIVITY'],
   ['employeerange', 'EMPLOYEE_OPTIONS']
 ]
 
