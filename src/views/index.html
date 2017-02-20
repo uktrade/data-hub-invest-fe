@@ -3,6 +3,13 @@
 
 {% block main %}
   {{ trade.searchbar('term', label="Search for company name or contact", value=query) }}
+    <div class="button-bar button-bar--top">
+      <a
+        class="button button-secondary"
+        href="/company/add-step-1/">
+        Add new company
+      </a>
+    </div>
 {% endblock %}
 
 {% block body_end %}

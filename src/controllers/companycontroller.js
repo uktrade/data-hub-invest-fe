@@ -8,32 +8,6 @@ const companyFormattingService = require('../services/companyformattingservice')
 const { companyDetailLabels, chDetailLabels, companyTableHeadings, companyTypeOptions } = require('../labels/companylabels')
 const router = express.Router()
 
-function cleanErrors (errors) {
-  if (errors.registered_address_1 || errors.registered_address_2 ||
-    errors.registered_address_town || errors.registered_address_county ||
-    errors.registered_address_postcode || errors.registered_address_country) {
-    errors.registered_address = ['Invalid address']
-    delete errors.registered_address_1
-    delete errors.registered_address_2
-    delete errors.registered_address_town
-    delete errors.registered_address_county
-    delete errors.registered_address_postcode
-    delete errors.registered_address_country
-  }
-
-  if (errors.trading_address_1 || errors.trading_address_2 ||
-    errors.trading_address_town || errors.trading_address_county ||
-    errors.trading_address_postcode || errors.trading_address_country) {
-    errors.trading_address = ['Invalid address']
-    delete errors.trading_address_1
-    delete errors.trading_address_2
-    delete errors.trading_address_town
-    delete errors.trading_address_county
-    delete errors.trading_address_postcode
-    delete errors.trading_address_country
-  }
-}
-
 function getCommon (req, res, next) {
   const id = req.params.sourceId
   const source = req.params.source
@@ -145,7 +119,6 @@ function postDetails (req, res, next) {
       if (error.errors) {
         winston.debug(error)
         res.locals.errors = controllerUtils.transformErrors(error.errors)
-        cleanErrors(res.locals.errors)
         res.locals.company = req.body
         return editDetails(req, res)
       }

@@ -12,7 +12,7 @@
     {% endfor %}
   {% endif %}
 
-  {{ trade.errorPanel( errors ) }}
+  {{ trade.errorPanel( errors, labels=companyDetailLabels ) }}
   <form id="company-add-form" data-step="1" method="post">
     <input type="hidden" name="_csrf_token" value="{{ csrfToken }}" />
 
@@ -59,7 +59,7 @@
     </fieldset>
     <div class="button-bar">
       <button class="button button--save" type="submit">Continue</button>
-      <a href="/company/company_company/{{company.id}}/investment" class="button-link button--link">Cancel</a>
+      <a href="/" class="button-link button--link">Cancel</a>
     </div>
   </form>
   <script src="/javascripts/common.js"></script>

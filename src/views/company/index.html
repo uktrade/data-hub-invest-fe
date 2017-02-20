@@ -14,7 +14,7 @@
   {{ headingName }}
   <span class="post-header">{{ headingAddress }}</span>
 </h2>
-
+{{ company | log | safe }}
 <div class="tabs tabs--inline">
   <ul class="tabs-nav">
     <li class="tab">
@@ -26,12 +26,14 @@
     <li class="tab">
       <a class="{% if tab == 'interactions' %}selected{% endif %}" href="/company/{{source}}/{{id}}/interactions">Interactions</a>
     </li>
+    {% if company.id %}
     <li class="tab">
       <a class="{% if tab == 'exports' %}selected{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a>
     </li>
     <li class="tab">
       <a class="{% if tab == 'investment' %}selected{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>
     </li>
+    {% endif %}
   </ul>
 </div>
 {% block tabmain%}{% endblock %}

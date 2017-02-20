@@ -40,7 +40,7 @@ hr {
   clear: both;
   padding: 5px 0 10px 10px;
   border-left: 5px solid $border-colour;
-  margin: 0 0 30px 0;
+  margin: 0 0 30px;
 }
 
 .indented-info.error {
@@ -53,7 +53,7 @@ hr {
 }
 
 .add-another-button {
-  @include core-19();
+  @include core-19;
   background-color: $white;
   border: 0;
   color: $link-colour;
@@ -70,7 +70,7 @@ hr {
 }
 
 .saving {
-  @include bold-24();
+  @include bold-24;
   margin-top: 40px;
 }
 
@@ -89,7 +89,7 @@ hr {
   p.footnote {
     color: $grey-1;
     padding-left: 35px;
-    padding-bottom : 10px;
+    padding-bottom: 10px;
     margin: 0;
   }
 }
@@ -99,7 +99,7 @@ hr {
 }
 
 #global-header-bar {
-  display: none
+  display: none;
 }
 
 .footer-wrapper {
@@ -111,6 +111,7 @@ hr {
     tr:nth-child(even) {
       background: $highlight-colour;
     }
+
     tr:nth-child(odd) {
       background: $white;
     }
@@ -127,11 +128,11 @@ hr {
 
 .invresult {
   padding: 14px 0;
-  border-top: 1px solid #CCC;
+  border-top: 1px solid $border-colour;
 }
 
 .invresults {
-  border-bottom: 1px solid #CCC;
+  border-bottom: 1px solid $border-colour;
   clear: both;
 }
 
@@ -139,9 +140,64 @@ hr {
   color: $link-colour;
   font-weight: bold;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .unclickable {
-  color: black;
+  color: $black;
   font-weight: bold;
+}
+
+.tightertopmargin {
+  margin-top: 0 !important;
+}
+
+.textbox_fullwidth {
+  width: 100%
+}
+
+.textbox_fullwidth input {
+  width: 100%;
+  margin : 0.6em 0;
+  padding: 0.3em 0;
+}
+
+.inset {
+  border-left: 10px solid $grey-2;
+  padding-left: 20px;
+  clear: both;
+  overflow: hidden;
+}
+
+.noformgroup {
+  margin-bottom: 0 !important;
+}
+
+.hybridformgroup {
+  margin-bottom: 30px;
+}
+
+.inv-month-year-date-control div {
+  float:left;
+  padding-right: 20px
+
+}
+
+.inv-month-year-date-control .inv-month {
+  width: 60px;
+}
+
+
+.inv-month-year-date-control .inv-year {
+  width: 100px;
+}
+
+.afterfloat {
+  clear: both;
+  padding-top: 30px
+}
+
+.projectname {
+  width: 60%;
+  float: right;
 }
