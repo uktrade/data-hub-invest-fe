@@ -1,9 +1,11 @@
 /* globals XMLHttpRequest:true */
+
+const trade = require('@uktrade/trade_elements').elementstuff
+const axios = require('axios')
+
 const searchfield = document.querySelector('#inv-search')
 const resultsdiv = document.querySelector('#inv-results')
 const isforeigncontinue = document.querySelector('#isforeigncontinue')
-
-const trade = require('@uktrade/trade_elements').elementstuff
 
 function ifdef (thing, replace) {
   const replacer = replace || ''
@@ -42,7 +44,7 @@ function updateSearchField (res) {
   trade.removeClass(resultsdiv, 'hidden')
   resultsdiv.innerHTML = ''
   trade.removeClass(document.querySelector('#new_co_nagger'), 'hidden')
-  const companies = JSON.parse(res.response)
+  const companies = res.data
   Object.keys(companies).forEach(function (key) {
     let co = companies[key]
     let d = document.createElement('div')
@@ -89,15 +91,8 @@ function updateSearchField (res) {
 }
 
 function searchCos (term) {
-  const companyRequest = new XMLHttpRequest()
-  companyRequest.onreadystatechange = function () {
-    if (companyRequest.readyState === 4) {
-      updateSearchField(companyRequest)
-    }
-  }
-
-  companyRequest.open('GET', '/api/investment/search/' + term)
-  companyRequest.send()
+  axios.get(`/api/investment/search/${term}`)
+  .then((result) => updateSearchField(result))
 }
 
 searchfield.addEventListener('keyup', function () {
