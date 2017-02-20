@@ -106,7 +106,7 @@ searchfield.addEventListener('keyup', function () {
 
 isforeigncontinue.addEventListener('click', function (ev) {
   if (document.querySelector('#isforeign_yes').checked) {
-// this will connect to step 2, @todo
+    window.location.href = window.location.href + "/create"
   } else {
     trade.removeClass(document.querySelector('#sbcontainer'), 'hidden')
     trade.addClass(document.querySelector('#foreignradiocontainer'), 'hidden')
