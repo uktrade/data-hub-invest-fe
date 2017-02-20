@@ -63,11 +63,16 @@ function editInvestment (req, res, next) {
       return companyRepository.getCompanyInvestmentSummaryLite(req.session.token, req.params.sourceId)
     })
     .then((investmentSummary) => {
+
+
+
+
       res.render('company/investmentform', {
         tab: 'investment',
         investmentTierOptions,
         investmentFormLabels,
-        investmentSummary
+        investmentSummary,
+        countries: metadataRepository.COUNTRYS.map((country) => country.name)
       })
     })
 }
