@@ -6,11 +6,13 @@
 
   .left-nav {
     box-sizing: border-box;
-    width: 25%;
-    float: left;
     margin: 0;
     padding: 0;
-    border-right: 1px solid $grey-2;
+    @include media(tablet) {
+      border-right: 1px solid $grey-2;
+      width: 25%;
+      float: left;
+    }
 
     nav a {
       @include core-19();
@@ -24,18 +26,19 @@
         color: $white;
         text-decoration: none;
       }
-
     }
-
   }
 
   .right-content {
     box-sizing: border-box;
-    width: 75%;
-    float: left;
     margin: 0;
     padding: 0 15px;
-
+    clear: both;
+    @include media(tablet) {
+      width: 75%;
+      float: left;
+      clear: none;
+    }
 
     > h1:first-child,
     > h2:first-child,
@@ -50,3 +53,5 @@
   }
 
 }
+
+
