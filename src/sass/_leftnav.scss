@@ -34,10 +34,12 @@
     margin: 0;
     padding: 0 15px;
     clear: both;
+    margin: 20px 0px 0px 0px;
     @include media(tablet) {
       width: 75%;
       float: left;
       clear: none;
+      margin-top: 0;
     }
 
     > h1:first-child,
