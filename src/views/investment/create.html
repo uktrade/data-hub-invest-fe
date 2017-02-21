@@ -27,9 +27,9 @@
 
     {{ local.inlineradio("inv-referral-source", "referral-src-reveal", "referral-src-reveal", label='Are you the Referral Source for this project?') }}
 
-    {{ trade.dropdown("referral", label="Project referral source activity", emptyLabel="Pick a value", options=topLevelReferralSource) }}
+    {{ trade.textbox("inv-referral-alt-source", label="Referral Source - advisor", class="hidden panel", id="inv-referral-alt-source") }}
 
-    {{ trade.textbox("inv-subref", label="Event", class="hidden inset", id="subrefferal") }}
+    {{ trade.dropdown("referral", label="Project referral source activity", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
     {{ trade.dropdown("inv-subref-dd", label="Project referral source activity",  class="inset hidden", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
