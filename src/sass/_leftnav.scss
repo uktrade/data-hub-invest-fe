@@ -15,13 +15,14 @@
     nav a {
       @include core-19();
       display: block;
-      color: $govuk-blue;
-      text-decoration: none;
+      color: $black;
+      text-decoration: underline;
       padding: 15px;
 
       &.active {
         background: $govuk-blue;
         color: $white;
+        text-decoration: none;
       }
 
     }
