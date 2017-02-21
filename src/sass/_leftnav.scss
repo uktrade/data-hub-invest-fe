@@ -14,19 +14,13 @@
     nav a {
       @include core-19();
       display: block;
-      color: $link-colour;
+      color: $govuk-blue;
       text-decoration: none;
       margin-bottom: 17px;
       padding: 7px 10px 5px 10px;
 
-      &::after {
-        content: ">";
-        text-align: right;
-        float: right;
-      }
-
       &.active {
-        background: $link-colour;
+        background: $govuk-blue;
         color: $white;
       }
 
