@@ -1,8 +1,12 @@
 {% extends "layouts/ukti.html" %}
 {% block head_script %}
 <script>
-  window.company = {{ company | dump | safe }}
-  window.csrfToken= '{{ csrfToken }}'
+    window.company = {
+    {
+        company | dump | safe
+    }
+    }
+    window.csrfToken = '{{ csrfToken }}'
 </script>
 {% endblock %}
 
@@ -10,31 +14,79 @@
 {% block main %}
 <h1 class="visually-hidden">Company Details</h1>
 <h2 class="page-heading">
-  {% if company.id %}<span class="pre-header">Company ref: 321513</span>{% endif %}
-  {{ headingName }}
-  <span class="post-header">{{ headingAddress }}</span>
+    {% if company.id %}<span class="pre-header">Company ref: 321513</span>{% endif %}
+    {{ headingName }}
+    <span class="post-header">{{ headingAddress }}</span>
 </h2>
 {{ company | log | safe }}
-<div class="tabs tabs--inline">
-  <ul class="tabs-nav">
-    <li class="tab">
-      <a class="{% if tab == 'details' %}selected{% endif %}" href="/company/{{source}}/{{id}}/details">Details</a>
-    </li>
-    <li class="tab">
-      <a class="{% if tab == 'contacts' %}selected{% endif %}" href="/company/{{source}}/{{id}}/contacts">Contacts</a>
-    </li>
-    <li class="tab">
-      <a class="{% if tab == 'interactions' %}selected{% endif %}" href="/company/{{source}}/{{id}}/interactions">Interactions</a>
-    </li>
-    {% if company.id %}
-    <li class="tab">
-      <a class="{% if tab == 'exports' %}selected{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a>
-    </li>
-    <li class="tab">
-      <a class="{% if tab == 'investment' %}selected{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>
-    </li>
-    {% endif %}
-  </ul>
+
+<div class="left-nav-container">
+  <div class="left-nav">
+    <nav>
+      <a class="{% if tab == 'details' %}active{% endif %}"
+         href="/company/{{source}}/{{id}}/details">Details</a>
+      <a class="{% if tab == 'contacts' %}active{% endif %}"
+         href="/company/{{source}}/{{id}}/contacts">Contacts</a>
+      <a class="{% if tab == 'interactions' %}active{% endif %}" href="/company/{{source}}/{{id}}/interactions">Interactions</a>
+      {% if company.id %}
+      <a class="{% if tab == 'exports' %}active{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a><br/>
+      <a class="{% if tab == 'investment' %}active{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>
+      {% endif %}
+    </nav>
+  </div>
+  <div class="right-content">
+    {% block tabmain%}{% endblock %}
+  </div>
 </div>
-{% block tabmain%}{% endblock %}
+
+{% if false %}
+{# http://trade-elements.herokuapp.com/ version #}
+<div class="container grid-row">
+    <div id="left-menu">
+        <nav>
+            <a class="{% if tab == 'details' %}selected{% endif %}"
+               href="/company/{{source}}/{{id}}/details">Details</a>
+            <a class="{% if tab == 'contacts' %}selected{% endif %}"
+               href="/company/{{source}}/{{id}}/contacts">Contacts</a>
+            <a class="{% if tab == 'interactions' %}selected{% endif %}" href="/company/{{source}}/{{id}}/interactions">Interactions</a>
+            {% if company.id %}
+                <a class="{% if tab == 'exports' %}selected{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a><br/>
+                <a class="{% if tab == 'investment' %}selected{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>
+            {% endif %}
+        </nav>
+    </div>
+    <div id="right-content">
+
+        {% block tabmain2%}{% endblock %}
+
+
+    </div>
+</div>
+{% endif %}
+
+
+<!--<div class="tabs tabs&#45;&#45;inline">-->
+    <!--<ul class="tabs-nav">-->
+        <!--<li class="tab">-->
+            <!--<a class="{% if tab == 'details' %}selected{% endif %}"-->
+               <!--href="/company/{{source}}/{{id}}/details">Details</a>-->
+        <!--</li>-->
+        <!--<li class="tab">-->
+            <!--<a class="{% if tab == 'contacts' %}selected{% endif %}"-->
+               <!--href="/company/{{source}}/{{id}}/contacts">Contacts</a>-->
+        <!--</li>-->
+        <!--<li class="tab">-->
+            <!--<a class="{% if tab == 'interactions' %}selected{% endif %}" href="/company/{{source}}/{{id}}/interactions">Interactions</a>-->
+        <!--</li>-->
+        <!--{% if company.id %}-->
+        <!--<li class="tab">-->
+            <!--<a class="{% if tab == 'exports' %}selected{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a>-->
+        <!--</li>-->
+        <!--<li class="tab">-->
+            <!--<a class="{% if tab == 'investment' %}selected{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>-->
+        <!--</li>-->
+        <!--{% endif %}-->
+    <!--</ul>-->
+<!--</div>-->
+
 {% endblock %}
