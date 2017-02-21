@@ -15,7 +15,7 @@ function getInvestmentDetailsDisplay (company, extra) {
   return {
     company_name: `${company.name}`,
     account_management_tier: `${extra.investment_tier}`,
-    account_manager: `<a href="/advisor/${company.account_manager.id}/">${company.account_manager.name}</a>`,
+    account_manager: `<a href="/advisor/${extra.investment_account_manager.id}/">${extra.investment_account_manager.name}</a>`,
     ownership: `${extra.ownership}`
   }
 }

@@ -36,7 +36,7 @@ const companyDisplay = tmpl => `
       </tr>
     </table>
   <div class='save-bar'>
-    <button class='button button--save' type='submit'>Choose company</button>
+    <button class='button button--save' type='submit' id='button-${tmpl.id}'>Choose company</button>
     <a class='button-link button--cancel js-button-cancel' href='#' id='close-${tmpl.id}'>Close</a>
   </div>`
 
@@ -80,6 +80,7 @@ function updateSearchField (res) {
         trade.removeClass(coname, 'unclickable')
         trade.hide(resblock)
       }, true)
+      document.querySelector('#button-' + key).addEventListener('click', () => window.location.href = `/investment/${key}/create`)
       document.querySelector('#headclose-' + key).addEventListener('click', function () {
         trade.addClass(coname, 'clickable')
         trade.addClass(headcloser, 'hidden')
