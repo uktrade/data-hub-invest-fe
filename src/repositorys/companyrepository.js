@@ -245,7 +245,6 @@ function saveCompanyInvestmentSummary (token, summary) {
   controllerUtils.flattenIdFields(data)
   controllerUtils.nullEmptyFields(data)
   const url = `${config.apiRoot}/company/${data.id}/investmentsummary/`
-
   return authorisedRequest(token, { url, method, body: data })
 }
 
