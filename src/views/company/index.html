@@ -29,8 +29,8 @@
          href="/company/{{source}}/{{id}}/contacts">Contacts</a>
       <a class="{% if tab == 'interactions' %}active{% endif %}" href="/company/{{source}}/{{id}}/interactions">Interactions</a>
       {% if company.id %}
-      <a class="{% if tab == 'exports' %}active{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a><br/>
-      <a class="{% if tab == 'investment' %}active{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>
+          <a class="{% if tab == 'exports' %}active{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a>
+          <a class="{% if tab == 'investment' %}active{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>
       {% endif %}
     </nav>
   </div>
