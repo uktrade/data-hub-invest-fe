@@ -23,7 +23,7 @@
 
     {{ local.inlineradio("inv-client-relationship", "client-rel-reveal", "client-rev-reveal", label='Are you the Client Relationship Manager for this project?') }}
 
-    {{ trade.textbox("inv-crm", label="Client Relationship Manager", class="hidden inset", id="differentclientrelationship") }}
+    {{ trade.textbox("inv-crm", label="Client Relationship Manager", class="hidden panel", id="differentclientrelationship") }}
 
     {{ local.inlineradio("inv-referral-source", "referral-src-reveal", "referral-src-reveal", label='Are you the Referral Source for this project?') }}
 
@@ -31,7 +31,7 @@
 
     {{ trade.dropdown("referral", label="Project referral source activity", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
-    {{ trade.dropdown("inv-subref-dd", label="Project referral source activity",  class="inset hidden", emptyLabel="Pick a value", options=topLevelReferralSource) }}
+    {{ trade.dropdown("inv-subref-dd", label="Project referral source activity",  class="panel hidden", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
     <fieldset id="inv-fdi-type">
       <legend class="form-label-bold">Type of investment</legend>
@@ -39,13 +39,13 @@
       <label class="block-label selection-button-radio" for="radio-fdi">
         <input type="radio" id="radio-fdi" name="radio-fdi" value="FDI">FDI
       </label>
-      {{ trade.dropdown("inv-fdi", label="Type of foreign direct investment (FDI)", class="inset hidden", emptyLabel="Pick a value", options=fdi) }}
+      {{ trade.dropdown("inv-fdi", label="Type of foreign direct investment (FDI)", class="panel hidden", emptyLabel="Pick a value", options=fdi) }}
 
       <label class="block-label selection-button-radio" for="radio-nonfdi">
         <input type="radio" id="radio-nonfdi" name="radio-nonfdi" value="non-FDI">non-FDI
       </label>
 
-      {{ trade.dropdown("inv-non-fdi", label="Non-FDI programme options", class="inset hidden", emptyLabel="Pick a value", options=nonfdi) }}
+      {{ trade.dropdown("inv-non-fdi", label="Non-FDI programme options", class="panel hidden", emptyLabel="Pick a value", options=nonfdi) }}
 
       <label class="block-label selection-button-radio" for="radio-commitment">
         <input type="radio" id="radio-commitment" name="radio-commitment" value="Commitment to Invest">Commitment to Invest
@@ -54,13 +54,13 @@
 
     {{ trade.dropdown("sector", label="Primary sector", emptyLabel="Pick a value", options=sectors) }}
 
-    {{ trade.dropdown("subsector", label="Sub sector", emptyLabel="Pick a value", options=sectors, class="inset hidden") }}
+    {{ trade.dropdown("subsector", label="Sub sector", emptyLabel="Pick a value", options=sectors, class="panel hidden") }}
 
     {{ trade.dropdown("subsector-drop", label="Business activity of this investment project", emptyLabel="Pick a value", options=businessActivities) }}
 
     <div class="clickable" id="inv-add-business-activity">Add another business activity</div>
 
-    {{ trade.textbox("addbusiness", label="Business Activity", class="hidden inset", id="inv-add-activity-textbox") }}
+    {{ trade.textbox("addbusiness", label="Business Activity", class="hidden panel", id="inv-add-activity-textbox") }}
 
     <div class="form-group readonly afterfloat" id="inv-project-wrapper">
       <label class="form-label-bold" for="invprojname">
@@ -75,10 +75,10 @@
     {{ local.inlineradio("inv-nda-signed", "inv-nda-signed", "noformgroup", label='Have we signed a Non-Disclosure Agreement (NDA) with the client?') }}
 
 
-    <div id="invsubnda" class="inset hybridformgroup">
+    <div id="invsubnda" class="panel hybridformgroup">
       {{ local.inlineradio("inv-nda-unsigned", class="hidden", label='Can this project be shared with our local UK partners?') }}
-      {{ trade.textarea("inv-share-details", label="Anonymous description to be shared with partners", hint="Do not include and company names or contact details", value="", id="canshare-text", class="inset hidden noformgroup") }}
-      {{ trade.textarea("inv-noshare-details", label="Please decribe why this project may not be shared with partners", hint="", value="", id="cannotshare-text", class="inset hidden noformgroup") }}
+      {{ trade.textarea("inv-share-details", label="Anonymous description to be shared with partners", hint="Do not include and company names or contact details", value="", id="canshare-text", class="panel hidden noformgroup") }}
+      {{ trade.textarea("inv-noshare-details", label="Please decribe why this project may not be shared with partners", hint="", value="", id="cannotshare-text", class="panel hidden noformgroup") }}
 
     </div>
 
