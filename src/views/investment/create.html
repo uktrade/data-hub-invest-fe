@@ -17,6 +17,8 @@
   id="investment-details")
   }}
 
+
+    <form action="/investment/{{ id }}/create" method="post">
   <h2 class="heading-medium"></h2>
 
   {{ trade.textbox("inv-client", label="Client contact for this project", class="", id="invclientcontact") }}
@@ -97,7 +99,7 @@
       <a class='button-link button--cancel js-button-cancel' href='#' id='isforeigncancel'>Cancel</a>
     </div>
 </div>
-
+    </form>
   </div>
 
   <script src="/javascripts/common.js"></script>

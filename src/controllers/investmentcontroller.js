@@ -12,8 +12,6 @@ const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 const detailsDisplayOrder = Object.keys(detailsDisplay)
 const referOrder = Object.keys(referLabels)
 
-console.log(detailsDisplayOrder)
-
 function getInvestmentDetailsDisplay (company, extra) {
   if (!company.id) return null
   return {
@@ -105,6 +103,7 @@ function create (req, res) {
     .then((projects) => {
       lcompany.projects = projects
       let investmentDisplay = getInvestmentDetailsDisplay(lcompany)
+      let id = lcompany.id
       res.render('investment/create', {
         sectors,
         topLevelReferralSource,
@@ -113,9 +112,15 @@ function create (req, res) {
         investmentBriefDetails,
         investmentDetailsDisplayOrder,
         fdi,
-        nonfdi
+        nonfdi,
+        id
       })
     })
+}
+
+function created(req, res) {
+console.log(req)
+  res.json({})
 }
 
 
@@ -141,8 +146,6 @@ function details (req, res) {
     referral_event: 'Moscow Hoteliers Conference 2016',
     referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
   }
-
-
 
 res.render('investment/details',
   {
@@ -184,6 +187,7 @@ function subreferrals (req, res) {
 
 router.get('/investment/', index)
 router.get('/investment/:sourceId/create', create)
+router.post('/investment/:sourceId/create', created)
 router.get('/investment/:sourceId/details', details)
 router.get('/investment/:sourceId', index)
 router.get('/api/investment/search/:term', invsearch)
