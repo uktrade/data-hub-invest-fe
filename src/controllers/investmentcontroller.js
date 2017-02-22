@@ -21,6 +21,7 @@ function fixInvestmentDisplayDefaults (company) {
     company.summary.investment_tier = "TODO"
   }
   if (!company.projects) {
+    company.projects = []
   }
 
   return company
@@ -28,7 +29,7 @@ function fixInvestmentDisplayDefaults (company) {
 
 function getInvestmentDetailsDisplay (company) {
   if (!company.id) return null
-  // @todo figure out why these are missing
+  // @todo figure out th
   company = fixInvestmentDisplayDefaults(company)
   return {
     company_name: `${company.name}`,
