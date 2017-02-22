@@ -21,12 +21,15 @@
         <nav>
             <div class="{% if tab == 'details' %}active{% endif %}">
                 <a href="/company/{{source}}/{{id}}/details">Details</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
             </div>
             <div class="{% if tab == 'contacts' %}active{% endif %}">
                 <a href="/company/{{source}}/{{id}}/contacts">Contacts</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
             </div>
             <div class="{% if tab == 'interactions' %}active{% endif %}">
                 <a href="/company/{{source}}/{{id}}/interactions">Interactions</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
             </div>
 
             {% if company.id %}
@@ -43,5 +46,59 @@
         {% block tabmain%}{% endblock %}
     </div>
 </div>
+
+<script>
+
+    // chevron handler events
+    var menu = document.querySelector('.left-nav');
+    var allItems = menu.querySelectorAll("nav div");
+
+    [].forEach.call(allItems, function (e) {
+        e.addEventListener('click', function(){
+            var chevron = e.querySelector('.collapse-filter');
+            var menu = document.querySelector('.left-nav');
+            var nonActiveItems = menu.querySelectorAll("nav div:not(.active)");
+
+            if (chevron.classList.contains('fa-chevron-down')) {
+                // expand
+                chevron.classList.remove('fa-chevron-down');
+                chevron.className += ' fa-chevron-up ';
+                [].forEach.call(nonActiveItems, function (a) {
+                    a.style.display = null;
+                });
+
+            } else {
+                //collapse
+                chevron.classList.remove('fa-chevron-up');
+                chevron.className += ' fa-chevron-down ';
+                [].forEach.call(nonActiveItems, function (a) {
+                    a.style.display = 'none';
+                });
+            }
+        });
+    });
+
+    // on resize, hide items except the active one
+    function togglerHandler() {
+        var menu = document.querySelector('.left-nav');
+        var nonActiveItems = menu.querySelectorAll("nav div:not(.active)");
+        var allItems = menu.querySelectorAll("nav div");
+
+        if (document.documentElement.clientWidth <= 641) {
+            [].forEach.call(nonActiveItems, function (a) {
+                a.style.display = 'none';
+            });
+        } else {
+            [].forEach.call(allItems, function (a) {
+                a.style.display = null;
+            });
+        }
+    }
+
+    window.addEventListener("resize", togglerHandler);
+    window.addEventListener("load", togglerHandler);
+
+
+</script>
 
 {% endblock %}

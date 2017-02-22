@@ -22,6 +22,14 @@
         color: $black;
         text-decoration: underline;
       }
+      
+      .collapse-filter {
+        float: right;
+        color: $white;
+        @include media(tablet) {
+          display: none;
+        }
+      }
 
       &.active {
         background: $govuk-blue;
