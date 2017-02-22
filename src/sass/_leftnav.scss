@@ -14,18 +14,22 @@
       float: left;
     }
 
-    nav a {
+    nav div {
       @include core-19();
-      display: block;
-      color: $black;
-      text-decoration: underline;
       padding: 15px;
+
+      a {
+        color: $black;
+        text-decoration: underline;
+      }
 
       &.active {
         background: $govuk-blue;
-        color: $white;
-        text-decoration: none;
-        font-weight: bold;
+        a {
+          color: $white;
+          text-decoration: none;
+          font-weight: bold;
+        }
       }
     }
   }
