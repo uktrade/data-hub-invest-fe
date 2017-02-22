@@ -10,8 +10,27 @@ const {investmentBriefDetails} = require('../labels/investmentlabels')
 
 const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 
-function getInvestmentDetailsDisplay (company, extra) {
+function fixInvestmentDisplayDefaults (company) {
+  if (!company.registered_address_country) {
+    company.registered_address_country = {name: 'TODO'}
+  }
+  if (!company.summary) {
+    company.summary = {}
+  }
+  if (!company.summary.investment_tier) {
+    company.summary.investment_tier = "TODO"
+  }
+  if (!company.projects) {
+    company.projects = []
+  }
+
+  return company
+}
+
+function getInvestmentDetailsDisplay (company) {
   if (!company.id) return null
+  // @todo figure out th
+  company = fixInvestmentDisplayDefaults(company)
   return {
     company_name: `${company.name}`,
     country_address: `${company.registered_address_country.name}`,
