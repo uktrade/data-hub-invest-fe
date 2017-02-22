@@ -1,9 +1,11 @@
 /* globals XMLHttpRequest:true */
+
+const trade = require('@uktrade/trade_elements').elementstuff
+const axios = require('axios')
+
 const searchfield = document.querySelector('#inv-search')
 const resultsdiv = document.querySelector('#inv-results')
 const isforeigncontinue = document.querySelector('#isforeigncontinue')
-
-const trade = require('@uktrade/trade_elements').elementstuff
 
 function ifdef (thing, replace) {
   const replacer = replace || ''
@@ -34,7 +36,7 @@ const companyDisplay = tmpl => `
       </tr>
     </table>
   <div class='save-bar'>
-    <button class='button button--save' type='submit'>Choose company</button>
+    <button class='button button--save' type='submit' id='button-${tmpl.id}'>Choose company</button>
     <a class='button-link button--cancel js-button-cancel' href='#' id='close-${tmpl.id}'>Close</a>
   </div>`
 
@@ -42,7 +44,7 @@ function updateSearchField (res) {
   trade.removeClass(resultsdiv, 'hidden')
   resultsdiv.innerHTML = ''
   trade.removeClass(document.querySelector('#new_co_nagger'), 'hidden')
-  const companies = JSON.parse(res.response)
+  const companies = res.data
   Object.keys(companies).forEach(function (key) {
     let co = companies[key]
     let d = document.createElement('div')
@@ -78,6 +80,7 @@ function updateSearchField (res) {
         trade.removeClass(coname, 'unclickable')
         trade.hide(resblock)
       }, true)
+      document.querySelector('#button-' + key).addEventListener('click', () => window.location.href = `/investment/${key}/create`)
       document.querySelector('#headclose-' + key).addEventListener('click', function () {
         trade.addClass(coname, 'clickable')
         trade.addClass(headcloser, 'hidden')
@@ -89,15 +92,8 @@ function updateSearchField (res) {
 }
 
 function searchCos (term) {
-  const companyRequest = new XMLHttpRequest()
-  companyRequest.onreadystatechange = function () {
-    if (companyRequest.readyState === 4) {
-      updateSearchField(companyRequest)
-    }
-  }
-
-  companyRequest.open('GET', '/api/investment/search/' + term)
-  companyRequest.send()
+  axios.get(`/api/investment/search/${term}`)
+  .then((result) => updateSearchField(result))
 }
 
 searchfield.addEventListener('keyup', function () {
@@ -106,7 +102,7 @@ searchfield.addEventListener('keyup', function () {
 
 isforeigncontinue.addEventListener('click', function (ev) {
   if (document.querySelector('#isforeign_yes').checked) {
-// this will connect to step 2, @todo
+    window.location.href = window.location.href + "/create"
   } else {
     trade.removeClass(document.querySelector('#sbcontainer'), 'hidden')
     trade.addClass(document.querySelector('#foreignradiocontainer'), 'hidden')

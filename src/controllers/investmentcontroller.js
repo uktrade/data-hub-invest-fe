@@ -6,17 +6,17 @@ const express = require('express')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
-const investmentDetailLabels = require('../labels/investmentlabels').investmentDetailLabels
+const {investmentBriefDetails} = require('../labels/investmentlabels')
 
-const investmentDetailsDisplayOrder = Object.keys(investmentDetailLabels)
+const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 
 function getInvestmentDetailsDisplay (company, extra) {
   if (!company.id) return null
   return {
     company_name: `${company.name}`,
-    account_management_tier: `${extra.investment_tier}`,
-    account_manager: `<a href="/advisor/${company.account_manager.id}/">${company.account_manager.name}</a>`,
-    ownership: `${extra.ownership}`
+    country_address: `${company.registered_address_country.name}`,
+    account_management_tier: `${company.summary.investment_tier}`,
+    investment_in_uk: `${company.projects.length} Investment Project`
   }
 }
 
@@ -25,7 +25,6 @@ const router = express.Router()
 function index (req, res) {
   const id = req.params.sourceId
   let lcompany
-
   companyRepository.getCompany(req.session.token, id, null)
     .then((company) => {
       lcompany = company
@@ -36,7 +35,7 @@ function index (req, res) {
       const foreign = lcompany.registered_address_country.name !== 'United Kingdom'
       res.render('investment/index', {
         investmentDisplay,
-        investmentDetailLabels,
+        investmentBriefDetails,
         investmentDetailsDisplayOrder,
         foreign
       })
@@ -95,17 +94,20 @@ function create (req, res) {
       lcompany = company
       return companyRepository.getCompanyInvestmentSummary(req.session.token, company.id)
     })
-    .then((extra) => {
-      let investmentDisplay = getInvestmentDetailsDisplay(lcompany, extra)
-      const foreign = lcompany.registered_address_country.name !== 'United Kingdom'
+    .then((summary) => {
+        lcompany.summary = summary
+        return companyRepository.getCompanyInvestmentProjects(req.session.token, lcompany.id)
+    })
+    .then((projects) => {
+      lcompany.projects = projects
+      let investmentDisplay = getInvestmentDetailsDisplay(lcompany)
       res.render('investment/create', {
         sectors,
         topLevelReferralSource,
         businessActivities,
         investmentDisplay,
-        investmentDetailLabels,
+        investmentBriefDetails,
         investmentDetailsDisplayOrder,
-        foreign,
         fdi,
         nonfdi
       })

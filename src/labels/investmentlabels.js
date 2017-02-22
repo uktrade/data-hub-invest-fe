@@ -21,6 +21,13 @@ const investmentDetailLabels = {
   ownership: 'Ownership'
 }
 
+const investmentBriefDetails = {
+  company_name: 'Company',
+  country_address: 'Country of Address',
+  investment_in_uk: 'Investment in the UK',
+  account_management_tier: 'Account tier'
+}
+
 const investmentFormLabels = {
   company_name: 'Company',
   investment_tier: 'Investment account manager tier',
@@ -33,6 +40,7 @@ module.exports = {
   investmentProjectsOpenLabels,
   investmentProjectsClosedLabels,
   investmentDetailLabels,
-  investmentFormLabels
+  investmentFormLabels,
+  investmentBriefDetails
 }
 

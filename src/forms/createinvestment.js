@@ -24,6 +24,8 @@ const radioCanShare = document.querySelector('#inv-nda-unsigned_yes')
 const textShareDetailsWrapper = document.querySelector('#inv-share-details-wrapper')
 const radioCannotShare = document.querySelector('#inv-nda-unsigned_no')
 const textNoShareDetailsWrapper = document.querySelector('#inv-noshare-details-wrapper')
+const invReferralAltSourceWrapper = document.querySelector('#inv-referral-alt-source-wrapper')
+const invReferralSourceNo = document.querySelector('#inv-referral-source_no')
 
 notClientRelationship.addEventListener('click', () => {
   trade.removeClass(differentclientrelationship, 'hidden')
@@ -100,4 +102,8 @@ radioCanShare.addEventListener('click', () => {
 radioCannotShare.addEventListener('click', () => {
   trade.addClass(textShareDetailsWrapper, 'hidden')
   trade.removeClass(textNoShareDetailsWrapper, 'hidden')
+})
+
+invReferralSourceNo.addEventListener('click', () => {
+  trade.removeClass(invReferralAltSourceWrapper, 'hidden')
 })

@@ -1,8 +1,11 @@
 {% extends "layouts/ukti.html" %}
 
 {% block main %}
-
+<!-- investment/index -->
 {% import "macros/trade.html" as trade %}
+
+{% import "./investment_macros.html" as local %}
+
 
 <h1 class="page-heading">Create an investment project</h1>
 
@@ -11,22 +14,21 @@
 {{ trade.keyvaluetable(
 investmentDisplay,
 stripey=true,
-labels=investmentDetailLabels,
+labels=investmentBriefDetails,
 keyorder=investmentDetailsDisplayOrder,
 id="investment-details")
 }}
 
-<form class="searchbar" action="/search" method="get" role="search">
 {%  if foreign %}
+
+
+
+
   <div id="foreignradiocontainer" class="{% if not foreign %}hidden{% endif %}">
-    <fieldset class="inline form-group form-group__checkbox-group form-group__radiohide">
-      <legend class="form-label-bold">Will this company be the source of foreign equity investment?</legend>
-      <label class="block-label selection-button-radio selected" for="isforeign_yes">
-        <input type="radio" id="isforeign_yes" name="uk_based" value="Yes" checked>Yes
-      </label>
-      <label class="block-label selection-button-radio" for="isforeign_no">
-        <input type="radio" id="isforeign_no" name="uk_based" value="No">No</label>
-    </fieldset>
+
+
+    {{ local.inlineradio("isforeign", "isforeign", "", label='Will this company be the source of foreign equity investment?') }}
+
 
     <div class='save-bar'>
       <button class='button button--save' type='submit' id="isforeigncontinue">Continue</button>
@@ -34,7 +36,6 @@ id="investment-details")
     </div>
   </div>
 {%  endif %}
-</form>
 <div id="sbcontainer" class="{%  if foreign %}hidden{% endif %}">
 <h1 class="heading-small">Source of foreign investment</h1>
 <form class="searchbar tightertopmargin" action="/search" method="get" role="search">
