@@ -6,9 +6,13 @@ const express = require('express')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
-const {investmentBriefDetails} = require('../labels/investmentlabels')
+const {investmentBriefDetails, detailsDisplay, referLabels} = require('../labels/investmentlabels')
 
 const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
+const detailsDisplayOrder = Object.keys(detailsDisplay)
+const referOrder = Object.keys(referLabels)
+
+console.log(detailsDisplayOrder)
 
 function getInvestmentDetailsDisplay (company, extra) {
   if (!company.id) return null
@@ -114,6 +118,47 @@ function create (req, res) {
     })
 }
 
+
+function details (req, res) {
+  const projectNumber = 'P-123456677'
+  const prospectStage = 'Not started'
+  const details = {
+    company_name: 'MArriott',
+    investment_type: 'FDI, Creation of a new something',
+    sector_primary: 'Leisure and tourism',
+    sector_sub: 'Hospitality',
+    business_activity: 'Services',
+    project_description: 'Marriott want to set up a hotel in a new location with no existing presence',
+    nda_signed: 'No signed NDA',
+    project_shareable: 'Yes, shareable',
+    project_description: 'American hotel chain to set up new hotel in location with no existing presence',
+    estimated_land_date: 'May 2017'
+  }
+
+
+  const referral = {
+    referral_activity: 'Evant',
+    referral_event: 'Moscow Hoteliers Conference 2016',
+    referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
+  }
+
+
+
+res.render('investment/details',
+  {
+    projectNumber,
+    prospectStage,
+    details,
+    detailsDisplay,
+    detailsDisplayOrder,
+    referral,
+    referOrder,
+    referLabels
+  }
+)
+}
+
+
 function invsearch (req, res) {
   search.search({
     token: req.session.token,
@@ -139,6 +184,7 @@ function subreferrals (req, res) {
 
 router.get('/investment/', index)
 router.get('/investment/:sourceId/create', create)
+router.get('/investment/:sourceId/details', details)
 router.get('/investment/:sourceId', index)
 router.get('/api/investment/search/:term', invsearch)
 router.get('/api/investment/subsectors/:id', subsectors)
