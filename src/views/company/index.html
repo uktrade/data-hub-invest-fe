@@ -55,6 +55,9 @@
 
     [].forEach.call(allItems, function (e) {
         e.addEventListener('click', function(){
+            if (document.documentElement.clientWidth > 641) {
+                return;
+            }
             var chevron = e.querySelector('.collapse-filter');
             var menu = document.querySelector('.left-nav');
             var nonActiveItems = menu.querySelectorAll("nav div:not(.active)");
