@@ -8,8 +8,8 @@ module.exports = {
     companyadd: './src/forms/companyadd',
     companyedit: './src/forms/companyedit',
     investment: './src/forms/investment',
-    createinvestment: './src/forms/createinvestment'
-
+    createinvestment: './src/forms/createinvestment',
+    togglenav: './src/lib/togglenav'
   },
   output: {
     path: 'build/javascripts',
