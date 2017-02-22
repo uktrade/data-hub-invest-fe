@@ -2,7 +2,6 @@
 {% import "macros/trade.html" as trade %}
 
 {% block tabmain %}
-  <h2 class="heading-medium">Company summary</h2>
   {% if chDisplay %}
     <div class="dark-panel">
       {{ trade.keyvaluetable(chDisplay, labels=chDetailLabels, keyorder=chDetailsDisplayOrder, readonly=true) }}
