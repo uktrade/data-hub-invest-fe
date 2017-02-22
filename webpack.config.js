@@ -9,7 +9,7 @@ module.exports = {
     companyedit: './src/forms/companyedit',
     investment: './src/forms/investment',
     createinvestment: './src/forms/createinvestment',
-    togglenav: './src/lib/togglenav'
+    leftnav: './src/lib/leftnav'
   },
   output: {
     path: 'build/javascripts',
