@@ -28,6 +28,7 @@ function fixInvestmentDisplayDefaults (company) {
 
 function getInvestmentDetailsDisplay (company) {
   if (!company.id) return null
+  // @todo figure out why these are missing
   company = fixInvestmentDisplayDefaults(company)
   return {
     company_name: `${company.name}`,
