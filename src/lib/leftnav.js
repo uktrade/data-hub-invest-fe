@@ -1,57 +1,79 @@
-// chevron handler events
+let toggleEnabled = null
+// TODO move globally or into the config ? has to be the same as the media query for tablets
+let enableIfScreenSmallerThan = 641
 
-var menu = document.querySelector('.left-nav');
-var allItems = menu.querySelectorAll("nav div");
+function allItems() {
+    return document.querySelectorAll('.left-nav nav div')
+}
 
-function attachEvents() {
-    [].forEach.call(allItems, function (e) {
-        e.addEventListener('click', function () {
-            if (document.documentElement.clientWidth > 641) {
-                return;
-            }
-            var chevron = e.querySelector('.collapse-filter');
-            var menu = document.querySelector('.left-nav');
-            var nonActiveItems = menu.querySelectorAll("nav div:not(.active)");
+function nonActiveItems() {
+    return document.querySelectorAll(".left-nav nav div:not(.active)")
+}
 
-            if (chevron.classList.contains('fa-chevron-down')) {
-                // expand
-                chevron.classList.remove('fa-chevron-down');
-                chevron.className += ' fa-chevron-up ';
-                [].forEach.call(nonActiveItems, function (a) {
-                    a.style.display = null;
-                });
+function disableActiveLink() {
+    return document.querySelectorAll(".left-nav nav div.active a").setAttribute('onclick', 'return false')
+}
 
-            } else {
-                //collapse
-                chevron.classList.remove('fa-chevron-up');
-                chevron.className += ' fa-chevron-down ';
-                [].forEach.call(nonActiveItems, function (a) {
-                    a.style.display = 'none';
-                });
-            }
-        });
+function isItemCollapsed(item) {
+    let chevron = item.querySelector('.collapse-filter')
+    return chevron.classList.contains('fa-chevron-down') ? true : false
+}
+
+function setChevronUp(item) {
+    let chevron = item.querySelector('.collapse-filter')
+    chevron.classList.remove('fa-chevron-down')
+    chevron.className += ' fa-chevron-up '
+}
+
+function setChevronDown(item) {
+    let chevron = item.querySelector('.collapse-filter')
+    chevron.classList.remove('fa-chevron-up')
+    chevron.className += ' fa-chevron-down '
+}
+
+function show(items) {
+    [].forEach.call(items, function (a) {
+        a.style.display = null
+
     });
 }
 
-attachEvents();
+function hide(items) {
+    [].forEach.call(items, function (a) {
+        a.style.display = 'none'
+    });
+}
 
-// on resize, hide items except the active one
-function togglerHandler() {
-    var menu = document.querySelector('.left-nav');
-    var nonActiveItems = menu.querySelectorAll("nav div:not(.active)");
+// expand/collapse logic
+[].forEach.call(allItems(), function (item) {
+    item.addEventListener('click', function () {
+        if (!toggleEnabled) {
+            return
+        }
+        if (isItemCollapsed(item)) {
+            setChevronUp(item)
+            show(nonActiveItems())
+        } else {
+            setChevronDown(item)
+            hide(nonActiveItems())
+        }
+    });
+});
 
-    if (document.documentElement.clientWidth <= 641) {
-        [].forEach.call(nonActiveItems, function (a) {
-            a.style.display = 'none';
-        });
+// show all items, or one items depending on the sceen size
+function init() {
+    let screenIsSmall = document.documentElement.clientWidth <= enableIfScreenSmallerThan
+    if (screenIsSmall) {
+        hide(nonActiveItems())
+        toggleEnabled = true
+        disableActiveLink()
     } else {
-        [].forEach.call(allItems, function (a) {
-            a.style.display = null;
-        });
+        show(allItems())
+        toggleEnabled = false
     }
 }
 
-window.addEventListener("resize", togglerHandler);
-window.addEventListener("load", togglerHandler);
+window.addEventListener("resize", init)
+window.addEventListener("load", init)
 
-module.exports = {}
+module.exports = {};
