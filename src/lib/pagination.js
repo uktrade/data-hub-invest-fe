@@ -14,8 +14,7 @@ function getPageIndexes (req, result) {
   pageIndex.startPage = Math.max((currentPage - 2), 1)
   pageIndex.endPage = Math.min((pageIndex.startPage + 4), totalPages)
 
-  if (currentPage !== 1) {//
-
+  if (currentPage !== 1) {
     pageIndex.previousPage = currentPage - 1
   }
 
