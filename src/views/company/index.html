@@ -35,9 +35,11 @@
             {% if company.id %}
             <div class="{% if tab == 'exports' %}active{% endif %}">
                 <a href="/company/{{source}}/{{id}}/export">Export</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
             </div>
             <div class="{% if tab == 'investment' %}active{% endif %}">
                 <a href="/company/{{source}}/{{id}}/investment">Investment</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
             </div>
             {% endif %}
         </nav>
