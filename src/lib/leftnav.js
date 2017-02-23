@@ -11,7 +11,7 @@ function nonActiveItems() {
 }
 
 function disableActiveLink() {
-    return document.querySelectorAll(".left-nav nav div.active a").setAttribute('onclick', 'return false')
+    return document.querySelector(".left-nav nav div.active a").setAttribute('onclick', 'return false')
 }
 
 function isItemCollapsed(item) {
