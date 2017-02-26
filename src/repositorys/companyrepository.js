@@ -239,13 +239,22 @@ function getCompanyInvestmentProjects (token, companyId) {
   return authorisedRequest(token, `${config.apiRoot}/company/${companyId}/investmentprojects/`)
 }
 
-function saveCompanyInvestmentSummary (token, summary) {
+function saveDataToAPI (token, indata, url) {
   const method = 'POST'
-  const data = Object.assign({}, summary)
+  const data = Object.assign({}, indata)
   controllerUtils.flattenIdFields(data)
   controllerUtils.nullEmptyFields(data)
-  const url = `${config.apiRoot}/company/${data.id}/investmentsummary/`
   return authorisedRequest(token, { url, method, body: data })
+}
+
+function saveCompanyInvestmentSummary (token, summary) {
+  const url = `${config.apiRoot}/company/${summary.id}/investmentsummary/`
+  return saveDataToAPI(token, summary, url)
+}
+
+function saveCreateInvestmentProject (token, project) {
+  const url = `${config.apiRoot}/investment/${project.id}/createproject/`
+  return saveDataToAPI(token, project, url)
 }
 
 function hydrateCompanyInvestments (token, companies) {
@@ -271,6 +280,7 @@ module.exports = {
   getCompanyInvestmentSummary,
   getCompanyInvestmentSummaryLite,
   saveCompanyInvestmentSummary,
+  saveCreateInvestmentProject,
   getCompanyInvestmentProjects,
   hydrateCompanyInvestments,
   getCompanyContacts,
