@@ -226,7 +226,7 @@ function postProject (req, res) {
   }
 
   companyRepository.saveCreateInvestmentProject(req.session.token, req.body)
-  res.json({})
+  details(req, res)
 }
 
 function details (req, res) {
