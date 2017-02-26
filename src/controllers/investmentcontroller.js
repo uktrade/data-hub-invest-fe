@@ -7,6 +7,9 @@ const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
 const {investmentBriefDetails, detailsDisplay, referLabels} = require('../labels/investmentlabels')
+const controllerUtils = require('../lib/controllerutils')
+
+const isBlank = controllerUtils.isBlank
 
 const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 const detailsDisplayOrder = Object.keys(detailsDisplay)
@@ -20,7 +23,7 @@ function fixInvestmentDisplayDefaults (company) {
     company.summary = {}
   }
   if (!company.summary.investment_tier) {
-    company.summary.investment_tier = "TODO"
+    company.summary.investment_tier = 'TODO'
   }
   if (!company.projects) {
     company.projects = []
@@ -103,6 +106,8 @@ function prepForDropdown (metadata, key) {
 function create (req, res) {
   const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, 'referral_type')
   const businessActivities = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, 'business_activity')
+
+  console.log('FDI', metadataRepository.FDI)
   const fdi = prepForDropdown(metadataRepository.FDI, 'fdi_option')
   const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
 
@@ -116,8 +121,8 @@ function create (req, res) {
       return companyRepository.getCompanyInvestmentSummary(req.session.token, company.id)
     })
     .then((summary) => {
-        lcompany.summary = summary
-        return companyRepository.getCompanyInvestmentProjects(req.session.token, lcompany.id)
+      lcompany.summary = summary
+      return companyRepository.getCompanyInvestmentProjects(req.session.token, lcompany.id)
     })
     .then((projects) => {
       lcompany.projects = projects
@@ -137,28 +142,107 @@ function create (req, res) {
     })
 }
 
-function created(req, res) {
-console.log(req)
-  res.json({})
+function fmtErrorLabel (term) {
+  return [`You must provide ${term} `]
 }
 
+function booleanise (val) {
+  if (!val) {
+    return false
+  } else {
+    if (val === 'Yes') {
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
+function validateProject (project) {
+  const errors = {}
+
+  project.amcrm = booleanise(project.amcrm)
+  project.amreferralsource = booleanise(project.amreferralsource)
+  project.fdi = booleanise(project.fdi)
+  project.nonfdi = booleanise(project.nonfdi)
+  project.commitment_to_invest = booleanise(project.commitment_to_invest)
+
+  if (isBlank(project.client_contact)) {
+    errors.client_contact = fmtErrorLabel('client contact')
+  }
+
+  if (!project.amcrm && isBlank(project.client_relationship_manager)) {
+    errors.client_relationship_manager = fmtErrorLabel('client relationship manager')
+  }
+
+  if (!project.amreferralsource && isBlank(project.referral_source_manager)) {
+    errors.referral_source_manager = fmtErrorLabel('referral source manager')
+  }
+
+  if (isBlank(project.referral_source_main)) {
+    errors.referral_source_main = fmtErrorLabel('referral source ')
+  }
+  if (isBlank(project.sector)) {
+    errors.sector = fmtErrorLabel('sector')
+  }
+  if (isBlank(project.business_activity)) {
+    errors.business_activity = fmtErrorLabel('business activity')
+  }
+  if (isBlank(project.project_description)) {
+    errors.project_description = fmtErrorLabel('project description')
+  }
+
+  if (!(project.fdi || project.nonfdi || project.commitment_to_invest)) {
+    errors.fdi = fmtErrorLabel('an FDI status')
+  }
+
+  if (project.fdi && isBlank(project.fdi_type)) {
+    errors.fdi = fmtErrorLabel('an FDI value')
+  }
+
+  if (project.nonfdi && isBlank(project.nonfdi_type)) {
+    errors.fdi = fmtErrorLabel('a non-FDI value')
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return errors
+  }
+  return null
+}
+
+function postProject (req, res) {
+  delete req.body._csrf_token
+
+  delete req.body.addbusiness
+  delete req.body.invprojname
+
+  console.log(req.body)
+
+  const errors = validateProject(req.body)
+  if (errors) {
+    controllerUtils.genCSRF(req, res)
+    res.locals.errors = errors
+    return create(req, res)
+  }
+
+  companyRepository.saveCreateInvestmentProject(req.session.token, req.body)
+  res.json({})
+}
 
 function details (req, res) {
   const projectNumber = 'P-123456677'
   const prospectStage = 'Not started'
   const details = {
-    company_name: 'MArriott',
+    company_name: 'Marriott',
     investment_type: 'FDI, Creation of a new something',
     sector_primary: 'Leisure and tourism',
     sector_sub: 'Hospitality',
     business_activity: 'Services',
-    project_description: 'Marriott want to set up a hotel in a new location with no existing presence',
     nda_signed: 'No signed NDA',
     project_shareable: 'Yes, shareable',
     project_description: 'American hotel chain to set up new hotel in location with no existing presence',
     estimated_land_date: 'May 2017'
   }
-
 
   const referral = {
     referral_activity: 'Evant',
@@ -166,20 +250,19 @@ function details (req, res) {
     referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
   }
 
-res.render('investment/details',
-  {
-    projectNumber,
-    prospectStage,
-    details,
-    detailsDisplay,
-    detailsDisplayOrder,
-    referral,
-    referOrder,
-    referLabels
-  }
+  res.render('investment/details',
+    {
+      projectNumber,
+      prospectStage,
+      details,
+      detailsDisplay,
+      detailsDisplayOrder,
+      referral,
+      referOrder,
+      referLabels
+    }
 )
 }
-
 
 function invsearch (req, res) {
   search.search({
@@ -206,7 +289,7 @@ function subreferrals (req, res) {
 
 router.get('/investment/', index)
 router.get('/investment/:sourceId/create', create)
-router.post('/investment/:sourceId/create', created)
+router.post('/investment/:sourceId/create', postProject)
 router.get('/investment/:sourceId/details', details)
 router.get('/investment/:sourceId', index)
 router.get('/api/investment/search/:term', invsearch)
