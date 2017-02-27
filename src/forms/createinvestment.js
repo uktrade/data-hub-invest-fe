@@ -28,7 +28,7 @@ const subSectorDropdownWrapper = document.querySelector('#subsector-wrapper')
 const createBusinessActivity = document.querySelector('#inv-add-business-activity')
 const addBusinessActivity = document.querySelector('#addbusiness-wrapper')
 
-const radioNdaNotSigned = document.querySelector('#inv-nda-signed_no')
+const radioNdaNotSigned = document.querySelector('#ndasigned_no')
 const radioCanShareWrapper = document.querySelector('#invsubnda > fieldset')
 const radioCanShare = document.querySelector('#inv-nda-unsigned_yes')
 const textShareDetailsWrapper = document.querySelector('#anonymous_description-wrapper')

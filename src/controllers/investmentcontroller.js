@@ -213,17 +213,31 @@ function validateProject (project) {
 function postProject (req, res) {
   delete req.body._csrf_token
 
-  delete req.body.addbusiness
-  delete req.body.invprojname
+  if (booleanise(req.body.amcrm)) {
+    req.body.client_relationship_manager = res.locals.user.id
+  }
 
-  console.log(req.body)
+  if (booleanise(req.body.amreferralsource)) {
+    req.body.referral_source_manager = res.locals.user.id
+  }
+
+  if (booleanise(req.body.ndasigned)) {
+    req.body.nda = true;
+  }
 
   const errors = validateProject(req.body)
+
   if (errors) {
     controllerUtils.genCSRF(req, res)
     res.locals.errors = errors
     return create(req, res)
   }
+
+  delete req.body.addbusiness
+  delete req.body.invprojname
+  delete req.body.amcrm
+  delete req.body.amreferralsource
+  delete req.body.ndasigned
 
   companyRepository.saveCreateInvestmentProject(req.session.token, req.body)
   details(req, res)
