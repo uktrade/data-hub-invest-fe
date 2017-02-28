@@ -2,11 +2,11 @@
 
 {% block main %}
 
-{% import "macros/trade.html" as trade %}
-{% import "./investment_macros.html" as local %}
+  {% import "macros/trade.html" as trade %}
+  {% import "./investment_macros.html" as local %}
 
   <div class="column-three-quarters">
-  <h1 class="page-heading">Create an investment project</h1>
+    <h1 class="page-heading">Create an investment project</h1>
 
     {% if messages.info.length %}
       {% for message in messages.info %}
@@ -16,62 +16,62 @@
 
     {{ trade.errorPanel( errors ) }}
 
-  <h2 class="heading-medium">Source of foreign equity investment</h2>
-  {{ trade.keyvaluetable(
-  investmentDisplay,
-  stripey=true,
-  labels=investmentBriefDetails,
-  keyorder=investmentDetailsDisplayOrder,
-  id="investment-details")
-  }}
+    <h2 class="heading-medium">Source of foreign equity investment</h2>
+    {{ trade.keyvaluetable(
+    investmentDisplay,
+    stripey=true,
+    labels=investmentBriefDetails,
+    keyorder=investmentDetailsDisplayOrder,
+    id="investment-details")
+    }}
 
 
     {#<form action="/investment/{{ id }}/create" method="post">#}
-  <h2 class="heading-medium"></h2>
+    <h2 class="heading-medium"></h2>
 
-      <input type="hidden" name="company" value="{{ id }}">
+    <input type="hidden" name="company" value="{{ id }}">
 
-      {{ trade.dropdown("client_contact",
-      label="Client contact for this project",
-      emptyLabel=" ",
-      value='',
-      error='',
-      options=lcontacts,
-      class="select-autocomplete-js")
-      }}
+    {{ trade.dropdown("client_contact",
+    label="Client contact for this project",
+    emptyLabel=" ",
+    value='',
+    error='',
+    options=lcontacts,
+    class="select-autocomplete-js")
+    }}
 
     {{ local.inlineradio("amcrm", "client-rel-reveal", "client-rev-reveal", label='Are you the Client Relationship Manager for this project?') }}
 
     {#{{ trade.textbox("client_relationship_manager", label="Client Relationship Manager", class="hidden panel", id="client_relationship_manager") }}#}
 
-      {{ trade.dropdown("client_relationship_manager",
-      label="Client Relationship Manager",
-      emptyLabel=" ",
-      value='',
-      error='',
-      options=ladvisors,
-      class="hidden panel select-autocomplete-js")
-      }}
+    {{ trade.dropdown("client_relationship_manager",
+    label="Client Relationship Manager",
+    emptyLabel=" ",
+    value='',
+    error='',
+    options=ladvisors,
+    class="hidden panel select-autocomplete-js")
+    }}
 
     {{ local.inlineradio("amreferralsource", "referral-src-reveal", "referral-src-reveal", label='Are you the Referral Source for this project?') }}
 
-      {{ trade.dropdown("referral_source_manager",
-      label="Referral Source Manager",
-      emptyLabel=" ",
-      value='',
-      error='',
-      options=ladvisors,
-      class="hidden panel select-autocomplete-js")
-      }}
+    {{ trade.dropdown("referral_source_manager",
+    label="Referral Source Manager",
+    emptyLabel=" ",
+    value='',
+    error='',
+    options=ladvisors,
+    class="hidden panel select-autocomplete-js")
+    }}
 
     {{ trade.dropdown("referral_source_main", label="Project referral source activity", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
     {{ trade.dropdown("referral_source_sub", label="Project referral source activity",  class="panel hidden", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
-      {{ trade.textbox("eventbox", label="Event", class="hidden panel", id="eventbox") }}
+    {{ trade.textbox("eventbox", label="Event", class="hidden panel", id="eventbox") }}
 
 
-      <fieldset id="inv-fdi-type" name="fdis">
+    <fieldset id="inv-fdi-type" name="fdis">
       <legend class="form-label-bold">Type of investment</legend>
 
       <label class="block-label selection-button-radio" for="fdi">
@@ -122,24 +122,24 @@
 
     </div>
 
-<h3 class="heading-small">Estimated Land Date</h3>
-      <p>When activities planned under the investment project will have fully commenced.</p>
-<div id="mmyyyyycontrol" class="inv-month-year-date-control">
-    <div class="inv-month">
-      MM<br>
-      <input type="text" id="land_month" size="2" class="form-control">
-    </div>
-    <div class="inv-year">
-      YYYY<br><input type="text" id="land_year" size="4" class="form-control">
-    </div>
+    <h3 class="heading-small">Estimated Land Date</h3>
+    <p>When activities planned under the investment project will have fully commenced.</p>
+    <div id="mmyyyyycontrol" class="inv-month-year-date-control">
+      <div class="inv-month">
+        MM<br>
+        <input type="text" id="land_month" size="2" class="form-control">
+      </div>
+      <div class="inv-year">
+        YYYY<br><input type="text" id="land_year" size="4" class="form-control">
+      </div>
 
-    <div class='save-bar afterfloat'>
-      <button class='button button--save' type='submit' id="isforeigncontinue" onclick="window.location.href='https://marvelapp.com/1dc2cgc/screen/24721102'">Save and create</button>
+      <div class='save-bar afterfloat'>
+        <button class='button button--save' type='submit' id="isforeigncontinue" onclick="window.location.href='https://marvelapp.com/1dc2cgc/screen/24721102'">Save and create</button>
 
-      {#<button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>#}
-      <a class='button-link button--cancel js-button-cancel' href='#' id='isforeigncancel'>Cancel</a>
+        {#<button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>#}
+        <a class='button-link button--cancel js-button-cancel' href='#' id='isforeigncancel'>Cancel</a>
+      </div>
     </div>
-</div>
     {#</form>#}
   </div>
 

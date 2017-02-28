@@ -38,13 +38,13 @@ const radioCannotShare = document.querySelector('#inv-nda-unsigned_no')
 const textNoShareDetailsWrapper = document.querySelector('#maynotshare-wrapper')
 
 notClientRelationship.addEventListener('click', () => {
-  trade.removeClass(differentclientrelationship, 'hidden')
-}, true
+    trade.removeClass(differentclientrelationship, 'hidden')
+  }, true
 )
 
 clientRelationship.addEventListener('click', () => {
-  trade.addClass(differentclientrelationship, 'hidden')
-}, true
+    trade.addClass(differentclientrelationship, 'hidden')
+  }, true
 )
 
 notReferralSource.addEventListener('click', () => {

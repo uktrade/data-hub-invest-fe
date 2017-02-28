@@ -80,21 +80,21 @@ function collate (rez) {
   })
 
   rez.forEach((item) => {
-    if (item) {
-      if (!!item._type && item._type === 'company_company') {
-        item.country = flatCountries[item._source.registered_address_country]
-        companies[item._id] = item
-      }
+      if (item) {
+        if (!!item._type && item._type === 'company_company') {
+          item.country = flatCountries[item._source.registered_address_country]
+          companies[item._id] = item
+        }
 
-      if (item.investment_tier) {
-        companies[item.id].summary = item
-      }
+        if (item.investment_tier) {
+          companies[item.id].summary = item
+        }
 
-      if (Array.isArray(item)) {
-        companies[item[0].company].details = item
+        if (Array.isArray(item)) {
+          companies[item[0].company].details = item
+        }
       }
     }
-  }
   )
   return companies
 }
@@ -137,7 +137,7 @@ function create (req, res) {
     })
     .then((projects) => {
 
-        lcompany.projects = projects
+      lcompany.projects = projects
 
       let investmentDisplay = getInvestmentDetailsDisplay(lcompany)
       let id = lcompany.id
@@ -293,8 +293,8 @@ function details (req, res) {
       }
       return companyRepository.getDitCompanyLite(req.session.token, ldetails.company)
     }).then((co) => {
-      ldetails.company = co
-      const prospectStage = 'Not started'
+    ldetails.company = co
+    const prospectStage = 'Not started'
 
     // project must have a sector...
     let sector = (metadataRepository.SECTOR_OPTIONS.find(el => el.id === ldetails.sector)).name
@@ -315,35 +315,35 @@ function details (req, res) {
 
     console.log(ldetails)
 
-      const details = {
-        company_name: ldetails.company.name,
-        investment_type: createInvestmentType(ldetails),
-        sector_primary: sector,
-        sector_sub: subsector,
-        business_activity: businessactivity,
-        nda_signed: nda,
-        project_shareable: shareable,
-        project_description: ldetails.project_description,
-        estimated_land_date: 'May 2017'
-      }
+    const details = {
+      company_name: ldetails.company.name,
+      investment_type: createInvestmentType(ldetails),
+      sector_primary: sector,
+      sector_sub: subsector,
+      business_activity: businessactivity,
+      nda_signed: nda,
+      project_shareable: shareable,
+      project_description: ldetails.project_description,
+      estimated_land_date: 'May 2017'
+    }
 
-      const referral = {
-        referral_activity: 'Evant',
-        referral_event: 'Moscow Hoteliers Conference 2016',
-        referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
-      }
+    const referral = {
+      referral_activity: 'Evant',
+      referral_event: 'Moscow Hoteliers Conference 2016',
+      referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
+    }
 
-      res.render('investment/details',
-        {
-          prospectStage,
-          details,
-          detailsDisplay,
-          detailsDisplayOrder,
-          referral,
-          referOrder,
-          referLabels
-        })
-    })
+    res.render('investment/details',
+      {
+        prospectStage,
+        details,
+        detailsDisplay,
+        detailsDisplayOrder,
+        referral,
+        referOrder,
+        referLabels
+      })
+  })
 }
 
 function invsearch (req, res) {
