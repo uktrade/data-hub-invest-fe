@@ -37,6 +37,11 @@ module.exports.getAdvisors = function (token) {
   return authorisedRequest(token, `${config.apiRoot}/metadata/advisor/`)
 }
 
+module.exports.getClientContacts = function (token) {
+  return authorisedRequest(token, `${config.apiRoot}/metadata/client_contacts/`)
+}
+
+
 module.exports.fetchAll = (cb) => {
   // todo
   // refactor to create an array of jobs to do and then use promise all
