@@ -2,50 +2,99 @@ const axios = require('axios')
 
 const trade = require('@uktrade/trade_elements').elementstuff
 
-const areClientRelationship = document.querySelectorAll('.client-rev-reveal > label > input')[0]
-const notClientRelationship = document.querySelectorAll('.client-rev-reveal > label > input')[1]
-const differentclientrelationship = document.querySelector('#crm-wrapper')
+const clientRelationship = document.querySelector('#amcrm_yes')
+const notClientRelationship = document.querySelector('#amcrm_no')
+const differentclientrelationship = document.querySelector('#client_relationship_manager-wrapper')
+
+const referralSource = document.querySelector('#amreferralsource_yes')
+const notReferralSource = document.querySelector('#amreferralsource_no')
+
+const invReferralAltSourceWrapper = document.querySelector('#referral_source_manager-wrapper')
+
+const referrerDropdown = document.querySelector('#referral_source_main')
+const eventWrapper = document.querySelector('#eventbox-wrapper')
+const subReferWrapper = document.querySelector('#referral_source_sub-wrapper')
+
+const subReferDropdown = document.querySelector('#referral_source_sub')
+
+const radioFdi = document.querySelector('#radio-fdi')
+const fdiDropdownWrapper = document.querySelector('#fdi_type-wrapper')
+
+const radioNonFdi = document.querySelector('#radio-nonfdi')
+const nonFdiDropdownWrapper = document.querySelector('#inv-non-fdi-wrapper')
+
 const sectorDropdown = document.querySelector('#sector')
 const subSectorDropdown = document.querySelector('#subsector')
 const subSectorDropdownWrapper = document.querySelector('#subsector-wrapper')
+
 const createBusinessActivity = document.querySelector('#inv-add-business-activity')
 const addBusinessActivity = document.querySelector('#addbusiness-wrapper')
-const subReferWrapper = document.querySelector('#inv-subref-wrapper')
-const referrerDropdown = document.querySelector('#referral')
-const subReferDropdownWrapper = document.querySelector('#inv-subref-dd-wrapper')
-const subReferDropdown = document.querySelector('#inv-subref-dd')
-const radioFdi = document.querySelector('#radio-fdi')
-const radioNonFdi = document.querySelector('#radio-nonfdi')
-const fdiDropdownWrapper = document.querySelector('#inv-fdi-wrapper')
-const nonFdiDropdownWrapper = document.querySelector('#inv-non-fdi-wrapper')
-const radioNdaNotSigned = document.querySelector('#inv-nda-signed_no')
+
+const radioNdaNotSigned = document.querySelector('#ndasigned_no')
 const radioCanShareWrapper = document.querySelector('#invsubnda > fieldset')
 const radioCanShare = document.querySelector('#inv-nda-unsigned_yes')
-const textShareDetailsWrapper = document.querySelector('#inv-share-details-wrapper')
+const textShareDetailsWrapper = document.querySelector('#anonymous_description-wrapper')
 const radioCannotShare = document.querySelector('#inv-nda-unsigned_no')
-const textNoShareDetailsWrapper = document.querySelector('#inv-noshare-details-wrapper')
-const invReferralAltSourceWrapper = document.querySelector('#inv-referral-alt-source-wrapper')
-const invReferralSourceNo = document.querySelector('#inv-referral-source_no')
+const textNoShareDetailsWrapper = document.querySelector('#maynotshare-wrapper')
 
 const hackForTest = document.querySelector('#isforeigncontinue')
 
 
 
 notClientRelationship.addEventListener('click', () => {
-  trade.removeClass(differentclientrelationship, 'hidden')
-},
-  true
+    trade.removeClass(differentclientrelationship, 'hidden')
+  }, true
 )
 
-areClientRelationship.addEventListener('click', () => {
-  trade.addClass(differentclientrelationship, 'hidden')
-},
-  true
+clientRelationship.addEventListener('click', () => {
+    trade.addClass(differentclientrelationship, 'hidden')
+  }, true
 )
+
+notReferralSource.addEventListener('click', () => {
+  trade.removeClass(invReferralAltSourceWrapper, 'hidden')
+})
+
+referralSource.addEventListener('click', () => {
+  trade.addClass(invReferralAltSourceWrapper, 'hidden')
+})
 
 createBusinessActivity.addEventListener('click', () => {
   trade.removeClass(addBusinessActivity, 'hidden')
 })
+
+referrerDropdown.addEventListener('change', (ev) => referHasSubs(ev.target.value))
+
+function referHasSubs (id) {
+  axios.get(`/api/investment/subreferrals/${id}`)
+    .then((result) => {
+      if (result.data.length > 0) {
+        if (result.data[0].subreferral_type !== 'FILL_IN_BOX') {
+          subReferDropdown.innerHTML = '<option value="-">Pick a value</option>'
+          result.data.forEach((el) => {
+            subReferDropdown.innerHTML += `<option value="${el.id}">${el.subreferral_type}</option>`
+          })
+          trade.removeClass(subReferWrapper, 'hidden')
+        } else {
+          trade.removeClass(eventWrapper, 'hidden')
+        }
+      } else {
+        trade.addClass(subReferWrapper, 'hidden')
+      }
+    })
+}
+
+radioFdi.addEventListener('click', () => {
+  trade.removeClass(fdiDropdownWrapper, 'hidden')
+  trade.addClass(nonFdiDropdownWrapper, 'hidden')
+})
+
+radioNonFdi.addEventListener('click', () => {
+  trade.addClass(fdiDropdownWrapper, 'hidden')
+  trade.removeClass(nonFdiDropdownWrapper, 'hidden')
+})
+
+sectorDropdown.addEventListener('change', (ev) => sectorHasSubs(ev.target.value))
 
 function sectorHasSubs (id) {
   axios.get(`/api/investment/subsectors/${id}`)
@@ -62,38 +111,6 @@ function sectorHasSubs (id) {
     })
 }
 
-function referHasSubs (id) {
-  axios.get(`/api/investment/subreferrals/${id}`)
-    .then((result) => {
-      if (result.data.length > 0) {
-        if (result.data[0].subreferral_type !== 'FILL_IN_BOX') {
-          subReferDropdown.innerHTML = '<option value="-">Pick a value</option>'
-          result.data.forEach((el) => {
-            subReferDropdown.innerHTML += `<option value="${el.id}">${el.subreferral_type}</option>`
-          })
-          trade.removeClass(subReferDropdownWrapper, 'hidden')
-        } else {
-          trade.removeClass(subReferWrapper, 'hidden')
-        }
-      } else {
-        trade.addClass(subReferWrapper, 'hidden')
-      }
-    })
-}
-
-sectorDropdown.addEventListener('change', (ev) => sectorHasSubs(ev.target.value))
-referrerDropdown.addEventListener('change', (ev) => referHasSubs(ev.target.value))
-
-radioFdi.addEventListener('click', () => {
-  trade.removeClass(fdiDropdownWrapper, 'hidden')
-  trade.addClass(nonFdiDropdownWrapper, 'hidden')
-})
-
-radioNonFdi.addEventListener('click', () => {
-  trade.addClass(fdiDropdownWrapper, 'hidden')
-  trade.removeClass(nonFdiDropdownWrapper, 'hidden')
-})
-
 radioNdaNotSigned.addEventListener('click', () => {
   trade.removeClass(radioCanShareWrapper, 'hidden')
 })
@@ -108,8 +125,3 @@ radioCannotShare.addEventListener('click', () => {
   trade.removeClass(textNoShareDetailsWrapper, 'hidden')
 })
 
-invReferralSourceNo.addEventListener('click', () => {
-  trade.removeClass(invReferralAltSourceWrapper, 'hidden')
-})
-
-hackForTest.addEventListener('click', () => window.location.href = 'https://marvelapp.com/1dc2cgc/screen/24721102')
