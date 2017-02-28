@@ -37,6 +37,10 @@ const textShareDetailsWrapper = document.querySelector('#anonymous_description-w
 const radioCannotShare = document.querySelector('#inv-nda-unsigned_no')
 const textNoShareDetailsWrapper = document.querySelector('#maynotshare-wrapper')
 
+const hackForTest = document.querySelector('#isforeigncontinue')
+
+
+
 notClientRelationship.addEventListener('click', () => {
     trade.removeClass(differentclientrelationship, 'hidden')
   }, true
