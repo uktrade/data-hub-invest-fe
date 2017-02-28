@@ -235,6 +235,12 @@ function getCompanyInvestmentSummary (token, companyId) {
   })
 }
 
+
+function getInvestmentProjectDetails(token, id) {
+  const url = `${config.apiRoot}/investment/${id}/projectdetails/`
+  return authorisedRequest(token, url)
+}
+
 function getCompanyInvestmentProjects (token, companyId) {
   return authorisedRequest(token, `${config.apiRoot}/company/${companyId}/investmentprojects/`)
 }
@@ -284,5 +290,6 @@ module.exports = {
   getCompanyInvestmentProjects,
   hydrateCompanyInvestments,
   getCompanyContacts,
-  getCompanyInteractions
+  getCompanyInteractions,
+  getInvestmentProjectDetails
 }

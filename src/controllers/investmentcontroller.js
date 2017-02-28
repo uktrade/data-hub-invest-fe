@@ -95,19 +95,20 @@ function collate (rez) {
       }
     }
   }
-)
+  )
   return companies
 }
 
 function prepForDropdown (metadata, key) {
-  return metadata.map((thing) => { return {value: thing.id, label: thing[key]} })
+  return metadata.map((thing) => {
+    return {value: thing.id, label: thing[key]}
+  })
 }
 
 function create (req, res) {
   const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, 'referral_type')
   const businessActivities = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, 'business_activity')
 
-  console.log('FDI', metadataRepository.FDI)
   const fdi = prepForDropdown(metadataRepository.FDI, 'fdi_option')
   const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
 
@@ -125,7 +126,9 @@ function create (req, res) {
       return companyRepository.getCompanyInvestmentProjects(req.session.token, lcompany.id)
     })
     .then((projects) => {
-      lcompany.projects = projects
+
+        lcompany.projects = projects
+
       let investmentDisplay = getInvestmentDetailsDisplay(lcompany)
       let id = lcompany.id
       res.render('investment/create', {
@@ -222,7 +225,7 @@ function postProject (req, res) {
   }
 
   if (booleanise(req.body.ndasigned)) {
-    req.body.nda = true;
+    req.body.nda = true
   }
 
   const errors = validateProject(req.body)
@@ -239,43 +242,96 @@ function postProject (req, res) {
   delete req.body.amreferralsource
   delete req.body.ndasigned
 
+  req.body.project_id = 'P-' + ('' + Math.random()).substr(2, 8)
+
   companyRepository.saveCreateInvestmentProject(req.session.token, req.body)
-  details(req, res)
+    .then((id) => {
+      res.redirect(`/investment/${id}/details`)
+    })
+}
+
+function createInvestmentType (ldetails) {
+  if (ldetails.fdi) {
+    let fditype = metadataRepository.FDI.find((el =>  el.id === ldetails.fdi_type))
+    fditype = fditype.fdi_option
+    return `FDI - ${fditype}`
+  } else if (ldetails.nonfdi) {
+    let nonfditype = metadataRepository.NONFDI.find((el =>  el.id === ldetails.nonfdi_type))
+    nonfditype = nonfditype.nonfdi_type
+    return `Non-FDI - ${nonfditype}`
+  } else {
+    return 'Commitment to invest'
+  }
 }
 
 function details (req, res) {
-  const projectNumber = 'P-123456677'
-  const prospectStage = 'Not started'
-  const details = {
-    company_name: 'Marriott',
-    investment_type: 'FDI, Creation of a new something',
-    sector_primary: 'Leisure and tourism',
-    sector_sub: 'Hospitality',
-    business_activity: 'Services',
-    nda_signed: 'No signed NDA',
-    project_shareable: 'Yes, shareable',
-    project_description: 'American hotel chain to set up new hotel in location with no existing presence',
-    estimated_land_date: 'May 2017'
-  }
+  let ldetails = {}
+  companyRepository.getInvestmentProjectDetails(req.session.token, req.params.sourceId)
+    .then((details) => {
+      ldetails = details
+      return metadataRepository.getAdvisors(req.session.token)
+    })
+    .then((advisors) => {
+      console.log(advisors)
+      if (ldetails.client_relationship_manager) {
+        ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager)
+      }
+      if (ldetails.referral_source_manager) {
+        ldetails.referral_source_manager = advisors.find((el) => el.id === ldetails.referral_source_manager)
+      }
+      return companyRepository.getDitCompanyLite(req.session.token, ldetails.company)
+    }).then((co) => {
+      ldetails.company = co
+      const prospectStage = 'Not started'
 
-  const referral = {
-    referral_activity: 'Evant',
-    referral_event: 'Moscow Hoteliers Conference 2016',
-    referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
-  }
+    // project must have a sector...
+    let sector = (metadataRepository.SECTOR_OPTIONS.find(el => el.id === ldetails.sector)).name
 
-  res.render('investment/details',
-    {
-      projectNumber,
-      prospectStage,
-      details,
-      detailsDisplay,
-      detailsDisplayOrder,
-      referral,
-      referOrder,
-      referLabels
+    // but subsector is not always present
+    let subsector = metadataRepository.SUBSECTOR.find(el => el.id === ldetails.subsector)
+    if (!subsector) {
+      subsector = "Not set"
+    } else {
+      subsector = subsector.name
     }
-)
+
+    let businessactivity = (metadataRepository.BUSINESS_ACTIVITY.find(el => el.id === ldetails.business_activity)).business_activity
+
+    const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
+    const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
+
+
+    console.log(ldetails)
+
+      const details = {
+        company_name: ldetails.company.name,
+        investment_type: createInvestmentType(ldetails),
+        sector_primary: sector,
+        sector_sub: subsector,
+        business_activity: businessactivity,
+        nda_signed: nda,
+        project_shareable: shareable,
+        project_description: ldetails.project_description,
+        estimated_land_date: 'May 2017'
+      }
+
+      const referral = {
+        referral_activity: 'Evant',
+        referral_event: 'Moscow Hoteliers Conference 2016',
+        referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
+      }
+
+      res.render('investment/details',
+        {
+          prospectStage,
+          details,
+          detailsDisplay,
+          detailsDisplayOrder,
+          referral,
+          referOrder,
+          referLabels
+        })
+    })
 }
 
 function invsearch (req, res) {
@@ -294,11 +350,15 @@ function invsearch (req, res) {
 }
 
 function subsectors (req, res) {
-  res.json(metadataRepository.SUBSECTOR.filter((f) => { return f.parent === req.params.id }))
+  res.json(metadataRepository.SUBSECTOR.filter((f) => {
+    return f.parent === req.params.id
+  }))
 }
 
 function subreferrals (req, res) {
-  res.json(metadataRepository.SUBREFERRAL.filter((f) => { return f.parent === req.params.id }))
+  res.json(metadataRepository.SUBREFERRAL.filter((f) => {
+    return f.parent === req.params.id
+  }))
 }
 
 router.get('/investment/', index)
