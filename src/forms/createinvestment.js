@@ -27,6 +27,10 @@ const textNoShareDetailsWrapper = document.querySelector('#inv-noshare-details-w
 const invReferralAltSourceWrapper = document.querySelector('#inv-referral-alt-source-wrapper')
 const invReferralSourceNo = document.querySelector('#inv-referral-source_no')
 
+const hackForTest = document.querySelector('#isforeigncontinue')
+
+
+
 notClientRelationship.addEventListener('click', () => {
   trade.removeClass(differentclientrelationship, 'hidden')
 },
@@ -107,3 +111,5 @@ radioCannotShare.addEventListener('click', () => {
 invReferralSourceNo.addEventListener('click', () => {
   trade.removeClass(invReferralAltSourceWrapper, 'hidden')
 })
+
+hackForTest.addEventListener('click', () => window.location.href = 'https://marvelapp.com/1dc2cgc/screen/24721102')
