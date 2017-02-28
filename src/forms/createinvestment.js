@@ -35,6 +35,8 @@ const textShareDetailsWrapper = document.querySelector('#anonymous_description-w
 const radioCannotShare = document.querySelector('#inv-nda-unsigned_no')
 const textNoShareDetailsWrapper = document.querySelector('#maynotshare-wrapper')
 
+const buttonAction = document.querySelector('#hackfortesting')
+
 notClientRelationship.addEventListener('click', () => {
   trade.removeClass(differentclientrelationship, 'hidden')
 },
@@ -121,3 +123,5 @@ radioCannotShare.addEventListener('click', () => {
   trade.removeClass(textNoShareDetailsWrapper, 'hidden')
 })
 
+
+buttonAction.addEventListener('click', () => {window.location.href = 'https://marvelapp.com/1dc2cgc/screen/24721102'; return false})

@@ -26,7 +26,7 @@
   }}
 
 
-    <form action="/investment/{{ id }}/create" method="post">
+    {#<form action="/investment/{{ id }}/create" method="post">#}
   <h2 class="heading-medium"></h2>
 
       <input type="hidden" name="company" value="{{ id }}">
@@ -107,11 +107,13 @@
     </div>
 
     <div class='save-bar afterfloat'>
-      <button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>
+      <button class='button button--save' type='submit' id="hackfortesting">Save and create</button>
+
+      {#<button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>#}
       <a class='button-link button--cancel js-button-cancel' href='#' id='isforeigncancel'>Cancel</a>
     </div>
 </div>
-    </form>
+    {#</form>#}
   </div>
 
   <script src="/javascripts/common.js"></script>
