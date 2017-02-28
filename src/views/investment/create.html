@@ -26,26 +26,52 @@
   }}
 
 
-    <form action="/investment/{{ id }}/create" method="post">
+    {#<form action="/investment/{{ id }}/create" method="post">#}
   <h2 class="heading-medium"></h2>
 
       <input type="hidden" name="company" value="{{ id }}">
 
-  {{ trade.textbox("client_contact", label="Client contact for this project", class="", id="invclientcontact") }}
+      {{ trade.dropdown("client_contact",
+      label="Client contact for this project",
+      emptyLabel=" ",
+      value='',
+      error='',
+      options=lcontacts,
+      class="select-autocomplete-js")
+      }}
 
     {{ local.inlineradio("amcrm", "client-rel-reveal", "client-rev-reveal", label='Are you the Client Relationship Manager for this project?') }}
 
-    {{ trade.textbox("client_relationship_manager", label="Client Relationship Manager", class="hidden panel", id="client_relationship_manager") }}
+    {#{{ trade.textbox("client_relationship_manager", label="Client Relationship Manager", class="hidden panel", id="client_relationship_manager") }}#}
+
+      {{ trade.dropdown("client_relationship_manager",
+      label="Client Relationship Manager",
+      emptyLabel=" ",
+      value='',
+      error='',
+      options=ladvisors,
+      class="hidden panel select-autocomplete-js")
+      }}
 
     {{ local.inlineradio("amreferralsource", "referral-src-reveal", "referral-src-reveal", label='Are you the Referral Source for this project?') }}
 
-    {{ trade.textbox("referral_source_manager", label="Referral Source - advisor", class="hidden panel", id="inv-referral-alt-source") }}
+      {{ trade.dropdown("referral_source_manager",
+      label="Referral Source Manager",
+      emptyLabel=" ",
+      value='',
+      error='',
+      options=ladvisors,
+      class="hidden panel select-autocomplete-js")
+      }}
 
     {{ trade.dropdown("referral_source_main", label="Project referral source activity", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
     {{ trade.dropdown("referral_source_sub", label="Project referral source activity",  class="panel hidden", emptyLabel="Pick a value", options=topLevelReferralSource) }}
 
-    <fieldset id="inv-fdi-type" name="fdis">
+      {{ trade.textbox("eventbox", label="Event", class="hidden panel", id="eventbox") }}
+
+
+      <fieldset id="inv-fdi-type" name="fdis">
       <legend class="form-label-bold">Type of investment</legend>
 
       <label class="block-label selection-button-radio" for="fdi">
@@ -96,7 +122,8 @@
 
     </div>
 
-
+<h3 class="heading-small">Estimated Land Date</h3>
+      <p>When activities planned under the investment project will have fully commenced.</p>
 <div id="mmyyyyycontrol" class="inv-month-year-date-control">
     <div class="inv-month">
       MM<br>
@@ -107,11 +134,13 @@
     </div>
 
     <div class='save-bar afterfloat'>
-      <button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>
+      <button class='button button--save' type='submit' id="isforeigncontinue" onclick="window.location.href='https://marvelapp.com/1dc2cgc/screen/24721102'">Save and create</button>
+
+      {#<button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>#}
       <a class='button-link button--cancel js-button-cancel' href='#' id='isforeigncancel'>Cancel</a>
     </div>
 </div>
-    </form>
+    {#</form>#}
   </div>
 
   <script src="/javascripts/common.js"></script>

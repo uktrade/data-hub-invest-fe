@@ -12,7 +12,9 @@ const notReferralSource = document.querySelector('#amreferralsource_no')
 const invReferralAltSourceWrapper = document.querySelector('#referral_source_manager-wrapper')
 
 const referrerDropdown = document.querySelector('#referral_source_main')
+const eventWrapper = document.querySelector('#eventbox-wrapper')
 const subReferWrapper = document.querySelector('#referral_source_sub-wrapper')
+
 const subReferDropdown = document.querySelector('#referral_source_sub')
 
 const radioFdi = document.querySelector('#radio-fdi')
@@ -37,14 +39,12 @@ const textNoShareDetailsWrapper = document.querySelector('#maynotshare-wrapper')
 
 notClientRelationship.addEventListener('click', () => {
   trade.removeClass(differentclientrelationship, 'hidden')
-},
-  true
+}, true
 )
 
 clientRelationship.addEventListener('click', () => {
   trade.addClass(differentclientrelationship, 'hidden')
-},
-  true
+}, true
 )
 
 notReferralSource.addEventListener('click', () => {
@@ -72,7 +72,7 @@ function referHasSubs (id) {
           })
           trade.removeClass(subReferWrapper, 'hidden')
         } else {
-          trade.removeClass(subReferWrapper, 'hidden')
+          trade.removeClass(eventWrapper, 'hidden')
         }
       } else {
         trade.addClass(subReferWrapper, 'hidden')

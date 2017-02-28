@@ -112,9 +112,11 @@ function create (req, res) {
   const fdi = prepForDropdown(metadataRepository.FDI, 'fdi_option')
   const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
 
+
+
   const sectors = prepForDropdown(metadataRepository.SECTOR_OPTIONS, 'name')
   const id = req.params.sourceId
-  let lcompany
+  let lcompany, lcontacts, ladvisors
 
   companyRepository.getCompany(req.session.token, id, null)
     .then((company) => {
@@ -123,6 +125,14 @@ function create (req, res) {
     })
     .then((summary) => {
       lcompany.summary = summary
+      return metadataRepository.getClientContacts(req.session.token)
+    })
+    .then((contacts) => {
+      lcontacts = prepForDropdown(contacts, 'contact')
+      return metadataRepository.getAdvisors(req.session.token)
+    })
+    .then((advisors) => {
+      ladvisors = prepForDropdown(advisors, 'name')
       return companyRepository.getCompanyInvestmentProjects(req.session.token, lcompany.id)
     })
     .then((projects) => {
@@ -133,6 +143,8 @@ function create (req, res) {
       let id = lcompany.id
       res.render('investment/create', {
         sectors,
+        lcontacts,
+        ladvisors,
         topLevelReferralSource,
         businessActivities,
         investmentDisplay,
