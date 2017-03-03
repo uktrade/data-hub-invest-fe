@@ -25,11 +25,19 @@
     id="investment-details")
     }}
 
+    <h2 class="heading-medium">Additional company</h2>
+    {{ trade.keyvaluetable(
+    investeeDetails,
+    stripey=true,
+    labels=investmentBriefDetails,
+    keyorder=investmentDetailsDisplayOrder,
+    id="investee-details")
+    }}
 
     {#<form action="/investment/{{ id }}/create" method="post">#}
     <h2 class="heading-medium"></h2>
 
-    <input type="hidden" name="company" value="{{ id }}">
+    <input type="hidden" name="company" value="{{ investerid }}">
 
     {{ trade.dropdown("client_contact",
     label="Client contact for this project",

@@ -33,6 +33,7 @@ function fixInvestmentDisplayDefaults (company) {
 }
 
 function getInvestmentDetailsDisplay (company) {
+  console.log(company.name)
   if (!company.id) return null
   // @todo figure out th
   company = fixInvestmentDisplayDefaults(company)
@@ -61,7 +62,8 @@ function index (req, res) {
         investmentDisplay,
         investmentBriefDetails,
         investmentDetailsDisplayOrder,
-        foreign
+        foreign,
+        id
       })
     })
     .catch((error) => {
@@ -80,21 +82,21 @@ function collate (rez) {
   })
 
   rez.forEach((item) => {
-      if (item) {
-        if (!!item._type && item._type === 'company_company') {
-          item.country = flatCountries[item._source.registered_address_country]
-          companies[item._id] = item
-        }
+    if (item) {
+      if (!!item._type && item._type === 'company_company') {
+        item.country = flatCountries[item._source.registered_address_country]
+        companies[item._id] = item
+      }
 
-        if (item.investment_tier) {
-          companies[item.id].summary = item
-        }
+      if (item.investment_tier) {
+        companies[item.id].summary = item
+      }
 
-        if (Array.isArray(item)) {
-          companies[item[0].company].details = item
-        }
+      if (Array.isArray(item)) {
+        companies[item[0].company].details = item
       }
     }
+  }
   )
   return companies
 }
@@ -112,19 +114,23 @@ function create (req, res) {
   const fdi = prepForDropdown(metadataRepository.FDI, 'fdi_option')
   const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
 
-
-
   const sectors = prepForDropdown(metadataRepository.SECTOR_OPTIONS, 'name')
-  const id = req.params.sourceId
+  const investerid = req.params.investerId
+  const investeeid = req.params.companyId
+
   let lcompany, lcontacts, ladvisors
 
-  companyRepository.getCompany(req.session.token, id, null)
-    .then((company) => {
-      lcompany = company
-      return companyRepository.getCompanyInvestmentSummary(req.session.token, company.id)
+  companyRepository.getCompany(req.session.token, investerid, null)
+    .then((invester) => {
+      lcompany = invester
+      return companyRepository.getCompanyInvestmentSummary(req.session.token, investerid)
     })
     .then((summary) => {
       lcompany.summary = summary
+      return companyRepository.getCompany(req.session.token, investeeid, null)
+    })
+    .then((investee) => {
+      lcompany.investee = investee
       return metadataRepository.getClientContacts(req.session.token)
     })
     .then((contacts) => {
@@ -136,11 +142,19 @@ function create (req, res) {
       return companyRepository.getCompanyInvestmentProjects(req.session.token, lcompany.id)
     })
     .then((projects) => {
-
       lcompany.projects = projects
+      return companyRepository.getCompanyInvestmentProjects(req.session.token, investeeid)
+    })
+    .then((iprojects) => {
+      lcompany.investee.projects = iprojects
+      return companyRepository.getCompanyInvestmentSummary(req.session.token, investeeid)
+    })
+    .then((isummary) => {
+      lcompany.investee.summary = isummary
 
       let investmentDisplay = getInvestmentDetailsDisplay(lcompany)
-      let id = lcompany.id
+      let investeeDetails = getInvestmentDetailsDisplay(lcompany.investee)
+
       res.render('investment/create', {
         sectors,
         lcontacts,
@@ -150,9 +164,10 @@ function create (req, res) {
         investmentDisplay,
         investmentBriefDetails,
         investmentDetailsDisplayOrder,
+        investeeDetails,
         fdi,
         nonfdi,
-        id
+        investerid
       })
     })
 }
@@ -264,11 +279,11 @@ function postProject (req, res) {
 
 function createInvestmentType (ldetails) {
   if (ldetails.fdi) {
-    let fditype = metadataRepository.FDI.find((el =>  el.id === ldetails.fdi_type))
+    let fditype = metadataRepository.FDI.find(el => el.id === ldetails.fdi_type)
     fditype = fditype.fdi_option
     return `FDI - ${fditype}`
   } else if (ldetails.nonfdi) {
-    let nonfditype = metadataRepository.NONFDI.find((el =>  el.id === ldetails.nonfdi_type))
+    let nonfditype = metadataRepository.NONFDI.find(el => el.id === ldetails.nonfdi_type)
     nonfditype = nonfditype.nonfdi_type
     return `Non-FDI - ${nonfditype}`
   } else {
@@ -293,57 +308,56 @@ function details (req, res) {
       }
       return companyRepository.getDitCompanyLite(req.session.token, ldetails.company)
     }).then((co) => {
-    ldetails.company = co
-    const prospectStage = 'Not started'
+      ldetails.company = co
+      const prospectStage = 'Not started'
 
     // project must have a sector...
-    let sector = (metadataRepository.SECTOR_OPTIONS.find(el => el.id === ldetails.sector)).name
+      let sector = (metadataRepository.SECTOR_OPTIONS.find(el => el.id === ldetails.sector)).name
 
     // but subsector is not always present
-    let subsector = metadataRepository.SUBSECTOR.find(el => el.id === ldetails.subsector)
-    if (!subsector) {
-      subsector = "Not set"
-    } else {
-      subsector = subsector.name
-    }
+      let subsector = metadataRepository.SUBSECTOR.find(el => el.id === ldetails.subsector)
+      if (!subsector) {
+        subsector = 'Not set'
+      } else {
+        subsector = subsector.name
+      }
 
-    let businessactivity = (metadataRepository.BUSINESS_ACTIVITY.find(el => el.id === ldetails.business_activity)).business_activity
+      let businessactivity = (metadataRepository.BUSINESS_ACTIVITY.find(el => el.id === ldetails.business_activity)).business_activity
 
-    const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
-    const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
+      const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
+      const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
 
+      console.log(ldetails)
 
-    console.log(ldetails)
+      const details = {
+        company_name: ldetails.company.name,
+        investment_type: createInvestmentType(ldetails),
+        sector_primary: sector,
+        sector_sub: subsector,
+        business_activity: businessactivity,
+        nda_signed: nda,
+        project_shareable: shareable,
+        project_description: ldetails.project_description,
+        estimated_land_date: 'May 2017'
+      }
 
-    const details = {
-      company_name: ldetails.company.name,
-      investment_type: createInvestmentType(ldetails),
-      sector_primary: sector,
-      sector_sub: subsector,
-      business_activity: businessactivity,
-      nda_signed: nda,
-      project_shareable: shareable,
-      project_description: ldetails.project_description,
-      estimated_land_date: 'May 2017'
-    }
+      const referral = {
+        referral_activity: 'Evant',
+        referral_event: 'Moscow Hoteliers Conference 2016',
+        referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
+      }
 
-    const referral = {
-      referral_activity: 'Evant',
-      referral_event: 'Moscow Hoteliers Conference 2016',
-      referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
-    }
-
-    res.render('investment/details',
-      {
-        prospectStage,
-        details,
-        detailsDisplay,
-        detailsDisplayOrder,
-        referral,
-        referOrder,
-        referLabels
-      })
-  })
+      res.render('investment/details',
+        {
+          prospectStage,
+          details,
+          detailsDisplay,
+          detailsDisplayOrder,
+          referral,
+          referOrder,
+          referLabels
+        })
+    })
 }
 
 function invsearch (req, res) {
@@ -374,7 +388,7 @@ function subreferrals (req, res) {
 }
 
 router.get('/investment/', index)
-router.get('/investment/:sourceId/create', create)
+router.get('/investment/:companyId/:investerId/create', create)
 router.post('/investment/:sourceId/create', postProject)
 router.get('/investment/:sourceId/details', details)
 router.get('/investment/:sourceId', index)
