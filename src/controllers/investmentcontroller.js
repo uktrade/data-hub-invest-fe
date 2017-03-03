@@ -33,6 +33,7 @@ function fixInvestmentDisplayDefaults (company) {
 }
 
 function getInvestmentDetailsDisplay (company) {
+  console.log(company.name)
   if (!company.id) return null
   // @todo figure out th
   company = fixInvestmentDisplayDefaults(company)
