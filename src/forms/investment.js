@@ -80,7 +80,7 @@ function updateSearchField (res) {
         trade.removeClass(coname, 'unclickable')
         trade.hide(resblock)
       }, true)
-      document.querySelector('#button-' + key).addEventListener('click', () => window.location.href = `/investment/${key}/create`)
+      document.querySelector('#button-' + key).addEventListener('click', () => window.location.href = `/investment/${company_id}/${key}/create`)
       document.querySelector('#headclose-' + key).addEventListener('click', function () {
         trade.addClass(coname, 'clickable')
         trade.addClass(headcloser, 'hidden')
@@ -102,7 +102,7 @@ searchfield.addEventListener('keyup', function () {
 
 isforeigncontinue.addEventListener('click', function (ev) {
   if (document.querySelector('#isforeign_yes').checked) {
-    window.location.href = window.location.href + "/create"
+    window.location.href = window.location.href + '/create'
   } else {
     trade.removeClass(document.querySelector('#sbcontainer'), 'hidden')
     trade.addClass(document.querySelector('#foreignradiocontainer'), 'hidden')
