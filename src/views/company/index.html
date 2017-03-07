@@ -1,8 +1,8 @@
 {% extends "layouts/ukti.html" %}
 {% block head_script %}
 <script>
-    window.company = {{ company | dump | safe }}
-    window.csrfToken= '{{ csrfToken }}'
+    window.company = {{company | dump | safe}}
+    window.csrfToken = '{{ csrfToken }}'
 </script>
 {% endblock %}
 
@@ -17,22 +17,40 @@
 {{ company | log | safe }}
 
 <div class="left-nav-container">
-  <div class="left-nav">
-    <nav>
-      <a class="{% if tab == 'details' %}active{% endif %}"
-         href="/company/{{source}}/{{id}}/details">Details</a>
-      <a class="{% if tab == 'contacts' %}active{% endif %}"
-         href="/company/{{source}}/{{id}}/contacts">Contacts</a>
-      <a class="{% if tab == 'interactions' %}active{% endif %}" href="/company/{{source}}/{{id}}/interactions">Interactions</a>
-      {% if company.id %}
-          <a class="{% if tab == 'exports' %}active{% endif %}" href="/company/{{source}}/{{id}}/export">Export</a>
-          <a class="{% if tab == 'investment' %}active{% endif %}" href="/company/{{source}}/{{id}}/investment">Investment</a>
-      {% endif %}
-    </nav>
-  </div>
-  <div class="right-content">
-    {% block tabmain%}{% endblock %}
-  </div>
+    <div class="left-nav">
+        <nav>
+            <div class="{% if tab == 'details' %}active{% endif %}">
+                <a href="/company/{{source}}/{{id}}/details">Company details</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
+            </div>
+            <div class="{% if tab == 'contacts' %}active{% endif %}">
+                <a href="/company/{{source}}/{{id}}/contacts">Contacts</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
+            </div>
+            <div class="{% if tab == 'interactions' %}active{% endif %}">
+                <a href="/company/{{source}}/{{id}}/interactions">Interactions</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
+            </div>
+
+            {% if company.id %}
+            <div class="{% if tab == 'exports' %}active{% endif %}">
+                <a href="/company/{{source}}/{{id}}/export">Export</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
+            </div>
+            <div class="{% if tab == 'investment' %}active{% endif %}">
+                <a href="/company/{{source}}/{{id}}/investment">Investment</a>
+                <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
+            </div>
+            {% endif %}
+        </nav>
+    </div>
+    <div class="right-content">
+        {% block tabmain%}{% endblock %}
+    </div>
 </div>
+
+
+<script src="/javascripts/common.js"></script>
+<script src="/javascripts/leftnav.bundle.js"></script>
 
 {% endblock %}
