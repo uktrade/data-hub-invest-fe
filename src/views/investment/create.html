@@ -78,61 +78,24 @@
 
     {{ trade.textbox("eventbox", label="Event", class="hidden panel", id="eventbox") }}
 
-    {#<div style="clear:both"></div>#}
-
-    {#<fieldset id="inv-fdi-type" name="fdis" class="inline form-group form-group__checkbox-group form-group__radiohide noformgroup">#}
-      {#<legend class="form-label-bold">Type of investment</legend>#}
-
-      {#<label class="block-label selection-button-radio" for="fdi" id="radio-fdi">#}
-        {#<input type="radio" name="fdi" value="fdi">FDI#}
-      {#</label>#}
-
-
-      {#<label class="block-label selection-button-radio" for="nonfdi" id="radio-nonfdi" >#}
-        {#<input type="radio" name="fdi" value="nonfdi">non-FDI#}
-      {#</label>#}
-
-
-      {#<label class="block-label selection-button-radio" for="commitment_to_invest" id="radio-commitment">#}
-        {#<input type="radio"  name="fdi" value="commitment">Commitment to Invest#}
-      {#</label>#}
-
-    {#</fieldset>#}
-
-
-    {#{{ local.stackedradio('fdi', ['FDI', 'Non-FDI', 'Commitment to Invest']) }}#}
-
-
     <fieldset id="">
       <legend class="form-label-bold"></legend>
-
-
-
-
       <label class="block-label selection-button-radio selected" for="fdi_1" id="fdi_1_label">
         <input type="radio" id="fdi_1" name="fdi" value="FDI">FDI
       </label>
 
-
       {{ trade.dropdown("fdi_type", label="Type of foreign direct investment (FDI)", class="panel hidden nofloat", emptyLabel="Pick a value", options=fdi) }}
-
 
       <label class="block-label selection-button-radio " for="fdi_2" id="fdi_2_label">
         <input type="radio" id="fdi_2" name="fdi" value="Non-FDI">Non-FDI
       </label>
 
-
       {{ trade.dropdown("nonfdi_type", label="Non-FDI programme options", class="panel hidden nofloat", emptyLabel="Pick a value", options=nonfdi) }}
-
 
       <label class="block-label selection-button-radio " for="fdi_3" id="fdi_3_label">
         <input type="radio" id="fdi_3" name="fdi" value="Commitment to Invest">Commitment to Invest
       </label>
-
-
     </fieldset>
-
-
 
     {{ trade.dropdown("sector", label="Primary sector", emptyLabel="Pick a value", options=sectors) }}
 
@@ -151,11 +114,9 @@
       {{  investmentDisplay.company_name }} <input id="invprojname" class="form-control" name="invprojname" type="text">
     </div>
 
-
     {{ trade.textarea("project_description", label="Project description", hint="", value="", id="inv-desc") }}
 
     {{ local.inlineradio("ndasigned", "inv-nda-signed", "noformgroup", label='Have we signed a Non-Disclosure Agreement (NDA) with the client?') }}
-
 
     <div id="invsubnda" class="panel hybridformgroup panel-hideable">
       {{ local.inlineradio("inv-nda-unsigned", class="hidden", label='Can this project be shared with our local UK partners?') }}
@@ -187,6 +148,5 @@
 
   <script src="/javascripts/common.js"></script>
   <script src="/javascripts/createinvestment.bundle.js"></script>
-
 
 {% endblock %}
