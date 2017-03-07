@@ -17,11 +17,13 @@ const subReferWrapper = document.querySelector('#referral_source_sub-wrapper')
 
 const subReferDropdown = document.querySelector('#referral_source_sub')
 
-const radioFdi = document.querySelector('#radio-fdi')
+const radioFdi = document.querySelector('#fdi_1_label')
 const fdiDropdownWrapper = document.querySelector('#fdi_type-wrapper')
 
-const radioNonFdi = document.querySelector('#radio-nonfdi')
-const nonFdiDropdownWrapper = document.querySelector('#inv-non-fdi-wrapper')
+const radioNonFdi = document.querySelector('#fdi_2_label')
+const nonFdiDropdownWrapper = document.querySelector('#nonfdi_type-wrapper')
+
+const radioCommitment = document.querySelector('#fdi_3_label')
 
 const sectorDropdown = document.querySelector('#sector')
 const subSectorDropdown = document.querySelector('#subsector')
@@ -31,24 +33,21 @@ const createBusinessActivity = document.querySelector('#inv-add-business-activit
 const addBusinessActivity = document.querySelector('#addbusiness-wrapper')
 
 const radioNdaNotSigned = document.querySelector('#ndasigned_no')
+const radioSigned = document.querySelector('#ndasigned_yes')
 const radioCanShareWrapper = document.querySelector('#invsubnda > fieldset')
 const radioCanShare = document.querySelector('#inv-nda-unsigned_yes')
 const textShareDetailsWrapper = document.querySelector('#anonymous_description-wrapper')
 const radioCannotShare = document.querySelector('#inv-nda-unsigned_no')
 const textNoShareDetailsWrapper = document.querySelector('#maynotshare-wrapper')
 
-const hackForTest = document.querySelector('#isforeigncontinue')
-
-
-
 notClientRelationship.addEventListener('click', () => {
-    trade.removeClass(differentclientrelationship, 'hidden')
-  }, true
+  trade.removeClass(differentclientrelationship, 'hidden')
+}, true
 )
 
 clientRelationship.addEventListener('click', () => {
-    trade.addClass(differentclientrelationship, 'hidden')
-  }, true
+  trade.addClass(differentclientrelationship, 'hidden')
+}, true
 )
 
 notReferralSource.addEventListener('click', () => {
@@ -84,16 +83,6 @@ function referHasSubs (id) {
     })
 }
 
-radioFdi.addEventListener('click', () => {
-  trade.removeClass(fdiDropdownWrapper, 'hidden')
-  trade.addClass(nonFdiDropdownWrapper, 'hidden')
-})
-
-radioNonFdi.addEventListener('click', () => {
-  trade.addClass(fdiDropdownWrapper, 'hidden')
-  trade.removeClass(nonFdiDropdownWrapper, 'hidden')
-})
-
 sectorDropdown.addEventListener('change', (ev) => sectorHasSubs(ev.target.value))
 
 function sectorHasSubs (id) {
@@ -111,8 +100,27 @@ function sectorHasSubs (id) {
     })
 }
 
+radioFdi.addEventListener('focus', () => {
+  trade.removeClass(fdiDropdownWrapper, 'hidden')
+  trade.addClass(nonFdiDropdownWrapper, 'hidden')
+}, true)
+
+radioNonFdi.addEventListener('focus', () => {
+  trade.addClass(fdiDropdownWrapper, 'hidden')
+  trade.removeClass(nonFdiDropdownWrapper, 'hidden')
+}, true)
+
+radioCommitment.addEventListener('focus', () => {
+  trade.addClass(fdiDropdownWrapper, 'hidden')
+  trade.addClass(nonFdiDropdownWrapper, 'hidden')
+}, true)
+
 radioNdaNotSigned.addEventListener('click', () => {
   trade.removeClass(radioCanShareWrapper, 'hidden')
+})
+
+radioSigned.addEventListener('click', () => {
+  trade.addClass(radioCanShareWrapper, 'hidden')
 })
 
 radioCanShare.addEventListener('click', () => {
