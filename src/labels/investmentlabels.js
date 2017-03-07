@@ -36,11 +36,33 @@ const investmentFormLabels = {
   ownership: 'Ownership'
 }
 
+const detailsDisplay = {
+  company_name: 'Client',
+  investment_type: 'Type of investment',
+  sector_primary: 'Primary sector',
+  sector_sub: 'Sub-sector',
+  business_activity: 'Business activity',
+  project_description: 'Project description',
+  nda_signed: 'Non-disclosure agreement',
+  project_shareable: 'Shareable with UK partners',
+  project_description: 'Project description',
+  estimated_land_date: 'Estimated land date'
+}
+
+const referLabels = {
+  referral_activity: 'Activity',
+  referral_event: 'Event',
+  referral_advisor: 'Advisor'
+}
+
+
 module.exports = {
   investmentProjectsOpenLabels,
   investmentProjectsClosedLabels,
   investmentDetailLabels,
   investmentFormLabels,
-  investmentBriefDetails
+  investmentBriefDetails,
+  detailsDisplay,
+  referLabels
 }
 
