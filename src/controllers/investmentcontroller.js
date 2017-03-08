@@ -114,8 +114,8 @@ function create (req, res) {
   const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
 
   const sectors = prepForDropdown(metadataRepository.SECTOR_OPTIONS, 'name')
-  const investerid = req.params.investerId
-  const investeeid = req.params.companyId
+  const investerid = req.params.investerId || req.body.investerId
+  const investeeid = req.params.companyId || req.body.companyId
 
   let lcompany, lcontacts, ladvisors
 
@@ -166,9 +166,10 @@ function create (req, res) {
         investeeDetails,
         fdi,
         nonfdi,
-        investerid
+        investerid,
+        investeeid
       })
-    })
+    }).catch((error) => console.log(error))
 }
 
 function fmtErrorLabel (term) {
@@ -189,6 +190,7 @@ function booleanise (val) {
 
 function validateProject (project) {
   const errors = {}
+
 
   project.amcrm = booleanise(project.amcrm)
   project.amreferralsource = booleanise(project.amreferralsource)
@@ -232,7 +234,6 @@ function validateProject (project) {
   if (project.nonfdi && isBlank(project.nonfdi_type)) {
     errors.fdi = fmtErrorLabel('a non-FDI value')
   }
-
   if (Object.keys(errors).length > 0) {
     return errors
   }
@@ -240,6 +241,7 @@ function validateProject (project) {
 }
 
 function postProject (req, res) {
+
   delete req.body._csrf_token
 
   if (booleanise(req.body.amcrm)) {
@@ -273,7 +275,7 @@ function postProject (req, res) {
   companyRepository.saveCreateInvestmentProject(req.session.token, req.body)
     .then((id) => {
       res.redirect(`/investment/${id}/details`)
-    })
+    }).catch((error) => console.log("ERROR", error))
 }
 
 function createInvestmentType (ldetails) {
@@ -298,7 +300,6 @@ function details (req, res) {
       return metadataRepository.getAdvisors(req.session.token)
     })
     .then((advisors) => {
-      console.log(advisors)
       if (ldetails.client_relationship_manager) {
         ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager)
       }
@@ -325,8 +326,6 @@ function details (req, res) {
 
       const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
       const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
-
-      console.log(ldetails)
 
       const details = {
         company_name: ldetails.company.name,
