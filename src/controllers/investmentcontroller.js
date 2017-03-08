@@ -191,7 +191,6 @@ function booleanise (val) {
 function validateProject (project) {
   const errors = {}
 
-
   project.amcrm = booleanise(project.amcrm)
   project.amreferralsource = booleanise(project.amreferralsource)
   project.fdi = booleanise(project.fdi)
@@ -241,7 +240,6 @@ function validateProject (project) {
 }
 
 function postProject (req, res) {
-
   delete req.body._csrf_token
 
   if (booleanise(req.body.amcrm)) {
@@ -275,7 +273,7 @@ function postProject (req, res) {
   companyRepository.saveCreateInvestmentProject(req.session.token, req.body)
     .then((id) => {
       res.redirect(`/investment/${id}/details`)
-    }).catch((error) => console.log("ERROR", error))
+    }).catch((error) => console.log('ERROR', error))
 }
 
 function createInvestmentType (ldetails) {
