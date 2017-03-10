@@ -1,6 +1,6 @@
 {% macro _radio(name, option, ord, checked=false) %}
 
-  <label class="block-label selection-button-radio {% if checked %}selected{% endif %}" for="{{ name }}_{{ ord }}">
+  <label class="block-label selection-button-radio {% if checked %}selected{% endif %}" for="{{ name }}_{{ ord }}" id="{{ name }}_{{ ord }}_label">
     <input type="radio" id="{{ name }}_{{ ord }}" name="{{ name }}" value="{{ option }}" {% if checked %}checked{% endif %}>{{ option }}
   </label>
 {% endmacro %}

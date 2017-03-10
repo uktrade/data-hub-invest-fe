@@ -201,3 +201,20 @@ hr {
   width: 60%;
   float: right;
 }
+
+.panel-hideable {
+  padding-top: 0;
+  margin-top: 15px;
+  padding-bottom: 0;
+  margin-bottom: 15px;
+}
+
+.nofloat {
+  float:none;
+  clear: left;
+  margin-left: 20px
+}
+
+.dropdownreveal {
+  margin-top: 100px
+}
