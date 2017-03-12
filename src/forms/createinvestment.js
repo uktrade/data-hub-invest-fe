@@ -40,6 +40,13 @@ const textShareDetailsWrapper = document.querySelector('#anonymous_description-w
 const radioCannotShare = document.querySelector('#inv-nda-unsigned_no')
 const textNoShareDetailsWrapper = document.querySelector('#maynotshare-wrapper')
 
+const month = document.querySelector('#land_month')
+const year = document.querySelector('#land_year')
+
+const now = new Date()
+month.placeholder = now.getMonth() > 8 ? now.getMonth() + 1: '0' + (now.getMonth() + 1)
+year.placeholder = now.getYear() + 1900
+
 notClientRelationship.addEventListener('click', () => {
   trade.removeClass(differentclientrelationship, 'hidden')
 }, true

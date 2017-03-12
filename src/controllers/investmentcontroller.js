@@ -114,8 +114,8 @@ function create (req, res) {
   const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
 
   const sectors = prepForDropdown(metadataRepository.SECTOR_OPTIONS, 'name')
-  const investerid = req.params.investerId
-  const investeeid = req.params.companyId
+  const investerid = req.params.investerId || req.body.investerId
+  const investeeid = req.params.companyId || req.body.companyId
 
   let lcompany, lcontacts, ladvisors
 
@@ -166,9 +166,10 @@ function create (req, res) {
         investeeDetails,
         fdi,
         nonfdi,
-        investerid
+        investerid,
+        investeeid
       })
-    })
+    }).catch((error) => console.log(error))
 }
 
 function fmtErrorLabel (term) {
@@ -192,9 +193,17 @@ function validateProject (project) {
 
   project.amcrm = booleanise(project.amcrm)
   project.amreferralsource = booleanise(project.amreferralsource)
-  project.fdi = booleanise(project.fdi)
-  project.nonfdi = booleanise(project.nonfdi)
-  project.commitment_to_invest = booleanise(project.commitment_to_invest)
+  project.fdi = project.fdi === 'FDI'
+  project.nonfdi = project.fdi === 'Non-FDI'
+  project.commitment_to_invest = project.fdi === 'Commitment to Invest'
+
+  if (parseInt(project.land_month, 10) > 12 || parseInt(project.land_month, 10) < 0) {
+    errors.land_month = 'not a valid month'
+  }
+
+  if (parseInt(project.land_year, 10) < 2017) {
+    errors.land_year = 'not a valid year'
+  }
 
   if (isBlank(project.client_contact)) {
     errors.client_contact = fmtErrorLabel('client contact')
@@ -232,27 +241,22 @@ function validateProject (project) {
   if (project.nonfdi && isBlank(project.nonfdi_type)) {
     errors.fdi = fmtErrorLabel('a non-FDI value')
   }
-
   if (Object.keys(errors).length > 0) {
     return errors
   }
   return null
 }
 
+function userOrAnotherAdvisor (amField, advisorId, userId) {
+  if (booleanise(amField)) {
+    return userId
+  } else {
+    return advisorId
+  }
+}
+
 function postProject (req, res) {
   delete req.body._csrf_token
-
-  if (booleanise(req.body.amcrm)) {
-    req.body.client_relationship_manager = res.locals.user.id
-  }
-
-  if (booleanise(req.body.amreferralsource)) {
-    req.body.referral_source_manager = res.locals.user.id
-  }
-
-  if (booleanise(req.body.ndasigned)) {
-    req.body.nda = true
-  }
 
   const errors = validateProject(req.body)
 
@@ -262,18 +266,33 @@ function postProject (req, res) {
     return create(req, res)
   }
 
-  delete req.body.addbusiness
-  delete req.body.invprojname
-  delete req.body.amcrm
-  delete req.body.amreferralsource
-  delete req.body.ndasigned
+  const project = {
+    investment_source: req.body.investerId,
+    investment_recipient: req.body.investeeId,
+    client_contact: req.body.client_contact,
+    client_relationship_manager: userOrAnotherAdvisor(req.body.amcrm, req.body.client_relationship_manager, res.locals.user.id),
+    referral_source_manager: userOrAnotherAdvisor(req.body.amreferralsource, req.body.referral_source_manager, res.locals.user.id),
+    referral_source_main: req.body.referral_source_main,
+    referral_source_sub: req.body.referral_source_sub,
+    fdi_type: req.body.fdi_type,
+    nonfdi_type: req.body.nonfdi_type,
+    sector: req.body.sector,
+    subsector: req.body.subsector,
+    business_activity: req.body.business_activity,
+    project_description: req.body.project_description,
+    anonymous_description: req.body.anonymous_description,
+    maynotshare: req.body.maynotshare,
+    nda: booleanise(req.body.ndasigned),
+    estimated_land_date: `${req.body.land_year}-${req.body.land_month}-01`,
+    project_id: 'P-' + ('' + Math.random()).substr(2, 8)
+  }
 
-  req.body.project_id = 'P-' + ('' + Math.random()).substr(2, 8)
+  console.log(project)
 
-  companyRepository.saveCreateInvestmentProject(req.session.token, req.body)
+  companyRepository.saveCreateInvestmentProject(req.session.token, project)
     .then((id) => {
       res.redirect(`/investment/${id}/details`)
-    })
+    }).catch((error) => console.log('ERROR', error))
 }
 
 function createInvestmentType (ldetails) {
@@ -298,14 +317,13 @@ function details (req, res) {
       return metadataRepository.getAdvisors(req.session.token)
     })
     .then((advisors) => {
-      console.log(advisors)
       if (ldetails.client_relationship_manager) {
         ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager)
       }
       if (ldetails.referral_source_manager) {
         ldetails.referral_source_manager = advisors.find((el) => el.id === ldetails.referral_source_manager)
       }
-      return companyRepository.getDitCompanyLite(req.session.token, ldetails.company)
+      return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
     }).then((co) => {
       ldetails.company = co
       const prospectStage = 'Not started'
@@ -325,8 +343,6 @@ function details (req, res) {
 
       const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
       const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
-
-      console.log(ldetails)
 
       const details = {
         company_name: ldetails.company.name,

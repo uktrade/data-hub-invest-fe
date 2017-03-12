@@ -38,7 +38,7 @@ function getCompanyInteractions (id) {
 // Get a company and then go back and get further details about it
 function getDitCompany (id) {
   return new Promise((resolve, reject) => {
-    Q.spawn(function *main () {
+    Q.spawn(function * main () {
       try {
         const company = yield request(`${config.apiRoot}/company/${id}/`)
 
@@ -213,14 +213,12 @@ function getCompanyInvestmentSummary (token, companyId) {
       promises.push(authorisedRequest(null, `${config.apiRoot}/metadata/advisor/${result.client_relationship_manager}/`)
       .then((advisor) => {
         result.investment_account_manager = advisor
-        return
       }))
     }
     if (result && result.client_relationship_manager) {
       promises.push(authorisedRequest(null, `${config.apiRoot}/metadata/advisor/${result.client_relationship_manager}/`)
       .then((advisor) => {
         result.client_relationship_manager = advisor
-        return
       }))
     }
 
@@ -235,8 +233,7 @@ function getCompanyInvestmentSummary (token, companyId) {
   })
 }
 
-
-function getInvestmentProjectDetails(token, id) {
+function getInvestmentProjectDetails (token, id) {
   const url = `${config.apiRoot}/investment/${id}/projectdetails/`
   return authorisedRequest(token, url)
 }
@@ -259,7 +256,7 @@ function saveCompanyInvestmentSummary (token, summary) {
 }
 
 function saveCreateInvestmentProject (token, project) {
-  const url = `${config.apiRoot}/investment/${project.id}/createproject/`
+  const url = `${config.apiRoot}/investment/${project.investment_source}/createproject/`
   return saveDataToAPI(token, project, url)
 }
 

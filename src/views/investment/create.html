@@ -34,10 +34,12 @@
     id="investee-details")
     }}
 
-    {#<form action="/investment/{{ id }}/create" method="post">#}
+    <form action="/investment/{{ investerid }}/create" method="post">
     <h2 class="heading-medium"></h2>
 
-    <input type="hidden" name="company" value="{{ investerid }}">
+      <input type="hidden" name="companyId" value="{{ investerid }}">
+      <input type="hidden" name="investeeId" value="{{ investeeid }}">
+      <input type="hidden" name="investerId" value="{{ investerid }}">
 
     {{ trade.dropdown("client_contact",
     label="Client contact for this project",
@@ -130,20 +132,20 @@
     <div id="mmyyyyycontrol" class="inv-month-year-date-control">
       <div class="inv-month">
         MM<br>
-        <input type="text" id="land_month" size="2" class="form-control">
+        <input type="text" id="land_month" name="land_month" size="2" maxlength="2" class="form-control" inputmode="numeric">
       </div>
       <div class="inv-year">
-        YYYY<br><input type="text" id="land_year" size="4" class="form-control">
+        YYYY<br><input type="text" id="land_year" name="land_year" size="4" maxlength="4" class="form-control">
       </div>
 
       <div class='save-bar afterfloat'>
-        <button class='button button--save' type='submit' id="isforeigncontinue" onclick="window.location.href='https://marvelapp.com/1dc2cgc/screen/24721102'">Save and create</button>
+        {#<button class='button button--save' type='submit' id="isforeigncontinue" onclick="window.location.href='https://marvelapp.com/1dc2cgc/screen/24721102'">Save and create</button>#}
 
-        {#<button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>#}
+        <button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>
         <a class='button-link button--cancel js-button-cancel' href='#' id='isforeigncancel'>Cancel</a>
       </div>
     </div>
-    {#</form>#}
+    </form>
   </div>
 
   <script src="/javascripts/common.js"></script>
