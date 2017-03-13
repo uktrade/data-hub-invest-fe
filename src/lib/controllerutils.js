@@ -97,7 +97,7 @@ function booleanise (val) {
   if (!val) {
     return false
   } else {
-    if (val === 'Yes') {
+    if (val === 'Yes' || val === true) {
       return true
     } else {
       return false

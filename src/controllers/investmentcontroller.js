@@ -186,6 +186,8 @@ function postProject (req, res) {
     return create(req, res)
   }
 
+  console.log(req.body.amreferralsource, req.body.referral_source_manager, res.locals.user.id)
+
   const project = {
     investment_source: req.body.investerId,
     investment_recipient: req.body.investeeId,
@@ -238,13 +240,10 @@ function details (req, res) {
     })
     .then((advisors) => {
       if (ldetails.client_relationship_manager) {
-        ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager)
+        ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager).name
       }
       if (ldetails.referral_source_manager) {
         ldetails.referral_source_manager = advisors.find((el) => el.id === ldetails.referral_source_manager)
-      }
-      if (ldetails.referral_source_main) {
-        ldetails.referral_source_main = advisors.find((el) => el.id === ldetails.referral_source_main)
       }
       return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
     }).then((co) => {
@@ -293,7 +292,7 @@ function details (req, res) {
       const referral = {
         activity: 'Evant',
         event: 'Moscow Hoteliers Conference 2016',
-        advisor: ldetails.referral_source_main
+        advisor: ldetails.referral_source_manager.name
       }
 
       res.render('investment/details',
