@@ -31,39 +31,29 @@
           <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
         </div>
         <div class="{% if tab == 'contacts' %}active{% endif %}">
-          <a href="/company/{{source}}/{{id}}/contacts">Client</a>
+          <a href="/investment/{{id}}/details">Client</a>
           <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
         </div>
         <div class="{% if tab == 'interactions' %}active{% endif %}">
-          <a href="/company/{{source}}/{{id}}/interactions">Project team</a>
+          <a href="/investment/{{id}}/details">Project team</a>
           <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
         </div>
         <div class="{% if tab == 'interactions' %}active{% endif %}">
-          <a href="/company/{{source}}/{{id}}/interactions">Interactions</a>
+          <a href="/investment/{{id}}/details">Interactions</a>
           <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
         </div>
         <div class="{% if tab == 'interactions' %}active{% endif %}">
-          <a href="/company/{{source}}/{{id}}/interactions">Documents</a>
+          <a href="/investment/{{id}}/details">Documents</a>
           <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
         </div>
         <div class="{% if tab == 'interactions' %}active{% endif %}">
-          <a href="/company/{{source}}/{{id}}/interactions">Evaluation</a>
+          <a href="/investment/{{id}}/details">Evaluation</a>
           <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
         </div>
         <div class="{% if tab == 'interactions' %}active{% endif %}">
-          <a href="/company/{{source}}/{{id}}/interactions">Audit history</a>
+          <a href="/investment/{{id}}/details">Audit history</a>
           <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
         </div>
-        {% if company.id %}
-          <div class="{% if tab == 'exports' %}active{% endif %}">
-            <a href="/company/{{source}}/{{id}}/export">Export</a>
-            <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
-          </div>
-          <div class="{% if tab == 'investment' %}active{% endif %}">
-            <a href="/company/{{source}}/{{id}}/investment">Investment</a>
-            <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
-          </div>
-        {% endif %}
       </nav>
     </div>
 
