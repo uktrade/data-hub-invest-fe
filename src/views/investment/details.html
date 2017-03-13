@@ -71,18 +71,28 @@
       }}
 
       <h2 class="heading-medium">Value</h2>
-      <div class="panel">Please complete this section to move to "Assign project manager stage"</div>
+      {{ trade.keyvaluetable(
+      blankValue,
+      stripey=false,
+      labels=valueLabels,
+      keyorder=valueOrder,
+      id="value-details")
+      }}
 
       <h2 class="heading-medium">Requirements and location</h2>
-      <div class="panel">Please complete this section to move to "Assign project manager stage"</div>
-
-      <h2></h2>
+      {{ trade.keyvaluetable(
+      blankRequirements,
+      stripey=false,
+      labels=requirementsLabels,
+      keyorder=requirementsOrder,
+      id="investment-details")
+      }}
 
       <h2 class="heading-medium">Referral source</h2>
       {{ trade.keyvaluetable(
       referral,
       stripey=false,
-      labels=referLabels,
+      labels=referralSource,
       keyorder=referOrder,
       id="investment-details")
       }}

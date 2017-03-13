@@ -6,12 +6,15 @@ const express = require('express')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
-const {investmentBriefDetails, detailsDisplay, referLabels, months} = require('../labels/investmentlabels')
+const {investmentBriefDetails, detailsDisplay, referralSource, months, valueLabels, requirementsLabels} = require('../labels/investmentlabels')
+const {validateProject} = require('./investmentvalidator')
 const {genCSRF, booleanise, prepForDropdown} = require('../lib/controllerutils')
+
 const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 const detailsDisplayOrder = Object.keys(detailsDisplay)
-const referOrder = Object.keys(referLabels)
-const {validateProject} = require('./investmentvalidator')
+const referOrder = Object.keys(referralSource)
+const valueOrder = Object.keys(valueLabels)
+const requirementsOrder = Object.keys(requirementsLabels)
 
 function fixInvestmentDisplayDefaults (company) {
   if (!company.registered_address_country) {
@@ -240,6 +243,9 @@ function details (req, res) {
       if (ldetails.referral_source_manager) {
         ldetails.referral_source_manager = advisors.find((el) => el.id === ldetails.referral_source_manager)
       }
+      if (ldetails.referral_source_main) {
+        ldetails.referral_source_main = advisors.find((el) => el.id === ldetails.referral_source_main)
+      }
       return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
     }).then((co) => {
       ldetails.company = co
@@ -263,6 +269,8 @@ function details (req, res) {
 
       const landDateRaw = new Date(ldetails.estimated_land_date)
 
+      console.log(ldetails)
+
       const details = {
         company_name: ldetails.company.name,
         investment_type: createInvestmentType(ldetails),
@@ -276,10 +284,16 @@ function details (req, res) {
         estimated_land_date: `${months[landDateRaw.getMonth()]} ${landDateRaw.getFullYear()}`
       }
 
-    const referral = {
-        referral_activity: 'Evant',
-        referral_event: 'Moscow Hoteliers Conference 2016',
-        referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
+      const blankValue = {}
+      Object.keys(valueLabels).forEach((k) => blankValue[k] = ' ')
+
+      const blankRequirements = {}
+      Object.keys(requirementsLabels).forEach((k) => blankRequirements[k] = ' ')
+
+      const referral = {
+        activity: 'Evant',
+        event: 'Moscow Hoteliers Conference 2016',
+        advisor: ldetails.referral_source_main
       }
 
       res.render('investment/details',
@@ -290,7 +304,13 @@ function details (req, res) {
           detailsDisplayOrder,
           referral,
           referOrder,
-          referLabels
+          referralSource,
+          blankValue,
+          valueLabels,
+          valueOrder,
+          blankRequirements,
+          requirementsLabels,
+          requirementsOrder
         })
     })
 }

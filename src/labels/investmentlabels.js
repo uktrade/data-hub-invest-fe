@@ -45,14 +45,7 @@ const detailsDisplay = {
   project_description: 'Project description',
   nda_signed: 'Non-disclosure agreement',
   project_shareable: 'Shareable with UK partners',
-  project_description: 'Project description',
   estimated_land_date: 'Estimated land date'
-}
-
-const referLabels = {
-  referral_activity: 'Activity',
-  referral_event: 'Event',
-  referral_advisor: 'Advisor'
 }
 
 const months = [
@@ -70,14 +63,44 @@ const months = [
   'December'
 ]
 
+const referralSource = {
+  activity: 'Activity',
+  event: 'Event',
+  advisor: 'Advisor'
+}
+
+const requirementsLabels = {
+  main_strategic_driver: 'Main strategic driver',
+  client_requirements: 'Client requirements',
+  competitor_countries: 'Competitor countries',
+  possible_uk_locations: 'Possible UK locations',
+  investment_location: 'Investment location',
+  uk_recipient_company: 'UK recipient company'
+}
+
+const valueLabels = {
+  total_investment: 'Total Investment',
+  foreign_equity_investment: 'Foreign equity investment',
+  government_assistance: 'Government assistance',
+  new_jobs: 'New jobs',
+  average_salary: 'Average salary',
+  safeguarded_jobs: 'Safeguarded jobs',
+  r_d_budget: 'R&D budget',
+  non_fdi_r_d_project: 'Non-FDI R&D project',
+  new_to_world_tech: 'New-to-world tech',
+  export_revenue: 'Export revenue'
+}
+
 module.exports = {
-  investmentProjectsOpenLabels,
-  investmentProjectsClosedLabels,
+  detailsDisplay,
+  investmentBriefDetails,
   investmentDetailLabels,
   investmentFormLabels,
-  investmentBriefDetails,
-  detailsDisplay,
-  referLabels,
-  months
+  investmentProjectsClosedLabels,
+  investmentProjectsOpenLabels,
+  months,
+  referralSource,
+  requirementsLabels,
+  valueLabels
 }
 
