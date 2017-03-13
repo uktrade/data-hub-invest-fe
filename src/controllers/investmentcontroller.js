@@ -6,7 +6,7 @@ const express = require('express')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
-const {investmentBriefDetails, detailsDisplay, referLabels} = require('../labels/investmentlabels')
+const {investmentBriefDetails, detailsDisplay, referLabels, months} = require('../labels/investmentlabels')
 const {genCSRF, booleanise, prepForDropdown} = require('../lib/controllerutils')
 const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 const detailsDisplayOrder = Object.keys(detailsDisplay)
@@ -261,6 +261,8 @@ function details (req, res) {
       const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
       const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
 
+      const landDateRaw = new Date(ldetails.estimated_land_date)
+
       const details = {
         company_name: ldetails.company.name,
         investment_type: createInvestmentType(ldetails),
@@ -270,10 +272,11 @@ function details (req, res) {
         nda_signed: nda,
         project_shareable: shareable,
         project_description: ldetails.project_description,
-        estimated_land_date: 'May 2017'
+        projectNumber: ldetails.project_id,
+        estimated_land_date: `${months[landDateRaw.getMonth()]} ${landDateRaw.getFullYear()}`
       }
 
-      const referral = {
+    const referral = {
         referral_activity: 'Evant',
         referral_event: 'Moscow Hoteliers Conference 2016',
         referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'

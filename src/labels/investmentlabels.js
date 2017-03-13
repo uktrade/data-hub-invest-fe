@@ -55,6 +55,20 @@ const referLabels = {
   referral_advisor: 'Advisor'
 }
 
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
 
 module.exports = {
   investmentProjectsOpenLabels,
@@ -63,6 +77,7 @@ module.exports = {
   investmentFormLabels,
   investmentBriefDetails,
   detailsDisplay,
-  referLabels
+  referLabels,
+  months
 }
 

@@ -218,3 +218,21 @@ hr {
 .dropdownreveal {
   margin-top: 100px
 }
+
+.interactive-header {
+  width: 200px;
+  height: 60px;
+  float: left
+}
+
+.guidancestrip {
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 19px;
+  line-height: 1.38;
+  border-left: 5px solid $govuk-blue;
+  background-color: $light-blue-25;
+  display: inline-block;
+  padding: 10px 15px;
+}
