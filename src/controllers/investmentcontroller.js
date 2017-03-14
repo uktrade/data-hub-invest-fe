@@ -233,6 +233,9 @@ function createInvestmentType (ldetails) {
 
 function details (req, res) {
   let ldetails = {}
+
+  const sourceId = req.params.sourceId
+
   companyRepository.getInvestmentProjectDetails(req.session.token, req.params.sourceId)
     .then((details) => {
       ldetails = details
@@ -267,8 +270,6 @@ function details (req, res) {
       const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
 
       const landDateRaw = new Date(ldetails.estimated_land_date)
-
-      console.log(ldetails)
 
       const details = {
         company_name: ldetails.company.name,
@@ -309,7 +310,8 @@ function details (req, res) {
           valueOrder,
           blankRequirements,
           requirementsLabels,
-          requirementsOrder
+          requirementsOrder,
+          sourceId
         })
     })
 }
