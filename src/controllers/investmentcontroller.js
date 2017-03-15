@@ -186,8 +186,6 @@ function postProject (req, res) {
     return create(req, res)
   }
 
-  console.log(req.body.amreferralsource, req.body.referral_source_manager, res.locals.user.id)
-
   const project = {
     investment_source: req.body.investerId,
     investment_recipient: req.body.investeeId,
@@ -208,8 +206,6 @@ function postProject (req, res) {
     estimated_land_date: `${req.body.land_year}-${req.body.land_month}-01`,
     project_id: 'P-' + ('' + Math.random()).substr(2, 8)
   }
-
-  console.log(project)
 
   companyRepository.saveCreateInvestmentProject(req.session.token, project)
     .then((id) => {
@@ -251,6 +247,7 @@ function details (req, res) {
       return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
     }).then((co) => {
       ldetails.company = co
+      // @todo make dynamic
       const prospectStage = 'Not started'
 
     // project must have a sector...
@@ -343,8 +340,67 @@ function subreferrals (req, res) {
   }))
 }
 
+function editsummary (req, res) {
+
+  const investmentId = req.params.investmentId
+  const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, 'referral_type')
+
+  const businessActivities = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, 'business_activity')
+
+  const fdi = prepForDropdown(metadataRepository.FDI, 'fdi_option')
+  const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
+
+  const sectors = prepForDropdown(metadataRepository.SECTOR_OPTIONS, 'name')
+
+  let ldetails = {}
+  let lcontacts, ladvisors, investmentDisplay, investeeDetails, investeeId
+
+  companyRepository.getInvestmentProjectDetails(req.session.token, investmentId)
+    .then((project) => {
+      ldetails = project
+      investeeId = project.investment_recipient
+      return companyRepository.getCompany(req.session.token, investeeId, null)
+    })
+    .then((investee) => {
+      ldetails.investee = investee
+      return metadataRepository.getClientContacts(req.session.token)
+    })
+    .then((cli_contacts) => {
+      lcontacts = prepForDropdown(cli_contacts, 'contact')
+      return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
+    }).then((co) => {
+    investeeDetails = getInvestmentDetailsDisplay(ldetails.investee)
+    investmentDisplay = getInvestmentDetailsDisplay(co)
+    return metadataRepository.getAdvisors(req.session.token)
+  })
+    .then((advisors) => {
+        ladvisors = prepForDropdown(advisors, 'name')
+        const fullLandDate = new Date(ldetails.estimated_land_date)
+        const month = fullLandDate.getMonth() + 1
+        const year = fullLandDate.getFullYear()
+        res.render('investment/editsummary', {
+          ldetails,
+          investmentDisplay,
+          investmentBriefDetails,
+          investmentDetailsDisplayOrder,
+          lcontacts,
+          ladvisors,
+          investeeDetails,
+          topLevelReferralSource,
+          fdi,
+          nonfdi,
+          businessActivities,
+          sectors,
+          month,
+          year
+        })
+      }
+    )
+}
+
 router.get('/investment/', index)
 router.get('/investment/:companyId/:investerId/create', create)
+router.get('/investment/:investmentId/summary/edit', editsummary)
 router.post('/investment/:sourceId/create', postProject)
 router.get('/investment/:sourceId/details', details)
 router.get('/investment/:sourceId', index)
