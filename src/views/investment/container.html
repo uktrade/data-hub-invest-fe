@@ -23,10 +23,9 @@
 
   </section>
   <div class="left-nav-container">
-
     <div class="left-nav">
       <nav>
-        <div class="active">
+        <div class="{% if tab == 'summary' %}active{% endif %}">
           <a href="/investment/{{ sourceId }}/details">Project</a>
           <i class="collapse-filter collapse-filter-js fa fa-chevron-down"></i>
         </div>
