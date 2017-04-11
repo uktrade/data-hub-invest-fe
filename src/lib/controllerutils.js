@@ -93,8 +93,26 @@ function genCSRF (req, res) {
   return token
 }
 
+function booleanise (val) {
+  if (!val) {
+    return false
+  } else {
+    if (val === 'Yes' || val === true) {
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
 function isBlank (thing) {
   return (!thing || thing.length === 0)
+}
+
+function prepForDropdown (metadata, key) {
+  return metadata.map((thing) => {
+    return {value: thing.id, label: thing[key]}
+  })
 }
 
 function toQueryString (obj) {
@@ -108,12 +126,14 @@ function toQueryString (obj) {
 }
 
 module.exports = {
-  transformErrors,
-  encodeQueryData,
+  booleanise,
   convertAutosuggestCollection,
+  encodeQueryData,
   flattenIdFields,
-  nullEmptyFields,
   genCSRF,
   isBlank,
-  toQueryString
+  nullEmptyFields,
+  prepForDropdown,
+  toQueryString,
+  transformErrors
 }

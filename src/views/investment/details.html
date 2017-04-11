@@ -1,44 +1,50 @@
-{% extends "layouts/ukti.html" %}
+{% extends "./container.html" %}
 
-{% block main %}
+{% block tabmain %}
 
-  {% import "macros/trade.html" as trade %}
-  {% import "./investment_macros.html" as local %}
 
-<h1>{{ projectTitle }}</h1>
+      <p class="guidancestrip">New project added successfully at Prospect stage
+        Complete both the Value and Requirements and location sections below move the project to “Assign Project Manager” stage.</p>
 
-<div class="panel">
-  {{ projectNumber }}
-  Close project
+      <h2 class="heading-medium">Investment project summary</h2>
+      {{ trade.keyvaluetable(
+      details,
+      stripey=false,
+      labels=detailsDisplay,
+      keyorder=detailsDisplayOrder,
+      id="investment-details")
+      }}
 
-  Prospect stage
-  {{ prospectStage }}
-</div>
+      <a href="/investment/{{ sourceId }}/summary/edit" class="button button-secondary">Edit summary</a>
 
-  <h2 class="heading-medium">Investment project summary</h2>
-  {{ trade.keyvaluetable(
-  details,
-  stripey=false,
-  labels=detailsDisplay,
-  keyorder=detailsDisplayOrder,
-  id="investment-details")
-  }}
+      <h2 class="heading-medium">Value</h2>
+      {{ trade.keyvaluetable(
+      blankValue,
+      stripey=false,
+      labels=valueLabels,
+      keyorder=valueOrder,
+      id="value-details")
+      }}
 
-  <h2 class="heading-medium">Value</h2>
-  <div class="panel">Please complete this section to move to "Assign project manager stage"</div>
+      <h2 class="heading-medium">Requirements and location</h2>
+      {{ trade.keyvaluetable(
+      blankRequirements,
+      stripey=false,
+      labels=requirementsLabels,
+      keyorder=requirementsOrder,
+      id="investment-details")
+      }}
 
-  <h2 class="heading-medium">Requirements and location</h2>
-  <div class="panel">Please complete this section to move to "Assign project manager stage"</div>
+      <h2 class="heading-medium">Referral source</h2>
+      {{ trade.keyvaluetable(
+      referral,
+      stripey=false,
+      labels=referralSource,
+      keyorder=referOrder,
+      id="investment-details")
+      }}
 
-  <h2></h2>
 
-  <h2 class="heading-medium">Referral source</h2>
-  {{ trade.keyvaluetable(
-  referral,
-  stripey=false,
-  labels=referLabels,
-  keyorder=referOrder,
-  id="investment-details")
-  }}
+
 
 {% endblock %}

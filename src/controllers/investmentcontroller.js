@@ -6,14 +6,15 @@ const express = require('express')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
-const {investmentBriefDetails, detailsDisplay, referLabels} = require('../labels/investmentlabels')
-const controllerUtils = require('../lib/controllerutils')
-
-const isBlank = controllerUtils.isBlank
+const {investmentBriefDetails, detailsDisplay, referralSource, months, valueLabels, requirementsLabels} = require('../labels/investmentlabels')
+const {validateProject} = require('./investmentvalidator')
+const {genCSRF, booleanise, prepForDropdown} = require('../lib/controllerutils')
 
 const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 const detailsDisplayOrder = Object.keys(detailsDisplay)
-const referOrder = Object.keys(referLabels)
+const referOrder = Object.keys(referralSource)
+const valueOrder = Object.keys(valueLabels)
+const requirementsOrder = Object.keys(requirementsLabels)
 
 function fixInvestmentDisplayDefaults (company) {
   if (!company.registered_address_country) {
@@ -100,12 +101,6 @@ function collate (rez) {
   return companies
 }
 
-function prepForDropdown (metadata, key) {
-  return metadata.map((thing) => {
-    return {value: thing.id, label: thing[key]}
-  })
-}
-
 function create (req, res) {
   const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, 'referral_type')
   const businessActivities = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, 'business_activity')
@@ -172,81 +167,6 @@ function create (req, res) {
     }).catch((error) => console.log(error))
 }
 
-function fmtErrorLabel (term) {
-  return [`You must provide ${term} `]
-}
-
-function booleanise (val) {
-  if (!val) {
-    return false
-  } else {
-    if (val === 'Yes') {
-      return true
-    } else {
-      return false
-    }
-  }
-}
-
-function validateProject (project) {
-  const errors = {}
-
-  project.amcrm = booleanise(project.amcrm)
-  project.amreferralsource = booleanise(project.amreferralsource)
-  project.fdi = project.fdi === 'FDI'
-  project.nonfdi = project.fdi === 'Non-FDI'
-  project.commitment_to_invest = project.fdi === 'Commitment to Invest'
-
-  if (parseInt(project.land_month, 10) > 12 || parseInt(project.land_month, 10) < 0) {
-    errors.land_month = 'not a valid month'
-  }
-
-  if (parseInt(project.land_year, 10) < 2017) {
-    errors.land_year = 'not a valid year'
-  }
-
-  if (isBlank(project.client_contact)) {
-    errors.client_contact = fmtErrorLabel('client contact')
-  }
-
-  if (!project.amcrm && isBlank(project.client_relationship_manager)) {
-    errors.client_relationship_manager = fmtErrorLabel('client relationship manager')
-  }
-
-  if (!project.amreferralsource && isBlank(project.referral_source_manager)) {
-    errors.referral_source_manager = fmtErrorLabel('referral source manager')
-  }
-
-  if (isBlank(project.referral_source_main)) {
-    errors.referral_source_main = fmtErrorLabel('referral source ')
-  }
-  if (isBlank(project.sector)) {
-    errors.sector = fmtErrorLabel('sector')
-  }
-  if (isBlank(project.business_activity)) {
-    errors.business_activity = fmtErrorLabel('business activity')
-  }
-  if (isBlank(project.project_description)) {
-    errors.project_description = fmtErrorLabel('project description')
-  }
-
-  if (!(project.fdi || project.nonfdi || project.commitment_to_invest)) {
-    errors.fdi = fmtErrorLabel('an FDI status')
-  }
-
-  if (project.fdi && isBlank(project.fdi_type)) {
-    errors.fdi = fmtErrorLabel('an FDI value')
-  }
-
-  if (project.nonfdi && isBlank(project.nonfdi_type)) {
-    errors.fdi = fmtErrorLabel('a non-FDI value')
-  }
-  if (Object.keys(errors).length > 0) {
-    return errors
-  }
-  return null
-}
-
 function userOrAnotherAdvisor (amField, advisorId, userId) {
   if (booleanise(amField)) {
     return userId
@@ -261,7 +181,7 @@ function postProject (req, res) {
   const errors = validateProject(req.body)
 
   if (errors) {
-    controllerUtils.genCSRF(req, res)
+    genCSRF(req, res)
     res.locals.errors = errors
     return create(req, res)
   }
@@ -287,8 +207,6 @@ function postProject (req, res) {
     project_id: 'P-' + ('' + Math.random()).substr(2, 8)
   }
 
-  console.log(project)
-
   companyRepository.saveCreateInvestmentProject(req.session.token, project)
     .then((id) => {
       res.redirect(`/investment/${id}/details`)
@@ -311,6 +229,9 @@ function createInvestmentType (ldetails) {
 
 function details (req, res) {
   let ldetails = {}
+
+  const sourceId = req.params.sourceId
+
   companyRepository.getInvestmentProjectDetails(req.session.token, req.params.sourceId)
     .then((details) => {
       ldetails = details
@@ -318,7 +239,7 @@ function details (req, res) {
     })
     .then((advisors) => {
       if (ldetails.client_relationship_manager) {
-        ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager)
+        ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager).name
       }
       if (ldetails.referral_source_manager) {
         ldetails.referral_source_manager = advisors.find((el) => el.id === ldetails.referral_source_manager)
@@ -326,6 +247,7 @@ function details (req, res) {
       return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
     }).then((co) => {
       ldetails.company = co
+      // @todo make dynamic
       const prospectStage = 'Not started'
 
     // project must have a sector...
@@ -344,6 +266,8 @@ function details (req, res) {
       const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
       const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
 
+      const landDateRaw = new Date(ldetails.estimated_land_date)
+
       const details = {
         company_name: ldetails.company.name,
         investment_type: createInvestmentType(ldetails),
@@ -353,13 +277,20 @@ function details (req, res) {
         nda_signed: nda,
         project_shareable: shareable,
         project_description: ldetails.project_description,
-        estimated_land_date: 'May 2017'
+        projectNumber: ldetails.project_id,
+        estimated_land_date: `${months[landDateRaw.getMonth()]} ${landDateRaw.getFullYear()}`
       }
 
+      const blankValue = {}
+      Object.keys(valueLabels).forEach((k) => blankValue[k] = ' ')
+
+      const blankRequirements = {}
+      Object.keys(requirementsLabels).forEach((k) => blankRequirements[k] = ' ')
+
       const referral = {
-        referral_activity: 'Evant',
-        referral_event: 'Moscow Hoteliers Conference 2016',
-        referral_advisor: 'Alex Vasidiliev - Moscow Post, Russia'
+        activity: 'Evant',
+        event: 'Moscow Hoteliers Conference 2016',
+        advisor: ldetails.referral_source_manager.name
       }
 
       res.render('investment/details',
@@ -370,7 +301,14 @@ function details (req, res) {
           detailsDisplayOrder,
           referral,
           referOrder,
-          referLabels
+          referralSource,
+          blankValue,
+          valueLabels,
+          valueOrder,
+          blankRequirements,
+          requirementsLabels,
+          requirementsOrder,
+          sourceId
         })
     })
 }
@@ -402,8 +340,67 @@ function subreferrals (req, res) {
   }))
 }
 
+function editsummary (req, res) {
+
+  const investmentId = req.params.investmentId
+  const topLevelReferralSource = prepForDropdown(metadataRepository.REFERRAL, 'referral_type')
+
+  const businessActivities = prepForDropdown(metadataRepository.BUSINESS_ACTIVITY, 'business_activity')
+
+  const fdi = prepForDropdown(metadataRepository.FDI, 'fdi_option')
+  const nonfdi = prepForDropdown(metadataRepository.NONFDI, 'nonfdi')
+
+  const sectors = prepForDropdown(metadataRepository.SECTOR_OPTIONS, 'name')
+
+  let ldetails = {}
+  let lcontacts, ladvisors, investmentDisplay, investeeDetails, investeeId
+
+  companyRepository.getInvestmentProjectDetails(req.session.token, investmentId)
+    .then((project) => {
+      ldetails = project
+      investeeId = project.investment_recipient
+      return companyRepository.getCompany(req.session.token, investeeId, null)
+    })
+    .then((investee) => {
+      ldetails.investee = investee
+      return metadataRepository.getClientContacts(req.session.token)
+    })
+    .then((cli_contacts) => {
+      lcontacts = prepForDropdown(cli_contacts, 'contact')
+      return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
+    }).then((co) => {
+    investeeDetails = getInvestmentDetailsDisplay(ldetails.investee)
+    investmentDisplay = getInvestmentDetailsDisplay(co)
+    return metadataRepository.getAdvisors(req.session.token)
+  })
+    .then((advisors) => {
+        ladvisors = prepForDropdown(advisors, 'name')
+        const fullLandDate = new Date(ldetails.estimated_land_date)
+        const month = fullLandDate.getMonth() + 1
+        const year = fullLandDate.getFullYear()
+        res.render('investment/editsummary', {
+          ldetails,
+          investmentDisplay,
+          investmentBriefDetails,
+          investmentDetailsDisplayOrder,
+          lcontacts,
+          ladvisors,
+          investeeDetails,
+          topLevelReferralSource,
+          fdi,
+          nonfdi,
+          businessActivities,
+          sectors,
+          month,
+          year
+        })
+      }
+    )
+}
+
 router.get('/investment/', index)
 router.get('/investment/:companyId/:investerId/create', create)
+router.get('/investment/:investmentId/summary/edit', editsummary)
 router.post('/investment/:sourceId/create', postProject)
 router.get('/investment/:sourceId/details', details)
 router.get('/investment/:sourceId', index)
