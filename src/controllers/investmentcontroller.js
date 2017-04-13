@@ -9,6 +9,7 @@ const search = require('../services/searchservice')
 const {investmentBriefDetails, detailsDisplay, referralSource, months, valueLabels, requirementsLabels} = require('../labels/investmentlabels')
 const {validateProject} = require('./investmentvalidator')
 const {genCSRF, booleanise, prepForDropdown} = require('../lib/controllerutils')
+const {copyObj} = require('../lib/utils')
 
 const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 const detailsDisplayOrder = Object.keys(detailsDisplay)
@@ -150,6 +151,8 @@ function create (req, res) {
       let investeeDetails = getInvestmentDetailsDisplay(lcompany.investee)
 
       res.render('investment/create', {
+        userInput: req.session.userInput,
+        errors: req.session.errors,
         sectors,
         lcontacts,
         ladvisors,
@@ -183,7 +186,16 @@ function postProject (req, res) {
   if (errors) {
     genCSRF(req, res)
     res.locals.errors = errors
-    return create(req, res)
+    req.session.userInput = req.body
+    req.session.errors = errors
+    // return create(req, res)
+    return res.redirect(`/investment/${req.body.companyId}/${req.body.investerId}/create`)
+  }
+
+  else {
+    // clear session variables
+    delete req.session.userInput
+    delete req.session.errors
   }
 
   const project = {
