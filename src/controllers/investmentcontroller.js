@@ -187,12 +187,16 @@ function postProject (req, res) {
     genCSRF(req, res)
     res.locals.errors = errors
     req.session.userInput = req.body
+    // account for multiple client_relationship_manager entries
+    if (Array.isArray(req.session.userInput.client_relationship_manager)) {
+      let parsedClientManager = req.session.userInput.client_relationship_manager.find(val => val !== '')
+      req.session.userInput.client_relationship_manager = parsedClientManager || ''
+    }
+
     req.session.errors = errors
     // return create(req, res)
     return res.redirect(`/investment/${req.body.companyId}/${req.body.investerId}/create`)
-  }
-
-  else {
+  } else {
     // clear session variables
     delete req.session.userInput
     delete req.session.errors
