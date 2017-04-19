@@ -9,7 +9,6 @@ const search = require('../services/searchservice')
 const {investmentBriefDetails, detailsDisplay, referralSource, months, valueLabels, requirementsLabels} = require('../labels/investmentlabels')
 const {validateProject} = require('./investmentvalidator')
 const {genCSRF, booleanise, prepForDropdown} = require('../lib/controllerutils')
-const {copyObj} = require('../lib/utils')
 
 const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
 const detailsDisplayOrder = Object.keys(detailsDisplay)
