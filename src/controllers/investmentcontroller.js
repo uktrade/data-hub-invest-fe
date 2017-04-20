@@ -6,11 +6,12 @@ const express = require('express')
 const companyRepository = require('../repositorys/companyrepository')
 const metadataRepository = require('../repositorys/metadatarepository')
 const search = require('../services/searchservice')
-const {investmentBriefDetails, detailsDisplay, referralSource, months, valueLabels, requirementsLabels} = require('../labels/investmentlabels')
+const {investmentBriefDetails, investmentDetailLabels, detailsDisplay, referralSource, months, valueLabels, requirementsLabels} = require('../labels/investmentlabels')
 const {validateProject} = require('./investmentvalidator')
 const {genCSRF, booleanise, prepForDropdown} = require('../lib/controllerutils')
 
-const investmentDetailsDisplayOrder = Object.keys(investmentBriefDetails)
+const investmentBriefDisplayOrder = Object.keys(investmentBriefDetails)
+const investmentDetailsDisplayOrder = Object.keys(investmentDetailLabels)
 const detailsDisplayOrder = Object.keys(detailsDisplay)
 const referOrder = Object.keys(referralSource)
 const valueOrder = Object.keys(valueLabels)
@@ -61,7 +62,7 @@ function index (req, res) {
       res.render('investment/index', {
         investmentDisplay,
         investmentBriefDetails,
-        investmentDetailsDisplayOrder,
+        investmentBriefDisplayOrder,
         foreign,
         id
       })
@@ -157,7 +158,7 @@ function create (req, res) {
         businessActivities,
         investmentDisplay,
         investmentBriefDetails,
-        investmentDetailsDisplayOrder,
+        investmentBriefDisplayOrder,
         investeeDetails,
         fdi,
         nonfdi,
@@ -382,7 +383,7 @@ function editsummary (req, res) {
         ldetails,
         investmentDisplay,
         investmentBriefDetails,
-        investmentDetailsDisplayOrder,
+        investmentBriefDisplayOrder,
         lcontacts,
         ladvisors,
         investeeDetails,
@@ -398,61 +399,31 @@ function editsummary (req, res) {
   )
 }
 const viewProjectClient = function (req, res) {
+  const prospectStage = 'Not started'
   let ldetails = {},
-    invester, investee
+    lcontacts = {},
+    investor, investee
 
   const {sourceId} = req.params
 
   companyRepository.getInvestmentProjectDetails(req.session.token, req.params.sourceId)
     .then((details) => {
       ldetails = details
-      return metadataRepository.getAdvisors(req.session.token)
+      return metadataRepository.getClientContacts(req.session.token)
     })
-    .then((advisors) => {
-      if (ldetails.client_relationship_manager) {
-        ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager).name
-      }
-      if (ldetails.referral_source_manager) {
-        ldetails.referral_source_manager = advisors.find((el) => el.id === ldetails.referral_source_manager)
-      }
+    .then((cliContacts) => {
+      lcontacts = cliContacts
       return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
-    }).then((co) => {
-      ldetails.company = co
-      invester = ldetails.company
-      // @todo make dynamic
-      const prospectStage = 'Not started'
-
-    // project must have a sector...
-      let sector = (metadataRepository.SECTOR_OPTIONS.find(el => el.id === ldetails.sector)).name
-
-    // but subsector is not always present
-      let subsector = metadataRepository.SUBSECTOR.find(el => el.id === ldetails.subsector)
-      if (!subsector) {
-        subsector = 'Not set'
-      } else {
-        subsector = subsector.name
-      }
+    })
+    .then((investorCompany) => {
+      ldetails.investor = investorCompany
+      return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_recipient)
+    })
+    .then((investeeCompany) => {
+      ldetails.investee = investeeCompany
+      let {investor, investee} = ldetails
 
       let businessactivity = (metadataRepository.BUSINESS_ACTIVITY.find(el => el.id === ldetails.business_activity)).business_activity
-
-      const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
-      const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
-
-      const landDateRaw = new Date(ldetails.estimated_land_date)
-
-      const investerDetails = {
-        company_name: invester.name,
-        registered_address_country: invester.registered_address_country,
-        investment_type: createInvestmentType(ldetails),
-        sector_primary: sector,
-        sector_sub: subsector,
-        business_activity: businessactivity,
-        nda_signed: nda,
-        project_shareable: shareable,
-        project_description: ldetails.project_description,
-        projectNumber: ldetails.project_id,
-        estimated_land_date: `${months[landDateRaw.getMonth()]} ${landDateRaw.getFullYear()}`
-      }
 
       const blankValue = {}
       Object.keys(valueLabels).forEach((k) => blankValue[k] = ' ')
@@ -461,21 +432,26 @@ const viewProjectClient = function (req, res) {
       Object.keys(requirementsLabels).forEach((k) => blankRequirements[k] = ' ')
 
       const referral = {
-        activity: 'Evant',
+        activity: 'Event',
         event: 'Moscow Hoteliers Conference 2016',
         advisor: ldetails.referral_source_manager.name
       }
-
+      let investorDetails = getInvestmentDetailsDisplay(investor)
+      let investeeDetails = getInvestmentDetailsDisplay(investee)
       console.log('LDETAILS')
       console.log(ldetails)
       res.render('investment/tab-client',
         {
           prospectStage,
           details,
-          investerDetails,
+          lcontacts,
+          investorDetails,
+          investeeDetails,
+          investmentDetailsDisplayOrder,
           detailsDisplay,
           detailsDisplayOrder,
-          invester,
+          investor,
+          investee,
           referral,
           referOrder,
           referralSource,

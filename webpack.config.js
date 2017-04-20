@@ -9,6 +9,7 @@ module.exports = {
     companyedit: './src/forms/companyedit',
     investment: './src/forms/investment',
     createinvestment: './src/forms/createinvestment',
+    investment_tab_client: './src/forms/investment-tab-client',
     leftnav: './src/lib/leftnav'
   },
   output: {

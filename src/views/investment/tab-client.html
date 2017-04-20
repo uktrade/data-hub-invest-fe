@@ -2,20 +2,65 @@
 
 {% block tabmain %}
 
+{{ trade.errorPanel( errors ) }}
+{#
+<h2 class="heading-medium">Source of foreign equity investment</h2>
+{{ trade.keyvaluetable(
+investmentDisplay,
+stripey=true,
+labels=investmentBriefDetails,
+keyorder=investmentDetailsDisplayOrder,
+id="investment-details")
+}}
 
+<h2 class="heading-medium">Additional company</h2>
+{{ trade.keyvaluetable(
+investeeDetails,
+stripey=true,
+labels=investmentBriefDetails,
+keyorder=investmentDetailsDisplayOrder,
+id="investee-details")
+}}
+
+#}
 {#<p class="guidancestrip">New project added successfully at Prospect stage
   Complete both the Value and Requirements and location sections below move the project to “Assign Project Manager” stage.</p>#}
 
 <h2 class="heading-medium">Source of foreign equity investment</h2>
 {{ trade.keyvaluetable(
-investerDetails,
+investorDetails,
 stripey=false,
-labels=detailsDisplay,
-keyorder=detailsDisplayOrder,
+labels=investmentDetailLabels,
+keyorder=investmentDetailsDisplayOrder,
 id="investment-details")
 }}
 
+{{ trade.dropdown("client_contact",
+label="Client contact for this project",
+emptyLabel=" ",
+value='',
+error='',
+options=lcontacts,
+  value=ldetails.client_contact,
+class="select-autocomplete-js")
+}}
 
+<div class='save-bar afterfloat'>
+  <button class='button button--save' type='submit' id="isforeigncontinue">Save and create</button>
+  <a class='button-link button--cancel js-button-cancel' href='#' id='idummy'>Cancel</a>
+</div>
 
-
+{% if investee and investeeDetails %}
+<h2 class="heading-medium">Third-party company</h2>
+{{ trade.keyvaluetable(
+investeeDetails,
+stripey=false,
+labels=investmentDetailLabels,
+keyorder=investmentDetailsDisplayOrder,
+id="investment-details")
+}}
+{% endif %}
 {% endblock %}
+
+<script src="/javascripts/common.js"></script>
+<script src="/javascripts/investment_tab_client.bundle.js"></script>
