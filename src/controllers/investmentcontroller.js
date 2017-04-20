@@ -150,8 +150,8 @@ function create (req, res) {
       let investeeDetails = getInvestmentDetailsDisplay(lcompany.investee)
 
       res.render('investment/create', {
-        userInput: req.session.userInput,
-        errors: req.session.errors,
+        userInput: res.locals.userInput,
+        errors: res.locals.errors,
         sectors,
         lcontacts,
         ladvisors,
@@ -185,22 +185,15 @@ function postProject (req, res) {
   if (errors) {
     genCSRF(req, res)
     res.locals.errors = errors
-    req.session.userInput = req.body
+    res.locals.userInput = req.body
     // account for multiple client_relationship_manager entries
-    if (Array.isArray(req.session.userInput.client_relationship_manager)) {
-      let parsedClientManager = req.session.userInput.client_relationship_manager.find(val => val !== '')
-      req.session.userInput.client_relationship_manager = parsedClientManager || ''
+    if (Array.isArray(res.locals.userInput.client_relationship_manager)) {
+      let parsedClientManager = res.locals.userInput.client_relationship_manager.find(val => val !== '')
+      res.locals.userInput.client_relationship_manager = parsedClientManager || ''
     }
 
-    req.session.errors = errors
-    // return create(req, res)
-    return res.redirect(`/investment/${req.body.companyId}/${req.body.investerId}/create`)
-  } else {
-    // clear session variables
-    delete req.session.userInput
-    delete req.session.errors
+    return create(req, res)
   }
-
   const project = {
     investment_source: req.body.investerId,
     investment_recipient: req.body.investeeId,
