@@ -374,35 +374,127 @@ function editsummary (req, res) {
     return metadataRepository.getAdvisors(req.session.token)
   })
     .then((advisors) => {
-        ladvisors = prepForDropdown(advisors, 'name')
-        const fullLandDate = new Date(ldetails.estimated_land_date)
-        const month = fullLandDate.getMonth() + 1
-        const year = fullLandDate.getFullYear()
-        res.render('investment/editsummary', {
-          ldetails,
-          investmentDisplay,
-          investmentBriefDetails,
-          investmentDetailsDisplayOrder,
-          lcontacts,
-          ladvisors,
-          investeeDetails,
-          topLevelReferralSource,
-          fdi,
-          nonfdi,
-          businessActivities,
-          sectors,
-          month,
-          year
-        })
-      }
-    )
+      ladvisors = prepForDropdown(advisors, 'name')
+      const fullLandDate = new Date(ldetails.estimated_land_date)
+      const month = fullLandDate.getMonth() + 1
+      const year = fullLandDate.getFullYear()
+      res.render('investment/editsummary', {
+        ldetails,
+        investmentDisplay,
+        investmentBriefDetails,
+        investmentDetailsDisplayOrder,
+        lcontacts,
+        ladvisors,
+        investeeDetails,
+        topLevelReferralSource,
+        fdi,
+        nonfdi,
+        businessActivities,
+        sectors,
+        month,
+        year
+      })
+    }
+  )
 }
+const viewProjectClient = function (req, res) {
+  let ldetails = {},
+    invester, investee
 
+  const {sourceId} = req.params
+
+  companyRepository.getInvestmentProjectDetails(req.session.token, req.params.sourceId)
+    .then((details) => {
+      ldetails = details
+      return metadataRepository.getAdvisors(req.session.token)
+    })
+    .then((advisors) => {
+      if (ldetails.client_relationship_manager) {
+        ldetails.client_relationship_manager = advisors.find((el) => el.id === ldetails.client_relationship_manager).name
+      }
+      if (ldetails.referral_source_manager) {
+        ldetails.referral_source_manager = advisors.find((el) => el.id === ldetails.referral_source_manager)
+      }
+      return companyRepository.getDitCompanyLite(req.session.token, ldetails.investment_source)
+    }).then((co) => {
+      ldetails.company = co
+      invester = ldetails.company
+      // @todo make dynamic
+      const prospectStage = 'Not started'
+
+    // project must have a sector...
+      let sector = (metadataRepository.SECTOR_OPTIONS.find(el => el.id === ldetails.sector)).name
+
+    // but subsector is not always present
+      let subsector = metadataRepository.SUBSECTOR.find(el => el.id === ldetails.subsector)
+      if (!subsector) {
+        subsector = 'Not set'
+      } else {
+        subsector = subsector.name
+      }
+
+      let businessactivity = (metadataRepository.BUSINESS_ACTIVITY.find(el => el.id === ldetails.business_activity)).business_activity
+
+      const shareable = ldetails.canshare ? 'Yes, can be shared' : 'No, cannot be shared'
+      const nda = ldetails.nda ? 'Yes, NDA signed' : 'No NDA'
+
+      const landDateRaw = new Date(ldetails.estimated_land_date)
+
+      const investerDetails = {
+        company_name: invester.name,
+        registered_address_country: invester.registered_address_country,
+        investment_type: createInvestmentType(ldetails),
+        sector_primary: sector,
+        sector_sub: subsector,
+        business_activity: businessactivity,
+        nda_signed: nda,
+        project_shareable: shareable,
+        project_description: ldetails.project_description,
+        projectNumber: ldetails.project_id,
+        estimated_land_date: `${months[landDateRaw.getMonth()]} ${landDateRaw.getFullYear()}`
+      }
+
+      const blankValue = {}
+      Object.keys(valueLabels).forEach((k) => blankValue[k] = ' ')
+
+      const blankRequirements = {}
+      Object.keys(requirementsLabels).forEach((k) => blankRequirements[k] = ' ')
+
+      const referral = {
+        activity: 'Evant',
+        event: 'Moscow Hoteliers Conference 2016',
+        advisor: ldetails.referral_source_manager.name
+      }
+
+      console.log('LDETAILS')
+      console.log(ldetails)
+      res.render('investment/tab-client',
+        {
+          prospectStage,
+          details,
+          investerDetails,
+          detailsDisplay,
+          detailsDisplayOrder,
+          invester,
+          referral,
+          referOrder,
+          referralSource,
+          blankValue,
+          valueLabels,
+          valueOrder,
+          blankRequirements,
+          requirementsLabels,
+          requirementsOrder,
+          sourceId
+        })
+    })
+}
 router.get('/investment/', index)
 router.get('/investment/:companyId/:investerId/create', create)
 router.get('/investment/:investmentId/summary/edit', editsummary)
 router.post('/investment/:sourceId/create', postProject)
 router.get('/investment/:sourceId/details', details)
+router.get('/investment/:sourceId/client', viewProjectClient)
 router.get('/investment/:sourceId', index)
 router.get('/api/investment/search/:term', invsearch)
 router.get('/api/investment/subsectors/:id', subsectors)

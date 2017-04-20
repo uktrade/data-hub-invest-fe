@@ -1,0 +1,21 @@
+{% extends "./container.html" %}
+
+{% block tabmain %}
+
+
+{#<p class="guidancestrip">New project added successfully at Prospect stage
+  Complete both the Value and Requirements and location sections below move the project to “Assign Project Manager” stage.</p>#}
+
+<h2 class="heading-medium">Source of foreign equity investment</h2>
+{{ trade.keyvaluetable(
+investerDetails,
+stripey=false,
+labels=detailsDisplay,
+keyorder=detailsDisplayOrder,
+id="investment-details")
+}}
+
+
+
+
+{% endblock %}
