@@ -2,10 +2,6 @@
 {% import "./investment_macros.html" as local %}
 {% macro input_attr(name, val) %}{% if val %}{{name}}="{{name}}"{% endif %}{% endmacro %}
 
-{#<textarea>{{userInput|dump}}</textarea>
-<p>
-  {{messages|dump}}
-</p>#}
 <div class="column-three-quarters">
   <h1 class="page-heading">Create an investment project</h1>
 
@@ -55,7 +51,7 @@
       checked=amcrm_checked) }}
 
     {# Two elements with same name, this will probably cause problems #}
-    {{ trade.textbox("client_relationship_manager", label="Client Relationship Manager", class="hidden panel", id="client_relationship_manager", value=userInput.client_relationship_manager) }}
+
 
     {{ trade.dropdown("client_relationship_manager",
     label="Client Relationship Manager",

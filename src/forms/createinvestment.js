@@ -111,14 +111,11 @@ function updateSelectedStateDisplay () {
   /**
    * add the selected class to a checked fields label (for UI, do it here rather than in Nunjucks template)
    */
-  // console.log('updateSelectedStateDisplay')
   let aRadioBtns = [].slice.call(document.querySelectorAll('input[type=radio][checked]'))
   aRadioBtns.forEach((input, i) => {
     let dParent = input.closest('label')
     if (dParent) {
       dParent.classList.add('selected')
-      // console.log('dParent')
-      // console.log(dParent)
     }
   })
 }
