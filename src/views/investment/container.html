@@ -11,7 +11,8 @@
     <div class="projectoverview">
       <h1 class="heading-large">{{ projectTitle | default('Project title goes here') }}</h1>
       <address class="address_summary">
-        company name, address line 1, address line 2, City, POST CODE
+        {# @TODO create a method/filter to render company address #}
+        {{ details.getCompanyAddress | default('company name, address line 1, address line 2, City, POST CODE') }}
       </address>
     </div>
 
