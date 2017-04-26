@@ -8,19 +8,15 @@
   <h1>{{ projectTitle }}</h1>
 
   <section class="panel">
+    {% include "./partials/projectstatusbar.html" %}
     <div class="interactive-header">
       <p class="bold-small">{{ details.projectNumber }}</p>
       Close project
     </div>
     <div>
-
-
       <p class="bold-small">Prospect stage</p>
       {{ prospectStage }}
     </div>
-
-
-
   </section>
   <div class="left-nav-container">
     <div class="left-nav">

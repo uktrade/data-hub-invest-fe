@@ -33,9 +33,9 @@
   <form action="/investment/{{ investerid }}/create" method="post">
     <h2 class="heading-medium"></h2>
 
-    {#<input type="hidden" name="companyId" value="{{ investerid }}">#}
-    {#<input type="hidden" name="investeeId" value="{{ investeeid }}">#}
-    {#<input type="hidden" name="investerId" value="{{ investerid }}">#}
+    <input type="hidden" name="companyId" value="{{ investerid }}">
+    <input type="hidden" name="investeeId" value="{{ investeeid }}">
+    <input type="hidden" name="investerId" value="{{ investerid }}">
 
     {{ trade.dropdown("client_contact",
     label="Client contact for this project",
