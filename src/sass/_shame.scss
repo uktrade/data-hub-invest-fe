@@ -229,6 +229,16 @@ hr {
 /**
  * used at the top of the project views
  */
+
+.projectheader {
+  @extend .panel;
+  padding: 40px 0 30px 50px;
+  margin:0;
+}
+
+.projectoverview {
+  padding: 0 0 30px 0;
+}
 .projectstatusbar {
   @extend .clearfix;
   &__col {
@@ -238,13 +248,18 @@ hr {
   }
 
   &__col__heading, &__col__value {
-    display:block
+    display:block;
   }
   &__col__heading {
     font-weight: bold;
   }
 }
 
+.address_summary {
+  font-style:normal;
+  text-transform: uppercase;
+  display:block;
+}
 @media screen and (min-width:$mobile-break-point-max) {
   .projectstatusbar {
     width:$mobile-break-point-max;
