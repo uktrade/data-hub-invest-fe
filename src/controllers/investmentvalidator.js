@@ -1,12 +1,14 @@
 const {isBlank, booleanise} = require('../lib/controllerutils')
+const {copyObj} = require('../lib/utils')
 
 function fmtErrorLabel (term) {
   return [`You must provide ${term} `]
 }
 
-exports.validateProject = function validateProject (project) {
+exports.validateProject = function validateProject (projectBody) {
   const errors = {}
-
+  // copy the project properties so the original request body is not mutated
+  let project = copyObj(projectBody)
   project.amcrm = booleanise(project.amcrm)
   project.amreferralsource = booleanise(project.amreferralsource)
   project.fdi = project.fdi === 'FDI'
