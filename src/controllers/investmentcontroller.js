@@ -300,7 +300,7 @@ function details (req, res) {
         event: 'Moscow Hoteliers Conference 2016',
         advisor: ldetails.referral_source_manager.name
       }
-
+      const tab = 'summary'
       res.render('investment/details',
         {
           prospectStage,
@@ -316,7 +316,8 @@ function details (req, res) {
           blankRequirements,
           requirementsLabels,
           requirementsOrder,
-          sourceId
+          sourceId,
+          tab
         })
     })
 }
@@ -386,6 +387,8 @@ function editsummary (req, res) {
         const fullLandDate = new Date(ldetails.estimated_land_date)
         const month = fullLandDate.getMonth() + 1
         const year = fullLandDate.getFullYear()
+        const tab = 'summary'
+
         res.render('investment/editsummary', {
           ldetails,
           investmentDisplay,
@@ -400,7 +403,8 @@ function editsummary (req, res) {
           businessActivities,
           sectors,
           month,
-          year
+          year,
+          tab
         })
       }
     )

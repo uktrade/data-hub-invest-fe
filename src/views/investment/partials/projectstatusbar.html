@@ -1,0 +1,19 @@
+{# Project Status Bar component #}
+<div class="projectstatusbar">
+  <div class="projectstatusbar__col">
+    <span class="projectstatusbar__col__heading heading-small">{{ details.projectNumber }}</span>
+    {#
+      Close link is displayed conditionally depending on project status
+      i.e.: Assign PM | Prospect | Active | Won | Verify win
+    #}
+    {% if canBeClosed %}
+      <a class="projectstatusbar__col__value" href="#">Close project</a>
+    {% endif %}
+  </div>
+  <div class="projectstatusbar__col">
+    {# Possible status/stage: Prospect stage | Verify win | Won | Lost | Abandoned | Active stage Assign PM | Delayed | Dormant #}
+    <span class="projectstatusbar__col__heading heading-small">{{ prospectStage }}</span>
+    {# Possible values: High value | Low value | Not yet valued |  #}
+    <span class="projectstatusbar__col__value">{{ projectValue | default('Not yet valued') }}</span>
+  </div>
+</div>
