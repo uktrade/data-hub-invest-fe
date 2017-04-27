@@ -5,18 +5,19 @@
   {% import "macros/trade.html" as trade %}
   {% import "./investment_macros.html" as local %}
 
-  <h1>{{ projectTitle }}</h1>
 
-  <section class="panel">
+
+  <section class="projectheader">
+    <div class="projectoverview">
+      <h1 class="heading-large">{{ projectTitle | default('Project title goes here') }}</h1>
+      <address class="address_summary">
+        {# @TODO create a method/filter to render company address #}
+        {{ details.getCompanyAddress | default('company name, address line 1, address line 2, City, POST CODE') }}
+      </address>
+    </div>
+
     {% include "./partials/projectstatusbar.html" %}
-    <div class="interactive-header">
-      <p class="bold-small">{{ details.projectNumber }}</p>
-      Close project
-    </div>
-    <div>
-      <p class="bold-small">Prospect stage</p>
-      {{ prospectStage }}
-    </div>
+
   </section>
   <div class="left-nav-container">
     <div class="left-nav">
