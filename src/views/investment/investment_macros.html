@@ -5,12 +5,14 @@
   </label>
 {% endmacro %}
 
-{% macro inlineradio(name, id, class, label='', optiona='Yes', optionb='No', checked=false) %}
+{% macro inlineradio(name, id, class, label='', optiona='yes', optionb='no', checked=false) %}
 
+{% set opt_a_selected =  true if checked == true else false %}
+{% set opt_b_selected =  false if checked == true else true %}
 <fieldset class="inline form-group form-group__checkbox-group form-group__radiohide {{ class }}" {% if id %}id="{{ id }}"{% endif %}>
   <legend class="form-label-bold">{{ label }}</legend>
-  {{  _radio(name, optiona, "yes") }}
-  {{  _radio(name, optionb, "no") }}
+  {{  _radio(name, optiona, "yes", checked=opt_a_selected) }}
+  {{  _radio(name, optionb, "no", checked=opt_b_selected) }}
 </fieldset>
 
 {% endmacro %}
