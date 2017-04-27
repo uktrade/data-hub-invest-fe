@@ -1,0 +1,24 @@
+/**
+ * Content header
+ */
+.contentheader {
+  @extend .clearfix;
+  padding:1rem 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid $grey-2;
+}
+@media screen and (min-width:$mobile-break-point-max) {
+  .contentheader {
+
+    clear:both;
+    &__section {
+      text-align:left;
+      &--left {
+        float:left;
+      }
+      &--right {
+        float:right;
+      }
+    }
+  }
+}

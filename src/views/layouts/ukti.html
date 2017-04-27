@@ -19,15 +19,20 @@
 {% endblock %}
 
 {% block content %}
-  {% if user and user.name %}
-    <div class="login-bar">
-      <div class="login-links login-links-right">
-        <span class="user-name">{{ user.name }}:</span><a href="/myaccount">My account</a>
-        |
-        <a href="/login/signout">Sign out</a>
-      </div>
+  <nav class="contentheader">
+    <div class="contentheader__section contentheader__section--left">
+      <a href="/" class="contentheader__item">Home</a>
     </div>
-  {% endif %}
+    {% if user and user.name %}
+    <div class="contentheader__section contentheader__section--right">
+      <span class="contentheader__item">{{ user.name }}: </span>
+      <a href="/myaccount" class="contentheader__item">My account</a>
+      |
+      <a href="/login/signout" class="contentheader__item">Sign out</a>
+    </div>
+    {% endif %}
+  </nav>
+  
   <div class="container">
     {% block main %}{% endblock %}
   </div>

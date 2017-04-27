@@ -1,7 +1,15 @@
 $images-dir: '/images/';
 
+// settings
+@import 'settings/variables';
+//base
 @import 'trade-elements';
+@import 'base/helpers';
 
+
+// components
+@import 'components/contentheader';
+@import 'components/projectstatusbar';
 // application specific
 @import 'address';
 @import 'facets';
