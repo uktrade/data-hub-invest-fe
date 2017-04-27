@@ -1,0 +1,29 @@
+/**
+ * used at the top of the project views
+ */
+.projectstatusbar {
+  @extend .clearfix;
+  &__col {
+    width:100%;
+    float:left;
+    height:60px;
+  }
+
+  &__col__heading, &__col__value {
+    display:block
+  }
+  &__col__heading {
+    font-weight: bold;
+  }
+}
+
+@media screen and (min-width:$mobile-break-point-max) {
+  .projectstatusbar {
+    width:$mobile-break-point-max;
+    &__col {
+      width:50%;
+    }
+  }
+
+
+}

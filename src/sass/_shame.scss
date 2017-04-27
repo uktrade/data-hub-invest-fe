@@ -1,5 +1,3 @@
-$mobile-break-point-max:320px;
-
 .back-link {
   display: inline-block;
   padding-left: 20px;
@@ -221,40 +219,13 @@ hr {
   margin-top: 100px
 }
 
+
 .interactive-header {
   width: 200px;
   height: 60px;
   float: left
 }
-/**
- * used at the top of the project views
- */
-.projectstatusbar {
-  @extend .clearfix;
-  &__col {
-    width:100%;
-    float:left;
-    height:60px;
-  }
 
-  &__col__heading, &__col__value {
-    display:block
-  }
-  &__col__heading {
-    font-weight: bold;
-  }
-}
-
-@media screen and (min-width:$mobile-break-point-max) {
-  .projectstatusbar {
-    width:$mobile-break-point-max;
-    &__col {
-      width:50%;
-    }
-  }
-
-
-}
 .guidancestrip {
   font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
   font-weight: 400;
