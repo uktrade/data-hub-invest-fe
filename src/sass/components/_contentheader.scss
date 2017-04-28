@@ -3,11 +3,11 @@
  */
 .contentheader {
   @extend .clearfix;
-  padding:1rem 0;
+  padding:1.5rem 0;
   margin-bottom: 1rem;
   border-bottom: 1px solid $grey-2;
 }
-@media screen and (min-width:$mobile-break-point-max) {
+@media screen and (min-width:$mobile-breakpoint-max) {
   .contentheader {
 
     clear:both;

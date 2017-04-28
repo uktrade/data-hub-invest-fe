@@ -5,8 +5,6 @@
   {% import "macros/trade.html" as trade %}
   {% import "./investment_macros.html" as local %}
 
-
-
   <section class="projectheader">
     <div class="projectoverview">
       <h1 class="heading-large">{{ projectTitle | default('Project title goes here') }}</h1>
@@ -19,7 +17,22 @@
     {% include "./partials/projectstatusbar.html" %}
 
   </section>
-  <div class="left-nav-container">
+  <section class="tabbedwindow">
+    <nav class="tabbedwindow__nav">
+      {% for tab in navItems %}
+      <a href="{{tab.url}}" class="tabbedwindow__tab{% if tab.tab == 'summary' %} tabbedwindow__tab--active{% endif %}">
+        {{tab.label}}
+        <i class="tabbedwindow__tab__icon  collapse-filter-js fa fa-chevron-down"></i>
+      </a>
+      {% endfor %}
+    </nav>
+    <div class="tabbedwindow__pane">
+      {% block tabmain%}{% endblock %}
+    </div>
+  </section>
+
+
+  {# <div class="left-nav-container">
     <div class="left-nav">
       <nav>
         <div class="{% if tab == 'summary' %}active{% endif %}">
@@ -57,11 +70,12 @@
       {% block tabmain%}{% endblock %}
 
 
-    </div>
+    </div> #}
   </div>
   <script src="/javascripts/common.js"></script>
 
-  <script src="/javascripts/leftnav.bundle.js"></script>
+  {# <script src="/javascripts/leftnav.bundle.js"></script> #}
+  <script src="/javascripts/investment_details.bundle.js"></script>
 
 
 

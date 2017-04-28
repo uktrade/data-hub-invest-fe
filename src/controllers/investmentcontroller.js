@@ -301,6 +301,16 @@ function details (req, res) {
         advisor: ldetails.referral_source_manager.name
       }
       const tab = 'summary'
+
+      const navItems = [
+        {label: 'Project', url: `/investment/${sourceId}/details`, tab: 'summary'},
+        {label: 'Client', url: `/investment/${sourceId}/details`, tab: 'contacts'},
+        {label: 'Project Team', url: `/investment/${sourceId}/details`, tab: 'interactions'},
+        {label: 'Interactions', url: `/investment/${sourceId}/details`, tab: 'interactions'},
+        {label: 'Documents', url: `/investment/${sourceId}/details`, tab: 'interactions'},
+        {label: 'Evaluation', url: `/investment/${sourceId}/details`, tab: 'interactions'},
+        {label: 'Audit history', url: `/investment/${sourceId}/details`, tab: 'interactions'}
+      ]
       res.render('investment/details',
         {
           prospectStage,
@@ -317,7 +327,8 @@ function details (req, res) {
           requirementsLabels,
           requirementsOrder,
           sourceId,
-          tab
+          tab,
+          navItems
         })
     })
 }

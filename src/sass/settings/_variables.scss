@@ -3,4 +3,8 @@
  * Eventually variables can be split across multiple files
  * @type {[type]}
  */
-$mobile-break-point-max:320px;
+
+// $tablet-breakpoint: 641px !default;
+// $desktop-breakpoint: 769px !default;
+$mobile-breakpoint-max:320px;
+$tablet-breakpoint-min:640px;
