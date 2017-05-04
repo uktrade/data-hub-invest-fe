@@ -6,10 +6,6 @@
   }
   &__nav {
     width:25%;
-    // @extend %site-width-container;
-    // @extend %contain-floats;
-    // clear: both;
-
   }
   &__pane {
     margin-left:10%;
@@ -42,7 +38,6 @@
           display: none;
         }
       }
-
     }
     &__icon {
       color:$white;
@@ -54,9 +49,6 @@
       @include media(tablet) {
         display: none;
       }
-      // &.fa {
-      //   display:none;
-      // }
     }
   }
 

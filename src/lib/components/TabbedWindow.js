@@ -1,3 +1,5 @@
+const {debounce, extend} = require('lodash')
+const EventEmitter = require('eventemitter3')
 // TODO move globally or into the config ? has to be the same as the media query for tablets
 const enableIfScreenSmallerThan = 641
 const DOM_EL_WINDOW = '.tabbedwindow'
@@ -9,20 +11,44 @@ const DOM_EL_PANE = '.tabbedwindow__pane'
 const CSS_CLASS_TAB = `${DOM_EL_TAB}`.replace('.', '')
 const CSS_CLASS_TAB_ACTIVE = `${CSS_CLASS_TAB}--active`
 
-let toggleEnabled = null
+/**
+ * TabbedWindow constructor
+ * @extends EventEmitter
+ *
+ * toggleaccordion event
+ * @event TabbedWindow#toggleaccordion
+ * @type {object}
+ * @property {string} accordionState - (open|closed)
+ *
+ * accordionenabled event fired when the mobile breakpoint is triggered
+ * @event TabbedWindow#accordionenabled
+ * @type {boolean}
 
+ * accordiondisabled event fired when the desktop breakpoint is triggered
+ * @event TabbedWindow#accordiondisabled
+ * @type {boolean}
+ *
+
+ * accordionopened event
+ * @event TabbedWindow#accordionopened
+ * @type {object}
+ *
+ * accordionclosed event
+ * @event TabbedWindow#accordionclosed
+ * @type {object}
+ */
 function TabbedWindow () {
-  this.toggleEnabled = null
+  // initialise EvemtEmitter
+  EventEmitter.call(this)
+  this.accordionEnabled = false
+  this.accordionState = 'closed'
   this.domEl = document.querySelector(DOM_EL_WINDOW)
   this.domElTabs = [].slice.call(document.querySelectorAll(DOM_EL_TAB))
   this.domElNav = document.querySelector(DOM_EL_NAV)
   this.domElPane = document.querySelector(DOM_EL_PANE)
 }
 
-TabbedWindow.prototype = {
-  onActiveItems: function () {
-    return document.querySelectorAll(CSS_CLASS_TAB_ACTIVE)
-  },
+TabbedWindow.prototype = extend(EventEmitter.prototype, {
   getNonActiveItems: function () {
     return this.domElTabs.filter(tab => tab.classList.contains(CSS_CLASS_TAB_ACTIVE) === false)
   },
@@ -62,47 +88,79 @@ TabbedWindow.prototype = {
       a.style.display = 'none'
     })
   },
+  /**
+   * called (via a debounce) on window resize. Emits an event when breakpoint is changed (tabletbreakpoint|desktopbreakpoint)
+   * @return {void}
+   */
   updateDisplay: function () {
-    // @TODO stop calling updateDisplay resize
-    // running dom queries on window resize is bad for performance
-    // switch to event driven UI (JS Events)
     let screenIsSmall = document.documentElement.clientWidth <= enableIfScreenSmallerThan
-    if (screenIsSmall) {
-      this.hide(this.getNonActiveItems())
-      this.toggleEnabled = true
-      this.disableActiveLink()
-    } else {
-      this.setChevronDown(this.getActiveItem())
-      this.show(this.domElTabs)
-      this.toggleEnabled = false
+    if (screenIsSmall && this.accordionEnabled === false) {
+      this.emit('tabletbreakpoint')
+    } else if (!screenIsSmall && this.accordionEnabled === true) {
+      this.emit('desktopbreakpoint')
     }
   },
+  /**
+   * click event callback for tab navigation items
+   * @param  {DOMEvent} e dom event
+   * @return {void}
+   */
   onTabClick: function (e) {
     let el = e.target
-    if (!el.classList.contains(CSS_CLASS_TAB)) {
-      return
-    }
-    if (!this.toggleEnabled) {
+    let payload = {target: el}
+    if (!el.classList.contains(CSS_CLASS_TAB) || !this.accordionEnabled) {
       return
     }
     if (this.isItemCollapsed(el)) {
-      this.setChevronUp(el)
-      this.show(this.getNonActiveItems())
+      this.accordionState = 'open'
+      this.emit('toggleaccordion', payload)
     } else {
-      this.setChevronDown(el)
-      this.hide(this.getNonActiveItems())
+      this.accordionState = 'closed'
+      this.emit('toggleaccordion', payload)
     }
   },
+  /**
+   * callback for toggleaccordion event
+   * @param  {object} payload contains event data
+   * @return {void}
+   */
+  onAccordionStateToggled: function (payload) {
+    if (this.accordionState === 'open') {
+      this.openAccordion(payload)
+    } else if (this.accordionState === 'closed') {
+      this.closeAccordion(payload)
+    }
+  },
+  openAccordion: function (payload) {
+    this.setChevronUp(payload.target)
+    this.show(this.getNonActiveItems())
+    this.emit('accordionopened')
+  },
+  closeAccordion: function (payload) {
+    this.setChevronDown(payload.target)
+    this.hide(this.getNonActiveItems())
+    this.emit('accordionclosed')
+  },
   init: function () {
-    // @TODO setinterval on resize callback being fired for performance reason
-    window.addEventListener('resize', this.updateDisplay.bind(this))
+    // event listeners
+    // dom events
+    window.addEventListener('resize', debounce(this.updateDisplay.bind(this), 100))
     window.addEventListener('load', this.updateDisplay.bind(this))
-    // expand/collapse logic
-
     this.domEl.addEventListener('click', this.onTabClick.bind(this))
-    console.log('TabWindow initialied!')
-    console.log(this)
+    // custom component events
+    this.on('toggleaccordion', this.onAccordionStateToggled.bind(this))
+    this.on('tabletbreakpoint', function (e) {
+      this.accordionEnabled = true
+      this.hide(this.getNonActiveItems())
+      this.disableActiveLink()
+    })
+    this.on('desktopbreakpoint', function (e) {
+      this.accordionEnabled = false
+      this.accordionState = 'closed'
+      this.setChevronDown(this.getActiveItem())
+      this.show(this.domElTabs)
+    })
   }
-}
+})
 
 module.exports = TabbedWindow
