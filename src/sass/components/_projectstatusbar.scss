@@ -3,10 +3,13 @@
  */
 .projectstatusbar {
   @extend .clearfix;
+  border-left: 10px solid $grey-2;
+  padding-left:1rem;
+  margin: 2rem 0;
   &__col {
     width:100%;
     float:left;
-    height:60px;
+    // height:60px;
   }
 
   &__col__heading, &__col__value {
@@ -17,9 +20,9 @@
   }
 }
 
-@media screen and (min-width:$mobile-break-point-max) {
+@media screen and (min-width:$mobile-breakpoint-max) {
   .projectstatusbar {
-    width:$mobile-break-point-max;
+    width:$mobile-breakpoint-max;
     &__col {
       width:50%;
     }

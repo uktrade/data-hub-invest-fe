@@ -10,6 +10,7 @@ $images-dir: '/images/';
 // components
 @import 'components/contentheader';
 @import 'components/projectstatusbar';
+@import 'components/tabbedwindow';
 // application specific
 @import 'address';
 @import 'facets';

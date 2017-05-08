@@ -1,0 +1,61 @@
+.tabbedwindow {
+  @extend .clearfix;
+  // layout
+  &__nav, &__pane {
+    float:left;
+  }
+  &__nav {
+    width:25%;
+  }
+  &__pane {
+    margin-left:10%;
+    width:65%;
+  }
+  &__tab {
+    display:block;
+    height:50px;
+    padding-left:1rem;
+    vertical-align:middle;
+    line-height: 50px;
+    text-decoration: underline;
+    position:relative;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    &:hover, &:visited {
+      color:$black;
+    }
+    &--active {
+      background:$govuk-blue;
+      color:$white;
+      font-weight: bold;
+      text-decoration: none;
+      &:hover, &:visited {
+        color:$white;
+      }
+      & .tabbedwindow__tab__icon {
+        display: block;
+      }
+      @include media (tablet) {
+        & .tabbedwindow__tab__icon {
+          display: none;
+        }
+      }
+    }
+    &--hidden {
+      display: none;
+    }
+    &__icon {
+      color:$white;
+      position: absolute;
+      right:1rem;
+      top: 50%;
+      transform:translate3d(0, -50%, 0);
+      display: none;
+      @include media(tablet) {
+        display: none;
+      }
+    }
+  }
+
+}
