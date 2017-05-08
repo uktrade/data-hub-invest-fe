@@ -5,8 +5,8 @@
 
 {% block head_styles %}
 <!-- This is a test -->
-<link href="{{ asset_path | default('/') }}css/application.css" media="screen" rel="stylesheet" />
 <link href="/font-awesome-4.7.0/css/font-awesome.min.css" media="screen" rel="stylesheet" />
+<link href="{{ asset_path | default('/') }}css/application.css" media="screen" rel="stylesheet" />
 {% endblock %}
 
 {% block head_script %}
@@ -32,7 +32,7 @@
     </div>
     {% endif %}
   </nav>
-  
+
   <div class="container">
     {% block main %}{% endblock %}
   </div>

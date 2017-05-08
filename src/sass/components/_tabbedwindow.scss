@@ -19,6 +19,9 @@
     line-height: 50px;
     text-decoration: underline;
     position:relative;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     &:hover, &:visited {
       color:$black;
     }
