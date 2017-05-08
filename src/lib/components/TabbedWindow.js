@@ -10,6 +10,7 @@ const DOM_EL_PANE = '.tabbedwindow__pane'
 
 const CSS_CLASS_TAB = `${DOM_EL_TAB}`.replace('.', '')
 const CSS_CLASS_TAB_ACTIVE = `${CSS_CLASS_TAB}--active`
+const CSS_CLASS_TAB_HIDDEN = `${CSS_CLASS_TAB}--hidden`
 
 /**
  * TabbedWindow constructor
@@ -79,13 +80,13 @@ TabbedWindow.prototype = extend(EventEmitter.prototype, {
 
   show: function (items) {
     [].forEach.call(items, function (a) {
-      a.style.display = null
+      a.classList.remove(CSS_CLASS_TAB_HIDDEN)
     })
   },
 
   hide: function (items) {
     [].forEach.call(items, function (a) {
-      a.style.display = 'none'
+      a.classList.add(CSS_CLASS_TAB_HIDDEN)
     })
   },
   /**

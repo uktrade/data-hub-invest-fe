@@ -39,6 +39,9 @@
         }
       }
     }
+    &--hidden {
+      display: none;
+    }
     &__icon {
       color:$white;
       position: absolute;
